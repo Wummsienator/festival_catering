@@ -1,0 +1,19 @@
+{
+    "Stands": {
+        "1": {
+            "name": "Pizza"
+        },
+        "2": {
+            "name": "Mexican"
+        },
+        "3": {
+            "name": "Soup"
+        }
+    },
+    "Products": {
+
+    },
+    "Orders": {
+        
+    }
+}
