@@ -1,19 +1,117 @@
 {
+    "GlobalIDs": {
+        "Orders": 4,
+        "Order2Stand": 4,
+        "Order2Ticket": 5
+    },
+    "Tickets": {
+        "1234567": {
+            "Password": "OneTwoThreeForFive",
+            "Credit": 33
+        },
+        "8910111": {
+            "Password": "TestTest",
+            "Credit": 12
+        }
+    },
     "Stands": {
         "1": {
-            "name": "Pizza"
+            "name": "Pizza",
+            "products": [
+                "1",
+                "2"
+            ]
         },
         "2": {
-            "name": "Mexican"
+            "name": "Mexican",
+            "products": [
+                "3"
+            ]
         },
         "3": {
-            "name": "Soup"
+            "name": "Soup",
+            "products": [
+                "4"
+            ]
         }
     },
     "Products": {
-
+        "1": {
+            "name": "Pizza Hawaii",
+            "price": 10,
+            "time": 8
+        },
+        "2": {
+            "name": "Pizza Kebab",
+            "price": 12,
+            "time": 8
+        },
+        "3": {
+            "name": "Nacho Bowl",
+            "price": 7,
+            "time": 10
+        },
+        "4": {
+            "name": "Tomato Soup",
+            "price": 5,
+            "time": 6
+        }
     },
     "Orders": {
-        
+        "1": {
+            "time": 16,
+            "price": 22,
+            "status": "1",
+            "positions": {
+                "1": {
+                    "product": "1",
+                    "quantity": 1
+                },
+                "2": {
+                    "product": "2",
+                    "quantity": 1
+                }
+            }
+        },
+        "2": {
+            "time": 0,
+            "price": 10,
+            "status": "2",
+            "positions": {
+                "1": {
+                    "product": "4",
+                    "quantity": 2
+                }
+            }
+        }
+    },
+    "Order2Stand": {
+        "1": {
+            "order": "1",
+            "stand": "1"
+        },
+        "2": {
+            "order": "2",
+            "stand": "3"
+        }
+    },
+    "Order2Ticket": {
+        "1": {
+            "order": "1",
+            "ticket": "1234567"
+        },
+        "2": {
+            "order": "2",
+            "ticket": "8910111"
+        },
+        "3": {
+            "order": "2",
+            "ticket": "1234567"
+        }
+    },
+    "Status": {
+        "1": "In Bearbeitung",
+        "2": "Bereit zur Abholung",
+        "3": "Ausgegeben"
     }
 }
