@@ -64,6 +64,7 @@ class Database:
             time += p["quantity"] * prod["time"]
             positions[str(counter)] = p
             counter += 1
+            print("uwu :3")
 
         #add order
         data["Orders"][data["GlobalIDs"]["Orders"]] = {"time": time, "price": price, "status": "1", "positions": positions}
