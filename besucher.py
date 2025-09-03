@@ -24,7 +24,7 @@ title = Label(
     root,
     text="Offene Bestellungen:",
     font=("Arial", 14, "bold"),
-    bg="#004c66",   # dark teal background
+    bg="#05445E",   # dark teal background
     fg="white"
 )
 title.pack(fill="x")
@@ -45,20 +45,21 @@ for order in orders:
     data.append( (order["stand"], order["time"], order["status_desc"], order["order"]) )
 
 for i, row in enumerate(data):
-    tag = "evenrow" if i % 2 == 0 else "oddrow"
-    table.insert("", END, values=row, tags=(tag,))
+    # tag = "evenrow" if i % 2 == 0 else "oddrow"
+    # table.insert("", END, values=row, tags=(tag,))
+    table.insert("", END, values=row, tags=("evenrow",))
 
 # Style rows
 style = ttk.Style(root)
 style.theme_use("default")
 
 # Header style
-style.configure("Treeview.Heading", font=("Arial", 11, "bold"), background="#004c66", foreground="white")
+style.configure("Treeview.Heading", font=("Arial", 11, "bold"), background="#05445E", foreground="white")
 
 # Row styles
 style.configure("Treeview", font=("Arial", 11), rowheight=25)
-table.tag_configure("evenrow", background="#e6f7ff")   # light blue
-table.tag_configure("oddrow", background="white")
+table.tag_configure("evenrow", background="#D4F1F4")   # baby blue
+# table.tag_configure("oddrow", background="white")
 
 # Pack table
 table.pack(expand=True, fill="both", padx=5, pady=5)
