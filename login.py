@@ -8,6 +8,9 @@ root = Tk()
 #styles
 style1 = font.Font(size=20)
 
+#variables
+database = Database()
+
 #logo
 logo_pil = Image.open("logo.png")
 logo_pil = logo_pil.resize((300, 300), Image.Resampling.LANCZOS)
@@ -47,9 +50,6 @@ ip2 = Entry(form_frame, font=style1, bg="#D4F1F4", textvariable=password_val, sh
 
 #button
 logBtn = Button(form_frame, text="Login", command=lambda: onLogin(), font=style1, background="#75E6DA").grid(row=2, column=0, columnspan=2)
-
-#variables
-database = Database()
 
 #functions
 def onLogin():

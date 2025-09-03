@@ -38,6 +38,8 @@ class Database:
             o2tObj = data["Order2Ticket"][o2t]
             if o2tObj["ticket"] == ticket:
                 order = data["Orders"][o2tObj["order"]]
+                #append order number
+                order["order"] = o2tObj["order"]
                 #append stand number
                 for o2s in data["Order2Stand"]:
                     o2sObj = data["Order2Stand"][o2s]
@@ -58,6 +60,8 @@ class Database:
             o2sObj = data["Order2Stand"][o2s]
             if o2sObj["stand"] == stand:
                 order = data["Orders"][o2sObj["order"]]
+                #append order number
+                order["order"] = o2sObj["order"]
                 #append stand number
                 order["stand"] = stand      
                 #get status description
@@ -122,7 +126,7 @@ database = Database()
 # print(database.getOrdersForTicket("1234567"))
 # print(database.getOrdersForTicket("8910111"))
 
-print(database.getOrdersForStand("1"))
+#print(database.getOrdersForStand("1"))
 
 #database.adjustTimers()
 
