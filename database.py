@@ -63,8 +63,14 @@ class Database:
             price += p["quantity"] * prod["price"]
             time += p["quantity"] * prod["time"]
             positions[str(counter)] = p
+
+            #update quantity for stand
+            for sp in data["Stands"][stand]["products"]:
+                if sp["product"] == p["product"]:
+                    sp["quantity"] = sp["quantity"] - p["quantity"]
+
             counter += 1
-            print("uwu :3")
+            
 
         #add order
         data["Orders"][data["GlobalIDs"]["Orders"]] = {"time": time, "price": price, "status": "1", "positions": positions}
@@ -88,9 +94,9 @@ database = Database()
 # print(database.getproductsForStand("1"))
 # print(database.getproductsForStand("3"))
 
-print(database.getOrdersForTicket("1234567"))
-print(database.getOrdersForTicket("8910111"))
+# print(database.getOrdersForTicket("1234567"))
+# print(database.getOrdersForTicket("8910111"))
 
 #database.adjustTimers()
 
-# database.placeOrder("2", "8910111", [{"product": "3", "quantity": 1}])
+#database.placeOrder("2", "8910111", [{"product": "3", "quantity": 1}])
