@@ -1,17 +1,27 @@
 {
     "GlobalIDs": {
-        "Orders": 4,
-        "Order2Stand": 4,
-        "Order2Ticket": 5
+        "Orders": 3,
+        "Order2Stand": 3,
+        "Order2Ticket": 4
     },
     "Tickets": {
         "1234567": {
             "password": "OneTwoThreeForFive",
-            "credit": 33
+            "credit": 33,
+            "vip": false,
+            "stand": null
         },
         "8910111": {
             "password": "TestTest",
-            "credit": 12
+            "credit": 12,
+            "vip": true,
+            "stand": null
+        },
+        "11111111": {
+            "password": "Admin",
+            "credit": 0,
+            "vip": false,
+            "stand": "1"
         }
     },
     "Stands": {
