@@ -50,6 +50,23 @@ class Database:
                 orders.append(order)
         return orders
     
+    def getOrdersForStand(self, stand):
+        orders = []
+        data = self.readData()
+        for o2s in data["Order2Stand"]:
+            #get relation object
+            o2sObj = data["Order2Stand"][o2s]
+            if o2sObj["stand"] == stand:
+                order = data["Orders"][o2sObj["order"]]
+                #append stand number
+                order["stand"] = stand      
+                #get status description
+                for s in data["Status"]:
+                    if s == order["status"]:
+                        order["status_desc"] = data["Status"][s]
+        orders.append(order)
+        return orders
+    
     def placeOrder(self, stand, ticket, positionList):
         data = self.readData()
         time = 0
@@ -97,6 +114,10 @@ database = Database()
 # print(database.getOrdersForTicket("1234567"))
 # print(database.getOrdersForTicket("8910111"))
 
+print(database.getOrdersForStand("1"))
+
 #database.adjustTimers()
 
 #database.placeOrder("2", "8910111", [{"product": "3", "quantity": 1}])
+
+

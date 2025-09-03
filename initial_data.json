@@ -1,8 +1,8 @@
 {
     "GlobalIDs": {
-        "Orders": 4,
-        "Order2Stand": 4,
-        "Order2Ticket": 5
+        "Orders": 3,
+        "Order2Stand": 3,
+        "Order2Ticket": 4
     },
     "Tickets": {
         "1234567": {
