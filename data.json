@@ -6,12 +6,12 @@
     },
     "Tickets": {
         "1234567": {
-            "Password": "OneTwoThreeForFive",
-            "Credit": 33
+            "password": "OneTwoThreeForFive",
+            "credit": 33
         },
         "8910111": {
-            "Password": "TestTest",
-            "Credit": 12
+            "password": "TestTest",
+            "credit": 12
         }
     },
     "Stands": {

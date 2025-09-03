@@ -105,6 +105,14 @@ class Database:
 
         self.writeData(data)
         
+    def checkLogin(self, ticket, password):
+        data = self.readData()
+        for t in data["Tickets"]:
+            if t == ticket:
+                if data["Tickets"][t]["password"] == password:
+                    return True
+                else:
+                    return False 
 
 database = Database()
 
