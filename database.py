@@ -108,6 +108,9 @@ class Database:
         data["GlobalIDs"]["Order2Ticket"] = data["GlobalIDs"]["Order2Ticket"] + 1
 
         self.writeData(data)
+
+    def getCreditForTicket(self, ticket):
+        return self.readData()["Tickets"][ticket]["credit"]
         
     def checkLogin(self, ticket, password):
         data = self.readData()

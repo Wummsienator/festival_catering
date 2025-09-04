@@ -27,7 +27,7 @@ besucherPageManagement = BesucherPage(root, database, style1)
 besucherPage = besucherPageManagement.getPage()
 besucherPage.grid(row=0, column=1, sticky="nsew")
 
-loginPageManagement.setBesucherPage(besucherPage)
+loginPageManagement.setBesucherPageManagement(besucherPageManagement)
 
 #settings
 loginPage.tkraise()

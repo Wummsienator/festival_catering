@@ -27,8 +27,10 @@ class BesucherPage():
             form_frame.grid(row=2, column=6, columnspan=2)
 
             #labels
-            ticketLabel = Label(besucherPage, text="Ticket: 1234567", font=self._style1).grid(row=0, column=1)
-            creditLabel = Label(besucherPage, text="Guthaben: 222€", font=self._style1).grid(row=0, column=6)
+            self._ticketLabel = Label(besucherPage, text="Ticket: 1234567", font=self._style1)
+            self._ticketLabel.grid(row=0, column=1)
+            self._creditLabel = Label(besucherPage, text="Guthaben: 222€", font=self._style1)
+            self._creditLabel.grid(row=0, column=6)
 
             friendTicketLabel = Label(form_frame, text="Ticket Freund:", font=self._style1).grid(row=0, column=0)
 
@@ -101,17 +103,6 @@ class BesucherPage():
             self.table.heading(col, text=col)
             self.table.column(col, anchor="center", width=180)
 
-        # Insert sample data
-        data = []
-        orders = self._database.getOrdersForTicket("1234567")
-        for order in orders:
-            data.append( (order["stand"], order["time"], order["status_desc"], order["order"]) )
-
-        for i, row in enumerate(data):
-            # tag = "evenrow" if i % 2 == 0 else "oddrow"
-            # table.insert("", END, values=row, tags=(tag,))
-            self.table.insert("", END, values=row, tags=("evenrow",))
-
         # Style rows
         style = ttk.Style(besucherPage)
         style.theme_use("default")
@@ -130,6 +121,25 @@ class BesucherPage():
         self.table.grid(row=1, column=0)
 
         self.table.bind("<<TreeviewSelect>>", self.on_select)
+    
+    def fillOrderTableRows(self, ticket):
+        #clear existing rows
+        self.table.delete(*self.table.get_children())
+        # Insert sample data
+        data = []
+        orders = self._database.getOrdersForTicket(ticket)
+        for order in orders:
+            data.append( (order["stand"], order["time"], order["status_desc"], order["order"]) )
+
+        for i, row in enumerate(data):
+            # tag = "evenrow" if i % 2 == 0 else "oddrow"
+            # table.insert("", END, values=row, tags=(tag,))
+            self.table.insert("", END, values=row, tags=("evenrow",))
+
+        ticketTxt = "Ticket: " + ticket
+        self._ticketLabel.config(text=ticketTxt) 
+        creditTxt = "Guthaben: " + str(self._database.getCreditForTicket(ticket)) + "€"
+        self._creditLabel.config(text=creditTxt) 
 
     def createNotificationTable(self, besucherPage):
         # Define table columns

@@ -74,12 +74,13 @@ class LoginPage():
                     print("Correct Password!")
                     self.ticket_val.set("")
                     self.password_val.set("")
-                    self._besucherPage.tkraise()
+                    self._besucherPageManagement.fillOrderTableRows(ticket)
+                    self._besucherPageManagement.getPage().tkraise()
                 else:
                     print("Wrong Password!")
 
         if not found:
             print("Invalid Ticket!")
 
-    def setBesucherPage(self, besucherPage):
-        self._besucherPage = besucherPage
+    def setBesucherPageManagement(self, besucherPageManagement):
+        self._besucherPageManagement = besucherPageManagement
