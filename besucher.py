@@ -32,18 +32,18 @@ class BesucherPage():
             self._creditLabel = Label(besucherPage, text="Guthaben: 222€", font=self._style1)
             self._creditLabel.grid(row=0, column=6)
 
-            friendTicketLabel = Label(form_frame, text="Ticket Freund:", font=self._style1).grid(row=0, column=0)
+            Label(form_frame, text="Ticket Freund:", font=self._style1).grid(row=0, column=0)
 
-            qrLabel = Label(besucherPage, image=self._qr_img, font=self._style1).grid(row=3, column=1)
+            Label(besucherPage, image=self._qr_img, font=self._style1).grid(row=3, column=1)
 
             #buttons
-            creditBtn =  Button(besucherPage, text="▷", command=lambda: print("test"), font=self._style1, background="#75E6DA").grid(row=0, column=7)
-            orderBtn = Button(besucherPage, text="Bestellung aufnehmen", command=lambda: print("test"), font=self._style1, background="#75E6DA").grid(row=2, column=1)
-            friendOrderBtn = Button(form_frame, text="Bestellung freischalten", command=lambda: print("test"), font=self._style1, background="#75E6DA").grid(row=2, column=1)
+            Button(besucherPage, text="€▷", command=lambda: print("test"), font=self._style1, background="#75E6DA").grid(row=0, column=7)
+            Button(besucherPage, text="Bestellung aufnehmen", command=lambda: print("test"), font=self._style1, background="#75E6DA").grid(row=2, column=1)
+            Button(form_frame, text="Bestellung freischalten", command=lambda: print("test"), font=self._style1, background="#75E6DA").grid(row=2, column=1)
 
             #input fields
             testVal = "Hallo"
-            friendIpt = Entry(form_frame, font=self._style1, bg="#D4F1F4", textvariable=testVal).grid(row=0, column=1)
+            Entry(form_frame, font=self._style1, bg="#D4F1F4", textvariable=testVal).grid(row=0, column=1)
 
             self._besucherPage  = besucherPage
         return self._besucherPage
@@ -87,11 +87,10 @@ class BesucherPage():
             form_frame,
             text="Offene Bestellungen:",
             font=("Arial", 14, "bold"),
-            bg="#05445E",   # dark teal background
+            bg="#05445E",
             fg="white",
             width=60
         )
-        #title.pack(fill="x")
         title.grid(row=0, column=0)
 
         # Define table columns
@@ -112,11 +111,7 @@ class BesucherPage():
 
         # Row styles
         style.configure("Treeview", font=("Arial", 11), rowheight=25)
-        self.table.tag_configure("evenrow", background="#D4F1F4")   # baby blue
-        # table.tag_configure("oddrow", background="white")
-
-        # Pack table
-        #self.table.pack(expand=True, fill="both", padx=5, pady=5)
+        self.table.tag_configure("row", background="#D4F1F4")   # baby blue
 
         self.table.grid(row=1, column=0)
 
@@ -132,9 +127,7 @@ class BesucherPage():
             data.append( (order["stand"], order["time"], order["status_desc"], order["order"]) )
 
         for i, row in enumerate(data):
-            # tag = "evenrow" if i % 2 == 0 else "oddrow"
-            # table.insert("", END, values=row, tags=(tag,))
-            self.table.insert("", END, values=row, tags=("evenrow",))
+            self.table.insert("", END, values=row, tags=("row",))
 
         ticketTxt = "Ticket: " + ticket
         self._ticketLabel.config(text=ticketTxt) 
@@ -153,7 +146,7 @@ class BesucherPage():
         # Insert sample data
         data = [("Deine Bestellung kann in 20 Minuten an Stand 1 abgeholt werden.", ), ("Deine Bestellung an Stand 3 ist abholbereit", )]
         for i, row in enumerate(data):
-            self.table2.insert("", END, values=row, tags=("evenrow",))
+            self.table2.insert("", END, values=row, tags=("row",))
 
         # Style rows
         style = ttk.Style(besucherPage)
@@ -164,7 +157,7 @@ class BesucherPage():
 
         # Row styles
         style.configure("Treeview", font=("Arial", 11), rowheight=25)
-        self.table2.tag_configure("evenrow", background="#D4F1F4")   # baby blue
+        self.table2.tag_configure("row", background="#D4F1F4")   # baby blue
 
         self.table2.grid(row=5, column=1, columnspan=7)
 
