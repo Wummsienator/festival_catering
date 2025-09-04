@@ -1,8 +1,6 @@
 from tkinter import *
-from tkinter import font
 from tkinter import ttk
 from PIL import Image, ImageTk
-from database import Database
 
 class BesucherPage():
     def __init__(self, root, database, style1):
@@ -10,6 +8,9 @@ class BesucherPage():
         self._database = database
         self._style1 = style1
         self._besucherPage = ""
+        self._ticket = "1234567"
+
+        self._bestellungPage = Frame(root)
 
     def getPage(self):
         if not self._besucherPage:
@@ -40,7 +41,7 @@ class BesucherPage():
 
             #buttons
             Button(besucherPage, text="€▷", command=lambda: print("test"), font=self._style1, background="#75E6DA").grid(row=0, column=7)
-            Button(besucherPage, text="Bestellung aufnehmen", command=lambda: print("test"), font=self._style1, background="#75E6DA").grid(row=2, column=1)
+            Button(besucherPage, text="Bestellung aufnehmen", command=lambda: self.onGoToBestellungPage(), font=self._style1, background="#75E6DA").grid(row=2, column=1)
             Button(form_frame, text="Bestellung freischalten", command=lambda: print("test"), font=self._style1, background="#75E6DA").grid(row=2, column=1)
 
             #input fields
@@ -136,6 +137,9 @@ class BesucherPage():
         creditTxt = "Guthaben: " + str(self._database.getCreditForTicket(ticket)) + "€"
         self._creditLabel.config(text=creditTxt) 
 
+        #update ticket
+        self._ticket = ticket
+
     def createNotificationTable(self, besucherPage):
         # Define table columns
         column = "Benachrichtigungen:"
@@ -170,6 +174,13 @@ class BesucherPage():
         values = self.table.item(selected, "values")
         print("Selected row:", values)
 
+    def onGoToBestellungPage(self):
+        self._bestellungPageManagement.setTicket(self._ticket)
+        self._bestellungPageManagement.getPage().tkraise()
+
     def disable_selection(self, event):
         event.widget.selection_remove(event.widget.selection())
+
+    def setBestellungPageManagement(self, bestellungPageManagement):
+        self._bestellungPageManagement = bestellungPageManagement
 

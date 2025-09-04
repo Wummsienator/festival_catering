@@ -111,6 +111,17 @@ class Database:
 
     def getCreditForTicket(self, ticket):
         return self.readData()["Tickets"][ticket]["credit"]
+    
+    def searchStand(self, standStr):
+        data = self.readData()
+        rData = []
+        for stand in data["Stands"]:
+            if stand.startswith(standStr):
+                standData = data["Stands"][stand]
+                #append stand number
+                standData["stand"] = stand
+                rData.append(standData)
+        return rData
         
     def checkLogin(self, ticket, password):
         data = self.readData()

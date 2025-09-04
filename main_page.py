@@ -3,6 +3,7 @@ from tkinter import font
 from database import Database
 from login import LoginPage
 from besucher import BesucherPage
+from bestellung import BestellungPage
 
 root = Tk()
 database = Database()
@@ -25,11 +26,16 @@ besucherPageManagement = BesucherPage(root, database, style1)
 besucherPage = besucherPageManagement.getPage()
 besucherPage.grid(row=0, column=1, sticky="nsew")
 
+bestellungPageManagement =BestellungPage(root, database, style1)
+bestellungPage = bestellungPageManagement.getPage()
+bestellungPage.grid(row=0, column=1, sticky="nsew")
+
 loginPageManagement.setBesucherPageManagement(besucherPageManagement)
+besucherPageManagement.setBestellungPageManagement(bestellungPageManagement)
 
 #settings
-loginPage.tkraise()
-# besucherPage.tkraise()
+# loginPage.tkraise()
+besucherPage.tkraise()
 root.geometry("750x750")
 root.title("Festival Catering")
 root.resizable(False, False)

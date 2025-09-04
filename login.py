@@ -16,8 +16,6 @@ class LoginPage():
 
         self._logo_img = ImageTk.PhotoImage(logo_pil)
 
-        self._besucherPage = Frame(root)
-
     def getPage(self):
         if not self._loginPage:
             #page
