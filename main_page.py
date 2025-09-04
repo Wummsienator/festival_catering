@@ -30,8 +30,8 @@ besucherPage.grid(row=0, column=1, sticky="nsew")
 loginPageManagement.setBesucherPage(besucherPage)
 
 #settings
-# loginPage.tkraise()
-besucherPage.tkraise()
+loginPage.tkraise()
+# besucherPage.tkraise()
 root.geometry("750x750")
 root.title("Festival Catering")
 root.resizable(False, False)

@@ -20,6 +20,7 @@ class BesucherPage():
             self.createRows(besucherPage)
             self.loadImages()
             self.createOrderTable(besucherPage)
+            self.createNotificationTable(besucherPage)
 
             #frames
             form_frame = Frame(besucherPage)
@@ -34,7 +35,7 @@ class BesucherPage():
             qrLabel = Label(besucherPage, image=self._qr_img, font=self._style1).grid(row=3, column=1)
 
             #buttons
-            creditBtn =  Button(besucherPage, text="C", command=lambda: print("test"), font=self._style1, background="#75E6DA").grid(row=0, column=7)
+            creditBtn =  Button(besucherPage, text="▷", command=lambda: print("test"), font=self._style1, background="#75E6DA").grid(row=0, column=7)
             orderBtn = Button(besucherPage, text="Bestellung aufnehmen", command=lambda: print("test"), font=self._style1, background="#75E6DA").grid(row=2, column=1)
             friendOrderBtn = Button(form_frame, text="Bestellung freischalten", command=lambda: print("test"), font=self._style1, background="#75E6DA").grid(row=2, column=1)
 
@@ -75,19 +76,25 @@ class BesucherPage():
         self._qr_img = ImageTk.PhotoImage(qr_pil)
     
     def createOrderTable(self, besucherPage):
+        #frames
+        form_frame = Frame(besucherPage)
+        form_frame.grid(row=1, column=1, columnspan=7)
+
         # Title label
         title = Label(
-            besucherPage,
+            form_frame,
             text="Offene Bestellungen:",
             font=("Arial", 14, "bold"),
             bg="#05445E",   # dark teal background
-            fg="white"
+            fg="white",
+            width=60
         )
         #title.pack(fill="x")
+        title.grid(row=0, column=0)
 
         # Define table columns
         columns = ("Stand", "Wartezeit", "Status", "Bestellungsnummer")
-        self.table = ttk.Treeview(besucherPage, columns=columns, show="headings", selectmode="browse", height=3)
+        self.table = ttk.Treeview(form_frame, columns=columns, show="headings", selectmode="browse", height=3)
 
         # Define headings
         for col in columns:
@@ -120,11 +127,44 @@ class BesucherPage():
         # Pack table
         #self.table.pack(expand=True, fill="both", padx=5, pady=5)
 
-        self.table.grid(row=1, column=1, columnspan=7)
+        self.table.grid(row=1, column=0)
 
         self.table.bind("<<TreeviewSelect>>", self.on_select)
+
+    def createNotificationTable(self, besucherPage):
+        # Define table columns
+        column = "Benachrichtigungen:"
+        self.table2 = ttk.Treeview(besucherPage, columns=column, show="headings", selectmode="browse", height=3)
+
+        # Define headings
+        self.table2.heading(column, text=column)
+        self.table2.column(column, anchor="center", width=600)
+
+        # Insert sample data
+        data = [("Deine Bestellung kann in 20 Minuten an Stand 1 abgeholt werden.", ), ("Deine Bestellung an Stand 3 ist abholbereit", )]
+        for i, row in enumerate(data):
+            self.table2.insert("", END, values=row, tags=("evenrow",))
+
+        # Style rows
+        style = ttk.Style(besucherPage)
+        style.theme_use("default")
+
+        # Header style
+        style.configure("Treeview.Heading", font=("Arial", 11, "bold"), background="#05445E", foreground="white")
+
+        # Row styles
+        style.configure("Treeview", font=("Arial", 11), rowheight=25)
+        self.table2.tag_configure("evenrow", background="#D4F1F4")   # baby blue
+
+        self.table2.grid(row=5, column=1, columnspan=7)
+
+        self.table2.bind("<<TreeviewSelect>>", self.disable_selection)
     
     def on_select(self, event):
         selected = self.table.focus()
         values = self.table.item(selected, "values")
         print("Selected row:", values)
+
+    def disable_selection(self, event):
+        event.widget.selection_remove(event.widget.selection())
+
