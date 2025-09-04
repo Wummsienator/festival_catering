@@ -36,6 +36,8 @@ class BesucherPage():
 
             Label(besucherPage, image=self._qr_img, font=self._style1).grid(row=3, column=1)
 
+            Label(besucherPage, image=self._logo_img, font=self._style1).grid(row=6, column=7)
+
             #buttons
             Button(besucherPage, text="€▷", command=lambda: print("test"), font=self._style1, background="#75E6DA").grid(row=0, column=7)
             Button(besucherPage, text="Bestellung aufnehmen", command=lambda: print("test"), font=self._style1, background="#75E6DA").grid(row=2, column=1)

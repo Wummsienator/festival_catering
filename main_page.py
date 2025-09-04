@@ -15,8 +15,6 @@ root.grid_columnconfigure(2, weight=1)
 
 #rows
 root.grid_rowconfigure(0, weight=1)
-root.grid_rowconfigure(1, weight=1)
-root.grid_rowconfigure(2, weight=1)
 
 #pages
 loginPageManagement = LoginPage(root, database, style1)
