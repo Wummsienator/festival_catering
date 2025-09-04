@@ -18,18 +18,29 @@ class BesucherPage():
 
             self.createColumns(besucherPage)
             self.createRows(besucherPage)
-            self.loadLogoImg()
+            self.loadImages()
             self.createOrderTable(besucherPage)
+
+            #frames
+            form_frame = Frame(besucherPage)
+            form_frame.grid(row=2, column=6, columnspan=2)
 
             #labels
             ticketLabel = Label(besucherPage, text="Ticket: 1234567", font=self._style1).grid(row=0, column=1)
             creditLabel = Label(besucherPage, text="Guthaben: 222€", font=self._style1).grid(row=0, column=6)
 
+            friendTicketLabel = Label(form_frame, text="Ticket Freund:", font=self._style1).grid(row=0, column=0)
+
+            qrLabel = Label(besucherPage, image=self._qr_img, font=self._style1).grid(row=3, column=1)
+
+            #buttons
             creditBtn =  Button(besucherPage, text="C", command=lambda: print("test"), font=self._style1, background="#75E6DA").grid(row=0, column=7)
             orderBtn = Button(besucherPage, text="Bestellung aufnehmen", command=lambda: print("test"), font=self._style1, background="#75E6DA").grid(row=2, column=1)
+            friendOrderBtn = Button(form_frame, text="Bestellung freischalten", command=lambda: print("test"), font=self._style1, background="#75E6DA").grid(row=2, column=1)
 
+            #input fields
             testVal = "Hallo"
-            friendIpt = Entry(besucherPage, font=self._style1, bg="#D4F1F4", textvariable=testVal).grid(row=2, column=6, columnspan=2)
+            friendIpt = Entry(form_frame, font=self._style1, bg="#D4F1F4", textvariable=testVal).grid(row=0, column=1)
 
             self._besucherPage  = besucherPage
         return self._besucherPage
@@ -54,12 +65,14 @@ class BesucherPage():
         besucherPage.grid_rowconfigure(5, weight=1)
         besucherPage.grid_rowconfigure(6, weight=1)
     
-    def loadLogoImg(self):
+    def loadImages(self):
         logo_pil = Image.open("logo.png")
         logo_pil = logo_pil.resize((50, 50), Image.Resampling.LANCZOS)
-
         self._logo_img = ImageTk.PhotoImage(logo_pil)
 
+        qr_pil = Image.open("QR_Code.png")
+        qr_pil = qr_pil.resize((150, 150), Image.Resampling.LANCZOS)
+        self._qr_img = ImageTk.PhotoImage(qr_pil)
     
     def createOrderTable(self, besucherPage):
         # Title label

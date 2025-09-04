@@ -6,7 +6,7 @@ from besucher import BesucherPage
 
 root = Tk()
 database = Database()
-style1 = font.Font(size=20)
+style1 = font.Font(size=15)
 
 #columns
 root.grid_columnconfigure(0, weight=1)
@@ -30,7 +30,7 @@ besucherPage.grid(row=0, column=1, sticky="nsew")
 loginPageManagement.setBesucherPage(besucherPage)
 
 #settings
-#loginPage.tkraise()
+# loginPage.tkraise()
 besucherPage.tkraise()
 root.geometry("750x750")
 root.title("Festival Catering")

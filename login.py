@@ -10,18 +10,18 @@ class LoginPage():
         self._style1 = style1
         self._loginPage = ""
 
+        #logo
+        logo_pil = Image.open("logo.png")
+        logo_pil = logo_pil.resize((300, 300), Image.Resampling.LANCZOS)
+
+        self._logo_img = ImageTk.PhotoImage(logo_pil)
+
         self._besucherPage = Frame(root)
 
     def getPage(self):
         if not self._loginPage:
             #page
             loginPage = Frame(self._root)
-
-            #logo
-            logo_pil = Image.open("logo.png")
-            logo_pil = logo_pil.resize((300, 300), Image.Resampling.LANCZOS)
-
-            logo_img = ImageTk.PhotoImage(logo_pil)
 
             #define columns
             loginPage.grid_columnconfigure(0, weight=1)
@@ -42,7 +42,7 @@ class LoginPage():
             form_frame.grid(row=2, column=2, pady=20)
 
             #logo
-            img_l = Label(loginPage, image=logo_img, font=self._style1).grid(row=1, column=2)
+            img_l = Label(loginPage, image=self._logo_img, font=self._style1).grid(row=1, column=2)
 
             #labels
             l1 = Label(form_frame, text="Ticket:", font=self._style1).grid(row=0, column=0)
