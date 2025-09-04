@@ -34,6 +34,9 @@ class BestellungPage():
             Label(bestellungPage, image=self._logo_img, font=self._style1).grid(row=6, column=7)
             Label(form_frame, text="⌕", font=self._style1).grid(row=0, column=1)
 
+            #buttons
+            Button(bestellungPage, text="€▷", command=lambda: print("test"), font=self._style1, background="#75E6DA").grid(row=0, column=7)
+
             #input fields
             self._stand_val = StringVar()
             self._standIpt = Entry(form_frame, font=self._style1, bg="#D4F1F4", textvariable=self._stand_val)
@@ -150,9 +153,6 @@ class BestellungPage():
 
         self.table2.bind("<Double-1>", self.onAddOrderPosition)
 
-    def onAddOrderPosition(self, event):
-        print("test")
-
     def setTicket(self, ticket):
         ticketTxt = "Ticket: " + ticket
         self._ticketLabel.config(text=ticketTxt) 
@@ -191,3 +191,9 @@ class BestellungPage():
 
         for i, row in enumerate(data):
             self.table2.insert("", END, iid=ids[i], values=row, tags=("row",))
+
+    def onAddOrderPosition(self, event):
+        selected = self.table2.focus()
+        selectedProduct = self.table2.item(selected, "values")
+
+        print(selectedProduct)
