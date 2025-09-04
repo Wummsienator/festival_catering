@@ -9,6 +9,8 @@ class LoginPage():
         self._database = database
         self._style1 = style1
 
+        self._besucherPage = Frame(root)
+
     def getPage(self):
         #page
         loginPage = Frame(self._root)
@@ -69,8 +71,12 @@ class LoginPage():
                     print("Correct Password!")
                     self.ticket_val.set("")
                     self.password_val.set("")
+                    self._besucherPage.tkraise()
                 else:
                     print("Wrong Password!")
 
         if not found:
             print("Invalid Ticket!")
+
+    def setBesucherPage(self, besucherPage):
+        self._besucherPage = besucherPage

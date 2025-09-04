@@ -3,6 +3,7 @@ from tkinter import font
 from PIL import Image, ImageTk
 from database import Database
 from login import LoginPage
+from besucher import BesucherPage
 
 root = Tk()
 database = Database()
@@ -19,8 +20,15 @@ root.grid_rowconfigure(1, weight=1)
 root.grid_rowconfigure(2, weight=1)
 
 #pages
-loginPage = LoginPage(root, database, style1).getPage()
-loginPage.grid(row=1, column=1, sticky="nsew")
+loginPageManagement = LoginPage(root, database, style1)
+loginPage = loginPageManagement.getPage()
+loginPage.grid(row=0, column=1, sticky="nsew")
+
+besucherPageManagement = BesucherPage(root, database, style1)
+besucherPage = besucherPageManagement.getPage()
+besucherPage.grid(row=0, column=1, sticky="nsew")
+
+loginPageManagement.setBesucherPage(besucherPage)
 
 #settings
 loginPage.tkraise()
