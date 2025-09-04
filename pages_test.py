@@ -37,7 +37,6 @@ btn5 = Button(page3, text="Show Page 2", command=lambda: page2.tkraise(), font=s
 btn4.pack()
 btn5.pack()
 
-
 #
 page1.tkraise()
 win.geometry("1650x850")
