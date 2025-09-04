@@ -23,6 +23,7 @@ class BestellungPage():
             self.createRows(bestellungPage)
             self.loadImages()
             self.createStandTable(bestellungPage)
+            self.createBestellkarteTable(bestellungPage)
 
             #labels
             self._ticketLabel = Label(bestellungPage, text="Ticket: 1234567", font=self._style1)
@@ -109,10 +110,48 @@ class BestellungPage():
 
         self.table.bind("<<TreeviewSelect>>", self.onSelectStand)
 
-    def onSelectStand(self, event):
-        selected = self.table.focus()
-        values = self.table.item(selected, "values")
-        print("Selected row:", values)
+    def createBestellkarteTable(self, bestellungPage):
+        #frames
+        form_frame = Frame(bestellungPage)
+        form_frame.grid(row=3, column=1, columnspan=7)
+
+        # Title label
+        title = Label(
+            form_frame,
+            text="Bestellkarte:",
+            font=("Arial", 14, "bold"),
+            bg="#05445E",
+            fg="white",
+            width=60
+        )
+        title.grid(row=0, column=0)
+
+        # Define table columns
+        columns = ("Name", "Wartezeit", "Preis", "Lagerbestand")
+        self.table2 = ttk.Treeview(form_frame, columns=columns, show="headings", selectmode="browse", height=4)
+
+        # Define headings
+        for col in columns:
+            self.table2.heading(col, text=col)
+            self.table2.column(col, anchor="center", width=180)
+
+        # Style rows
+        style = ttk.Style(bestellungPage)
+        style.theme_use("default")
+
+        # Header style
+        style.configure("Treeview.Heading", font=("Arial", 11, "bold"), background="#05445E", foreground="white")
+
+        # Row styles
+        style.configure("Treeview", font=("Arial", 11), rowheight=25)
+        self.table2.tag_configure("row", background="#D4F1F4")   # baby blue
+
+        self.table2.grid(row=1, column=0)
+
+        self.table2.bind("<Double-1>", self.onAddOrderPosition)
+
+    def onAddOrderPosition(self, event):
+        print("test")
 
     def setTicket(self, ticket):
         ticketTxt = "Ticket: " + ticket
@@ -134,3 +173,21 @@ class BestellungPage():
 
         for i, row in enumerate(data):
             self.table.insert("", END, values=row, tags=("row",))
+
+    def onSelectStand(self, event):
+        selected = self.table.focus()
+        selectedStand = self.table.item(selected, "values")[0]
+
+        #clear existing rows
+        self.table2.delete(*self.table2.get_children())
+        # Insert sample data
+        data = []
+        ids = []
+        products = self._database.getProductsForStand(selectedStand)
+
+        for product in products:
+            data.append( (product["name"], product["time"], product["price"], product["quantity"]) )
+            ids.append(product["product"])
+
+        for i, row in enumerate(data):
+            self.table2.insert("", END, iid=ids[i], values=row, tags=("row",))

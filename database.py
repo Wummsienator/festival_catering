@@ -122,6 +122,27 @@ class Database:
                 standData["stand"] = stand
                 rData.append(standData)
         return rData
+    
+    def getProductsForStand(self, stand):
+        data = self.readData()
+        products = []
+
+        #find stand
+        for s in data["Stands"]:
+            if s == stand:
+                stProd = data["Stands"][s]["products"]
+                #get product informations
+                for stP in stProd:
+                    for p in data["Products"]:
+                        if stP["product"] == p:
+                            productData = data["Products"][p]
+                            #append product id
+                            productData["product"] = p
+                            #append quantity
+                            productData["quantity"] = stP["quantity"]
+                            
+                            products.append(productData)
+        return products
         
     def checkLogin(self, ticket, password):
         data = self.readData()
