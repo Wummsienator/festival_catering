@@ -1,6 +1,5 @@
 from tkinter import *
 from tkinter import font
-from PIL import Image, ImageTk
 from database import Database
 from login import LoginPage
 from besucher import BesucherPage
