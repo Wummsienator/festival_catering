@@ -425,6 +425,10 @@ class BestellungPage():
         self._besucherPageManagement.getPage().tkraise()
 
     def onOrder(self):
+        #not enough credit
+        if self._currentPrice > self._database.getCreditForTicket(self._ticket):
+            return
+
         orderPositions = []
         warenkorbItems = self.table3.get_children()
 
@@ -444,3 +448,4 @@ class BestellungPage():
 
         creditTxt = "Guthaben: " + str(self._database.getCreditForTicket(self._ticket)) + "€"
         self._creditLabel.config(text=creditTxt) 
+
