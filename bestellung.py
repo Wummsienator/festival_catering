@@ -232,7 +232,15 @@ class BestellungPage():
         self.table3.bind("<Double-1>", self.onRemoveOrderPosition)
 
     def setTicket(self, ticket):
+        #check vip
+        isVip = self._database.readData()["Tickets"][ticket]["vip"]
+
         ticketTxt = "Ticket: " + ticket
+        if isVip:
+            ticketTxt = ticketTxt + " ☆"
+            self._prioritySwitch.config(state="enabled") 
+        else:
+            self._prioritySwitch.config(state="disabled") 
         self._ticketLabel.config(text=ticketTxt) 
         creditTxt = "Guthaben: " + str(self._database.getCreditForTicket(ticket)) + "€"
         self._creditLabel.config(text=creditTxt) 

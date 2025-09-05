@@ -132,7 +132,12 @@ class BesucherPage():
         for i, row in enumerate(data):
             self.table.insert("", END, values=row, tags=("row",))
 
+        #check vip
+        isVip = self._database.readData()["Tickets"][ticket]["vip"]
+
         ticketTxt = "Ticket: " + ticket
+        if isVip:
+            ticketTxt = ticketTxt + " ☆"
         self._ticketLabel.config(text=ticketTxt) 
         creditTxt = "Guthaben: " + str(self._database.getCreditForTicket(ticket)) + "€"
         self._creditLabel.config(text=creditTxt) 
