@@ -40,20 +40,20 @@ class LoginPage():
             form_frame.grid(row=2, column=2, pady=20)
 
             #logo
-            img_l = Label(loginPage, image=self._logo_img, font=self._style1).grid(row=1, column=2)
+            Label(loginPage, image=self._logo_img, font=self._style1).grid(row=1, column=2)
 
             #labels
-            l1 = Label(form_frame, text="Ticket:", font=self._style1).grid(row=0, column=0)
-            l2 = Label(form_frame, text="Password:", font=self._style1).grid(row=1, column=0)
+            Label(form_frame, text="Ticket:", font=self._style1).grid(row=0, column=0)
+            Label(form_frame, text="Password:", font=self._style1).grid(row=1, column=0)
 
             #input fields
             self.ticket_val= StringVar()
             self.password_val= StringVar()
-            ip1 = Entry(form_frame, font=self._style1, bg="#D4F1F4", textvariable=self.ticket_val).grid(row=0, column=1)
-            ip2 = Entry(form_frame, font=self._style1, bg="#D4F1F4", textvariable=self.password_val, show="*").grid(row=1, column=1)
+            Entry(form_frame, font=self._style1, bg="#D4F1F4", textvariable=self.ticket_val).grid(row=0, column=1)
+            Entry(form_frame, font=self._style1, bg="#D4F1F4", textvariable=self.password_val, show="*").grid(row=1, column=1)
 
             #button
-            logBtn = Button(form_frame, text="Login", command=lambda: self.onLogin(), font=self._style1, background="#75E6DA").grid(row=2, column=0, columnspan=2)
+            Button(form_frame, text="Login", command=lambda: self.onLogin(), font=self._style1, background="#75E6DA").grid(row=2, column=0, columnspan=2)
 
             self._loginPage = loginPage
         return self._loginPage
