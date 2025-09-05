@@ -60,23 +60,11 @@ class LoginPage():
         ticket = self.ticket_val.get()
         password = self.password_val.get()
 
-        data = self._database.readData()
-        found = False
-
-        for t in data["Tickets"]:
-            if t == ticket:
-                found = True
-                if data["Tickets"][t]["password"] == password:
-                    print("Correct Password!")
-                    self.ticket_val.set("")
-                    self.password_val.set("")
-                    self._besucherPageManagement.fillOrderTableRows(ticket)
-                    self._besucherPageManagement.getPage().tkraise()
-                else:
-                    print("Wrong Password!")
-
-        if not found:
-            print("Invalid Ticket!")
+        if self._database.checkLogin(ticket, password):
+            self.ticket_val.set("")
+            self.password_val.set("")
+            self._besucherPageManagement.fillOrderTableRows(ticket)
+            self._besucherPageManagement.getPage().tkraise()
 
     def setBesucherPageManagement(self, besucherPageManagement):
         self._besucherPageManagement = besucherPageManagement
