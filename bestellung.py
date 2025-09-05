@@ -8,7 +8,7 @@ class BestellungPage():
         self._database = database
         self._style1 = style1
         self._bestellungPage = ""
-        self._ticket = ""
+        self._ticket = "1234567"
         self._selectedStand = ""
         self._currentTime = 0
         self._currentPrice = 0
@@ -40,11 +40,13 @@ class BestellungPage():
             self._priceLabel = Label(bestellungPage, text="Gesamtpreis: 0€", font=self._style1)
             self._priceLabel.grid(row=5, column=6)
 
-            Label(bestellungPage, image=self._logo_img, font=self._style1).grid(row=6, column=7)
+            Label(bestellungPage, image=self._logo_img, font=self._style1).grid(row=7, column=7)
             Label(form_frame, text="⌕", font=self._style1).grid(row=0, column=1)
 
             #buttons
             Button(bestellungPage, text="€▷", command=lambda: print("test"), font=self._style1, background="#75E6DA").grid(row=0, column=7)
+            Button(bestellungPage, text="Abbrechen", command=lambda: self.onCancel(), font=self._style1, background="#75E6DA").grid(row=6, column=2)
+            Button(bestellungPage, text="Bestellen", command=lambda: self.onOrder(), font=self._style1, background="#75E6DA").grid(row=6, column=5)
 
             #input fields
             self._stand_val = StringVar()
@@ -225,6 +227,8 @@ class BestellungPage():
 
     def onSelectStand(self, event):
         selected = self.table.focus()
+        if not selected:
+            return
         selectedStand = self.table.item(selected, "values")[0]
 
         #clear existing rows
@@ -352,3 +356,33 @@ class BestellungPage():
         self.table2.item(selected, values=updatedRow)
 
         self.updateTimePriceLabels()
+
+    def onCancel(self):
+        self.clearWarenkorb()
+
+        #clear tables
+        self.table.delete(*self.table.get_children())
+        self.table2.delete(*self.table2.get_children())
+        self.table3.delete(*self.table3.get_children())
+
+        #reset time/price
+        self._currentTime = 0
+        self._currentPrice = 0
+
+        self._besucherPageManagement.fillOrderTableRows(self._ticket)
+        self._besucherPageManagement.getPage().tkraise()
+
+    def onOrder(self):
+        orderPositions = []
+        warenkorbItems = self.table3.get_children()
+
+        if warenkorbItems:
+            for itemID in warenkorbItems:
+                item = self.table3.item(itemID, "values")
+                orderPositions.append({"product": itemID, "quantity": int(item[3])})
+
+            self._database.placeOrder(self._selectedStand, self._ticket, orderPositions)
+        self.onCancel()
+
+    def setBesucherPageManagement(self, besucherPageManagement):
+        self._besucherPageManagement = besucherPageManagement

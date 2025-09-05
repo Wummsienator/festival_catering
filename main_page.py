@@ -32,6 +32,7 @@ bestellungPage.grid(row=0, column=1, sticky="nsew")
 
 loginPageManagement.setBesucherPageManagement(besucherPageManagement)
 besucherPageManagement.setBestellungPageManagement(bestellungPageManagement)
+bestellungPageManagement.setBesucherPageManagement(besucherPageManagement)
 
 #settings
 # loginPage.tkraise()
