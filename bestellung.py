@@ -46,7 +46,7 @@ class BestellungPage():
             Label(form_frame, text="⌕", font=self._style1).grid(row=0, column=1)
 
             #buttons
-            Button(bestellungPage, text="€▷", command=lambda: print("test"), font=self._style1, background="#75E6DA").grid(row=0, column=7)
+            Button(bestellungPage, text="€▷", command=lambda: self.addCredit(), font=self._style1, background="#75E6DA").grid(row=0, column=7)
             Button(bestellungPage, text="Abbrechen", command=lambda: self.onCancel(), font=self._style1, background="#75E6DA").grid(row=7, column=2)
             Button(bestellungPage, text="Bestellen", command=lambda: self.onOrder(), font=self._style1, background="#75E6DA").grid(row=7, column=5)
 
@@ -422,3 +422,9 @@ class BestellungPage():
 
     def setBesucherPageManagement(self, besucherPageManagement):
         self._besucherPageManagement = besucherPageManagement
+
+    def addCredit(self):
+        self._database.addCreditForTicket(self._ticket, 10)
+
+        creditTxt = "Guthaben: " + str(self._database.getCreditForTicket(self._ticket)) + "€"
+        self._creditLabel.config(text=creditTxt) 

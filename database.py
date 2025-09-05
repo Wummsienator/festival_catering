@@ -125,7 +125,7 @@ class Database:
                 standData["stand"] = stand
                 rData.append(standData)
         return rData
-    
+
     def getProductsForStand(self, stand):
         data = self.readData()
         products = []
@@ -146,6 +146,14 @@ class Database:
                             
                             products.append(productData)
         return products
+    
+    def addCreditForTicket(self, ticket, amount):
+        data = self.readData()
+        for t in data["Tickets"]:
+            if t == ticket:
+                data["Tickets"][t]["credit"] = data["Tickets"][t]["credit"] + amount
+
+        self.writeData(data)
         
     def checkLogin(self, ticket, password):
         data = self.readData()
@@ -158,16 +166,5 @@ class Database:
 
 database = Database()
 
-# print(database.getproductsForStand("1"))
-# print(database.getproductsForStand("3"))
-
-# print(database.getOrdersForTicket("1234567"))
-# print(database.getOrdersForTicket("8910111"))
-
-#print(database.getOrdersForStand("1"))
-
-#database.adjustTimers()
-
-#database.placeOrder("2", "8910111", [{"product": "3", "quantity": 1}])
 
 
