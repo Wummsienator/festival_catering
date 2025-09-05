@@ -36,7 +36,6 @@ bestellungPageManagement.setBesucherPageManagement(besucherPageManagement)
 
 #settings
 loginPage.tkraise()
-# besucherPage.tkraise()
 root.geometry("750x750")
 root.title("Festival Catering")
 root.resizable(False, False)
