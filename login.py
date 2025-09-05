@@ -1,7 +1,5 @@
 from tkinter import *
-from tkinter import font
 from PIL import Image, ImageTk
-from database import Database
 
 class LoginPage():
     def __init__(self, root, database, style1):
