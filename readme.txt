@@ -17,3 +17,5 @@ Dialog für Einzelanzeige von Bestellpositionen haben wir auch erstmal ignoriert
 Benachrichtigungen sind erstmal nur fest simuliert.
 
 Die Wartezeit der Bestellungen wird nicht geupdated.
+
+Freigabe von Ticket an Freunde erstmal ohne Funktion.
