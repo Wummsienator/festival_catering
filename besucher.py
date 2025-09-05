@@ -116,7 +116,12 @@ class BesucherPage():
         style.configure("Treeview", font=("Arial", 11), rowheight=25)
         self.table.tag_configure("row", background="#D4F1F4")   # baby blue
 
-        self.table.grid(row=1, column=0)
+        self.table.grid(row=1, column=0, sticky="nsew")
+
+        # Vertical scrollbar
+        vsb = ttk.Scrollbar(form_frame, orient="vertical", command=self.table.yview)
+        self.table.configure(yscrollcommand=vsb.set)
+        vsb.grid(row=1, column=1, sticky="ns")
 
         self.table.bind("<<TreeviewSelect>>", self.on_select)
     

@@ -149,6 +149,11 @@ class BestellungPage():
 
         self.table.grid(row=1, column=0)
 
+        # Vertical scrollbar
+        vsb = ttk.Scrollbar(form_frame, orient="vertical", command=self.table.yview)
+        self.table.configure(yscrollcommand=vsb.set)
+        vsb.grid(row=1, column=1, sticky="ns")
+
         self.table.bind("<<TreeviewSelect>>", self.onSelectStand)
 
     def createBestellkarteTable(self, bestellungPage):
@@ -189,6 +194,11 @@ class BestellungPage():
 
         self.table2.grid(row=1, column=0)
 
+        # Vertical scrollbar
+        vsb = ttk.Scrollbar(form_frame, orient="vertical", command=self.table2.yview)
+        self.table2.configure(yscrollcommand=vsb.set)
+        vsb.grid(row=1, column=1, sticky="ns")
+
         self.table2.bind("<Double-1>", self.onAddOrderPosition)
 
     def createWarenkorbTable(self, bestellungPage):
@@ -228,6 +238,11 @@ class BestellungPage():
         self.table3.tag_configure("row", background="#D4F1F4")   # baby blue
 
         self.table3.grid(row=1, column=0)
+
+        # Vertical scrollbar
+        vsb = ttk.Scrollbar(form_frame, orient="vertical", command=self.table3.yview)
+        self.table3.configure(yscrollcommand=vsb.set)
+        vsb.grid(row=1, column=1, sticky="ns")
 
         self.table3.bind("<Double-1>", self.onRemoveOrderPosition)
 
