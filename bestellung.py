@@ -200,7 +200,7 @@ class BestellungPage():
 
         self.table3.grid(row=1, column=0)
 
-        # self.table3.bind("<Double-1>", self.onRemoveOrderPosition)
+        self.table3.bind("<Double-1>", self.onRemoveOrderPosition)
 
     def setTicket(self, ticket):
         ticketTxt = "Ticket: " + ticket
@@ -253,6 +253,8 @@ class BestellungPage():
 
     def onAddOrderPosition(self, event):
         selected = self.table2.focus()
+        if not selected:
+            return
         selectedProduct = self.table2.item(selected, "values")
 
         #check available quantity
@@ -300,11 +302,53 @@ class BestellungPage():
                     self._currentTime += product["time"]
                     self._currentPrice += product["price"]
 
-        self.updateTimePrice()
+        self.updateTimePriceLabels()
 
-    def updateTimePrice(self):
+    def updateTimePriceLabels(self):
         timeTxt = "Wartezeit: " + str(self._currentTime)
         self._timeLabel.config(text=timeTxt)
         priceTxt = "Gesamtpreis: " + str(self._currentPrice) + "€"
         self._priceLabel.config(text=priceTxt) 
 
+    def onRemoveOrderPosition(self, event):
+        selected = self.table3.focus()
+        if not selected:
+            return
+        selectedProduct = self.table3.item(selected, "values")
+
+        #update warenkorb
+        if selectedProduct[3] == "1":
+            self.table3.delete(selected)
+
+            #update time/price
+            currentQuantity = int(selectedProduct[3])
+            currentTime = int(selectedProduct[1])
+            currentPrice = int(selectedProduct[2])
+            
+            self._currentTime -= currentTime // currentQuantity
+            self._currentPrice -= currentPrice // currentQuantity
+        else:
+            currentQuantity = int(selectedProduct[3])
+            #update time
+            currentTime = int(selectedProduct[1])
+            newTime = currentTime - ( currentTime // currentQuantity) 
+            #update price
+            currentPrice = int(selectedProduct[2])
+            newPrice = currentPrice - ( currentPrice // currentQuantity)
+            #update quantity
+            newQuantity = currentQuantity - 1
+
+            #update table
+            newItem = (selectedProduct[0], newTime, newPrice, newQuantity)
+            self.table3.item(selected, values=newItem)
+
+            #update time/price
+            self._currentTime -= currentTime // currentQuantity
+            self._currentPrice -= currentPrice // currentQuantity
+
+        #update available quantity
+        bestellkarteItem = self.table2.item(selected, "values")
+        updatedRow = (bestellkarteItem[0], bestellkarteItem[1], bestellkarteItem[2], int(bestellkarteItem[3]) + 1)
+        self.table2.item(selected, values=updatedRow)
+
+        self.updateTimePriceLabels()
