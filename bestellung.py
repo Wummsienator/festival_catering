@@ -238,7 +238,7 @@ class BestellungPage():
         ticketTxt = "Ticket: " + ticket
         if isVip:
             ticketTxt = ticketTxt + " ☆"
-            self._prioritySwitch.config(state="enabled") 
+            self._prioritySwitch.config(state="active") 
         else:
             self._prioritySwitch.config(state="disabled") 
         self._ticketLabel.config(text=ticketTxt) 
