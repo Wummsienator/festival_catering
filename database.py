@@ -1,4 +1,5 @@
 import json
+import datetime
 
 class Database:
     def __init__(self):
@@ -92,9 +93,12 @@ class Database:
 
             counter += 1
             
+        #update timestamp
+        x = datetime.datetime.now()
+        timestamp = str(x.day) + "." + str(x.month) + "." + str(x.year) + " - " + str(x.hour) + ":" + str(x.minute)
 
         #add order
-        data["Orders"][data["GlobalIDs"]["Orders"]] = {"time": time, "price": price, "status": "1", "positions": positions}
+        data["Orders"][data["GlobalIDs"]["Orders"]] = {"time": time, "timestamp": timestamp, "price": price, "status": "1", "positions": positions}
 
         #add order2stand
         data["Order2Stand"][data["GlobalIDs"]["Order2Stand"]] = {"order": str(data["GlobalIDs"]["Orders"]), "stand": stand}
