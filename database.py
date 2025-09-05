@@ -168,7 +168,5 @@ class Database:
                 else:
                     return False 
 
-database = Database()
-
 
 
