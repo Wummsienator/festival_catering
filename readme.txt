@@ -1,3 +1,5 @@
+Gruppe G2_4 (Leon Horch, Said Dahdouh, Hendrik Wolf)
+
 #Ausführen
 Bitte main_page.py ausführen. Folgende Login Daten sind möglich:
 
