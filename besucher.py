@@ -40,7 +40,7 @@ class BesucherPage():
             Label(besucherPage, image=self._logo_img, font=self._style1).grid(row=6, column=7)
 
             #buttons
-            Button(besucherPage, text="€▷", command=lambda: print("test"), font=self._style1, background="#75E6DA").grid(row=0, column=7)
+            Button(besucherPage, text="€▷", command=lambda: self.addCredit(), font=self._style1, background="#75E6DA").grid(row=0, column=7)
             Button(besucherPage, text="Bestellung aufnehmen", command=lambda: self.onGoToBestellungPage(), font=self._style1, background="#75E6DA").grid(row=2, column=1)
             Button(form_frame, text="Bestellung freischalten", command=lambda: print("test"), font=self._style1, background="#75E6DA").grid(row=2, column=1)
 
@@ -188,4 +188,10 @@ class BesucherPage():
 
     def setBestellungPageManagement(self, bestellungPageManagement):
         self._bestellungPageManagement = bestellungPageManagement
+
+    def addCredit(self):
+        self._database.addCreditForTicket(self._ticket, 10)
+
+        creditTxt = "Guthaben: " + str(self._database.getCreditForTicket(self._ticket)) + "€"
+        self._creditLabel.config(text=creditTxt) 
 
