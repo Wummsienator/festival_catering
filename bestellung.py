@@ -381,7 +381,7 @@ class BestellungPage():
                 item = self.table3.item(itemID, "values")
                 orderPositions.append({"product": itemID, "quantity": int(item[3])})
 
-            self._database.placeOrder(self._selectedStand, self._ticket, orderPositions)
+            self._database.placeOrder(self._selectedStand, self._ticket, orderPositions, self._currentPrice)
         self.onCancel()
 
     def setBesucherPageManagement(self, besucherPageManagement):

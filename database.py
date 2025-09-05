@@ -71,7 +71,7 @@ class Database:
         orders.append(order)
         return orders
     
-    def placeOrder(self, stand, ticket, positionList):
+    def placeOrder(self, stand, ticket, positionList, price):
         data = self.readData()
         time = 0
         price = 0
@@ -106,6 +106,9 @@ class Database:
         data["GlobalIDs"]["Orders"] = data["GlobalIDs"]["Orders"] + 1
         data["GlobalIDs"]["Order2Stand"] = data["GlobalIDs"]["Order2Stand"] + 1
         data["GlobalIDs"]["Order2Ticket"] = data["GlobalIDs"]["Order2Ticket"] + 1
+
+        #update credit for ticket
+        data["Tickets"][ticket]["credit"] = data["Tickets"][ticket]["credit"] - price
 
         self.writeData(data)
 
