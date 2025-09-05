@@ -158,6 +158,16 @@ class Database:
                 data["Tickets"][t]["credit"] = data["Tickets"][t]["credit"] + amount
 
         self.writeData(data)
+
+    def connectOrderToTicket(self, order, ticket):
+        data = self.readData()
+        for t in data["Tickets"]:
+            if t == ticket:
+                #add order2ticket
+                data["Order2Ticket"][data["GlobalIDs"]["Order2Ticket"]] = {"order": order, "ticket": ticket}
+                #update id
+                data["GlobalIDs"]["Order2Ticket"] = data["GlobalIDs"]["Order2Ticket"] + 1
+                self.writeData(data)
         
     def checkLogin(self, ticket, password):
         data = self.readData()

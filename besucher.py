@@ -42,7 +42,7 @@ class BesucherPage():
             #buttons
             Button(besucherPage, text="€▷", command=lambda: self.addCredit(), font=self._style1, background="#75E6DA").grid(row=0, column=7)
             Button(besucherPage, text="Bestellung aufnehmen", command=lambda: self.onGoToBestellungPage(), font=self._style1, background="#75E6DA").grid(row=2, column=1)
-            Button(form_frame, text="Bestellung freischalten", command=lambda: print("test"), font=self._style1, background="#75E6DA").grid(row=2, column=1)
+            Button(form_frame, text="Bestellung freischalten", command=lambda: self.unlockTicketForFriend(), font=self._style1, background="#75E6DA").grid(row=2, column=1)
 
             #input fields
             testVal = "Hallo"
@@ -123,7 +123,7 @@ class BesucherPage():
         self.table.configure(yscrollcommand=vsb.set)
         vsb.grid(row=1, column=1, sticky="ns")
 
-        self.table.bind("<<TreeviewSelect>>", self.on_select)
+        # self.table.bind("<<TreeviewSelect>>", self.on_select)
     
     def fillOrderTableRows(self, ticket):
         #clear existing rows
@@ -199,4 +199,10 @@ class BesucherPage():
 
         creditTxt = "Guthaben: " + str(self._database.getCreditForTicket(self._ticket)) + "€"
         self._creditLabel.config(text=creditTxt) 
+    
+    
+    def unlockTicketForFriend(self):
+        selected = self.table.focus()
+        values = self.table.item(selected, "values")
 
+        self._database.connectOrderToTicket(values[3], self._ticket)
