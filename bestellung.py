@@ -10,7 +10,8 @@ class BestellungPage():
         self._bestellungPage = ""
         self._ticket = ""
         self._selectedStand = ""
-        self._warenkorb = []
+        self._currentTime = 0
+        self._currentPrice = 0
 
     def getPage(self):
         if not self._bestellungPage:
@@ -33,6 +34,11 @@ class BestellungPage():
             self._ticketLabel.grid(row=0, column=1)
             self._creditLabel = Label(bestellungPage, text="Guthaben: 222€", font=self._style1)
             self._creditLabel.grid(row=0, column=6)
+
+            self._timeLabel = Label(bestellungPage, text="Wartezeit: 0", font=self._style1)
+            self._timeLabel.grid(row=5, column=1)
+            self._priceLabel = Label(bestellungPage, text="Gesamtpreis: 0€", font=self._style1)
+            self._priceLabel.grid(row=5, column=6)
 
             Label(bestellungPage, image=self._logo_img, font=self._style1).grid(row=6, column=7)
             Label(form_frame, text="⌕", font=self._style1).grid(row=0, column=1)
@@ -239,14 +245,23 @@ class BestellungPage():
         self.clearWarenkorb()
 
     def clearWarenkorb(self):
-        self._warenkorb = []
+        self._currentTime = 0
+        self._currentPrice = 0
 
         #clear existing rows
         self.table3.delete(*self.table3.get_children())
 
     def onAddOrderPosition(self, event):
         selected = self.table2.focus()
-        #selectedProduct = self.table2.item(selected, "values")
+        selectedProduct = self.table2.item(selected, "values")
+
+        #check available quantity
+        if selectedProduct[3] == "0":
+            return
+        
+        #update available cquantity
+        updatedRow = (selectedProduct[0], selectedProduct[1], selectedProduct[2], int(selectedProduct[3]) - 1)
+        self.table2.item(selected, values=updatedRow)
 
         #update warenkorb
         found = False
@@ -269,6 +284,10 @@ class BestellungPage():
                 newItem = (item[0], newTime, newPrice, newQuantity)
                 self.table3.item(selected, values=newItem)
 
+                #update time/price
+                self._currentTime += currentTime // currentQuantity
+                self._currentPrice += currentPrice // currentQuantity
+
         
         if not found:
             products = self._database.getProductsForStand(self._selectedStand)
@@ -276,4 +295,16 @@ class BestellungPage():
                 if selected == product["product"]:
                     newRow = (product["name"], product["time"], product["price"], 1)
                     self.table3.insert("", END, iid=selected, values=newRow, tags=("row",))
+
+                    #update time/price
+                    self._currentTime += product["time"]
+                    self._currentPrice += product["price"]
+
+        self.updateTimePrice()
+
+    def updateTimePrice(self):
+        timeTxt = "Wartezeit: " + str(self._currentTime)
+        self._timeLabel.config(text=timeTxt)
+        priceTxt = "Gesamtpreis: " + str(self._currentPrice) + "€"
+        self._priceLabel.config(text=priceTxt) 
 
