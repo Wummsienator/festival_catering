@@ -9,6 +9,8 @@ class BestellungPage():
         self._style1 = style1
         self._bestellungPage = ""
         self._ticket = ""
+        self._selectedStand = ""
+        self._warenkorb = []
 
     def getPage(self):
         if not self._bestellungPage:
@@ -17,13 +19,14 @@ class BestellungPage():
 
             #frames
             form_frame = Frame(bestellungPage)
-            form_frame.grid(row=1, column=1, columnspan=2)
+            form_frame.grid(row=1, column=0, columnspan=2)
 
             self.createColumns(bestellungPage)
             self.createRows(bestellungPage)
             self.loadImages()
             self.createStandTable(bestellungPage)
             self.createBestellkarteTable(bestellungPage)
+            self.createWarenkorbTable(bestellungPage)
 
             #labels
             self._ticketLabel = Label(bestellungPage, text="Ticket: 1234567", font=self._style1)
@@ -76,7 +79,7 @@ class BestellungPage():
     def createStandTable(self, bestellungPage):
         #frames
         form_frame = Frame(bestellungPage)
-        form_frame.grid(row=2, column=1, columnspan=7)
+        form_frame.grid(row=2, column=0, columnspan=3)
 
         # Title label
         title = Label(
@@ -85,7 +88,7 @@ class BestellungPage():
             font=("Arial", 14, "bold"),
             bg="#05445E",
             fg="white",
-            width=60
+            width=30
         )
         title.grid(row=0, column=0)
 
@@ -153,6 +156,46 @@ class BestellungPage():
 
         self.table2.bind("<Double-1>", self.onAddOrderPosition)
 
+    def createWarenkorbTable(self, bestellungPage):
+        #frames
+        form_frame = Frame(bestellungPage)
+        form_frame.grid(row=4, column=1, columnspan=7)
+
+        # Title label
+        title = Label(
+            form_frame,
+            text="Warenkorb:",
+            font=("Arial", 14, "bold"),
+            bg="#05445E",
+            fg="white",
+            width=60
+        )
+        title.grid(row=0, column=0)
+
+        # Define table columns
+        columns = ("Name", "Wartezeit", "Preis", "Menge")
+        self.table3 = ttk.Treeview(form_frame, columns=columns, show="headings", selectmode="browse", height=4)
+
+        # Define headings
+        for col in columns:
+            self.table3.heading(col, text=col)
+            self.table3.column(col, anchor="center", width=180)
+
+        # Style rows
+        style = ttk.Style(bestellungPage)
+        style.theme_use("default")
+
+        # Header style
+        style.configure("Treeview.Heading", font=("Arial", 11, "bold"), background="#05445E", foreground="white")
+
+        # Row styles
+        style.configure("Treeview", font=("Arial", 11), rowheight=25)
+        self.table3.tag_configure("row", background="#D4F1F4")   # baby blue
+
+        self.table3.grid(row=1, column=0)
+
+        # self.table3.bind("<Double-1>", self.onRemoveOrderPosition)
+
     def setTicket(self, ticket):
         ticketTxt = "Ticket: " + ticket
         self._ticketLabel.config(text=ticketTxt) 
@@ -192,8 +235,45 @@ class BestellungPage():
         for i, row in enumerate(data):
             self.table2.insert("", END, iid=ids[i], values=row, tags=("row",))
 
+        self._selectedStand = selectedStand
+        self.clearWarenkorb()
+
+    def clearWarenkorb(self):
+        self._warenkorb = []
+
+        #clear existing rows
+        self.table3.delete(*self.table3.get_children())
+
     def onAddOrderPosition(self, event):
         selected = self.table2.focus()
-        selectedProduct = self.table2.item(selected, "values")
+        #selectedProduct = self.table2.item(selected, "values")
 
-        print(selectedProduct)
+        #update warenkorb
+        found = False
+        itemIDs = self.table3.get_children()
+        for id in itemIDs:
+            if id == selected:
+                found = True
+                item = self.table3.item(id, "values")
+                currentQuantity = int(item[3])
+                #update time
+                currentTime = int(item[1])
+                newTime = currentTime + ( currentTime // currentQuantity) 
+                #update price
+                currentPrice = int(item[2])
+                newPrice = currentPrice + ( currentPrice // currentQuantity)
+                #update quantity
+                newQuantity = currentQuantity + 1
+
+                #update table
+                newItem = (item[0], newTime, newPrice, newQuantity)
+                self.table3.item(selected, values=newItem)
+
+        
+        if not found:
+            products = self._database.getProductsForStand(self._selectedStand)
+            for product in products:
+                if selected == product["product"]:
+                    newRow = (product["name"], product["time"], product["price"], 1)
+                    self.table3.insert("", END, iid=selected, values=newRow, tags=("row",))
+
