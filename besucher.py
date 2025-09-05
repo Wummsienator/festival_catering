@@ -72,11 +72,11 @@ class BesucherPage():
         besucherPage.grid_rowconfigure(6, weight=1)
     
     def loadImages(self):
-        logo_pil = Image.open("logo.png")
+        logo_pil = Image.open("img/logo.png")
         logo_pil = logo_pil.resize((50, 50), Image.Resampling.LANCZOS)
         self._logo_img = ImageTk.PhotoImage(logo_pil)
 
-        qr_pil = Image.open("QR_Code.png")
+        qr_pil = Image.open("img/QR_Code.png")
         qr_pil = qr_pil.resize((150, 150), Image.Resampling.LANCZOS)
         self._qr_img = ImageTk.PhotoImage(qr_pil)
     

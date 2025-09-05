@@ -11,7 +11,7 @@ class LoginPage():
         self._loginPage = ""
 
         #logo
-        logo_pil = Image.open("logo.png")
+        logo_pil = Image.open("img/logo.png")
         logo_pil = logo_pil.resize((300, 300), Image.Resampling.LANCZOS)
 
         self._logo_img = ImageTk.PhotoImage(logo_pil)

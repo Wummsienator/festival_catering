@@ -80,7 +80,7 @@ class BestellungPage():
         bestellungPage.grid_rowconfigure(8, weight=1)
 
     def loadImages(self):
-        logo_pil = Image.open("logo.png")
+        logo_pil = Image.open("img/logo.png")
         logo_pil = logo_pil.resize((50, 50), Image.Resampling.LANCZOS)
         self._logo_img = ImageTk.PhotoImage(logo_pil)
 
