@@ -45,8 +45,8 @@ class BesucherPage():
             Button(form_frame, text="Bestellung freischalten", command=lambda: self.unlockTicketForFriend(), font=self._style1, background="#75E6DA").grid(row=2, column=1)
 
             #input fields
-            testVal = "Hallo"
-            Entry(form_frame, font=self._style1, bg="#D4F1F4", textvariable=testVal).grid(row=0, column=1)
+            self._friendTicket_val = StringVar()
+            Entry(form_frame, font=self._style1, bg="#D4F1F4", textvariable=self._friendTicket_val).grid(row=0, column=1)
 
             self._besucherPage  = besucherPage
         return self._besucherPage
@@ -203,6 +203,9 @@ class BesucherPage():
     
     def unlockTicketForFriend(self):
         selected = self.table.focus()
+        if not selected:
+            return
         values = self.table.item(selected, "values")
+        friendTicket = self._friendTicket_val.get()
 
-        self._database.connectOrderToTicket(values[3], self._ticket)
+        self._database.connectOrderToTicket(values[3], friendTicket)

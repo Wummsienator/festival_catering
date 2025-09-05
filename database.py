@@ -160,6 +160,9 @@ class Database:
         self.writeData(data)
 
     def connectOrderToTicket(self, order, ticket):
+        if self.checkOrder2TicketExists(order, ticket):
+            return
+
         data = self.readData()
         for t in data["Tickets"]:
             if t == ticket:
@@ -168,7 +171,14 @@ class Database:
                 #update id
                 data["GlobalIDs"]["Order2Ticket"] = data["GlobalIDs"]["Order2Ticket"] + 1
                 self.writeData(data)
-        
+
+    def checkOrder2TicketExists(self, order, ticket):
+        data = self.readData()
+        for o2t in data["Order2Ticket"]:
+            if data["Order2Ticket"][o2t]["order"] == order and data["Order2Ticket"][o2t]["ticket"] == ticket:
+                return True
+        return False
+
     def checkLogin(self, ticket, password):
         data = self.readData()
         for t in data["Tickets"]:

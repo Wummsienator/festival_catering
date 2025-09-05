@@ -18,4 +18,4 @@ Benachrichtigungen sind erstmal nur fest simuliert.
 
 Die Wartezeit der Bestellungen wird nicht geupdated.
 
-Freigabe von Ticket an Freunde erstmal ohne Funktion.
+Freigabe von Ticket an Freunde funktioniert, gibt aber keine Rückmeldung auf Erfolg usw.
