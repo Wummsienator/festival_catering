@@ -244,6 +244,7 @@ class BestellungPage():
         self._ticketLabel.config(text=ticketTxt) 
         creditTxt = "Guthaben: " + str(self._database.getCreditForTicket(ticket)) + "€"
         self._creditLabel.config(text=creditTxt) 
+        self._ticket = ticket
 
     def onSearchStand(self, event):
         standStr = self._stand_val.get()
