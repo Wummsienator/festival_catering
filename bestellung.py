@@ -12,6 +12,7 @@ class BestellungPage():
         self._selectedStand = ""
         self._currentTime = 0
         self._currentPrice = 0
+        self._priority = False
 
     def getPage(self):
         if not self._bestellungPage:
@@ -25,6 +26,7 @@ class BestellungPage():
             self.createColumns(bestellungPage)
             self.createRows(bestellungPage)
             self.loadImages()
+            self.createPrioritySwitch(bestellungPage)
             self.createStandTable(bestellungPage)
             self.createBestellkarteTable(bestellungPage)
             self.createWarenkorbTable(bestellungPage)
@@ -40,13 +42,13 @@ class BestellungPage():
             self._priceLabel = Label(bestellungPage, text="Gesamtpreis: 0€", font=self._style1)
             self._priceLabel.grid(row=5, column=6)
 
-            Label(bestellungPage, image=self._logo_img, font=self._style1).grid(row=7, column=7)
+            Label(bestellungPage, image=self._logo_img, font=self._style1).grid(row=8, column=7)
             Label(form_frame, text="⌕", font=self._style1).grid(row=0, column=1)
 
             #buttons
             Button(bestellungPage, text="€▷", command=lambda: print("test"), font=self._style1, background="#75E6DA").grid(row=0, column=7)
-            Button(bestellungPage, text="Abbrechen", command=lambda: self.onCancel(), font=self._style1, background="#75E6DA").grid(row=6, column=2)
-            Button(bestellungPage, text="Bestellen", command=lambda: self.onOrder(), font=self._style1, background="#75E6DA").grid(row=6, column=5)
+            Button(bestellungPage, text="Abbrechen", command=lambda: self.onCancel(), font=self._style1, background="#75E6DA").grid(row=7, column=2)
+            Button(bestellungPage, text="Bestellen", command=lambda: self.onOrder(), font=self._style1, background="#75E6DA").grid(row=7, column=5)
 
             #input fields
             self._stand_val = StringVar()
@@ -83,6 +85,31 @@ class BestellungPage():
         logo_pil = Image.open("img/logo.png")
         logo_pil = logo_pil.resize((50, 50), Image.Resampling.LANCZOS)
         self._logo_img = ImageTk.PhotoImage(logo_pil)
+
+        on_pil = Image.open("img/on.png")
+        on_pil = on_pil.resize((50, 25), Image.Resampling.LANCZOS)
+        self._on_img = ImageTk.PhotoImage(on_pil)
+
+        off_pil = Image.open("img/off.png")
+        off_pil = off_pil.resize((50, 25), Image.Resampling.LANCZOS)
+        self._off_img = ImageTk.PhotoImage(off_pil)
+
+    def createPrioritySwitch(self, bestellungPage):
+        #create Frame 
+        form_frame = Frame(bestellungPage)
+        form_frame.grid(row=6, column=2, columnspan=2)
+        
+        Label(form_frame, text="Priorisieren:", font=self._style1).grid(row=0, column=0)
+        self._prioritySwitch = Button(form_frame, image = self._off_img, bd = 0,command = self.switchPriority)
+        self._prioritySwitch.grid(row=0, column=1)
+
+    def switchPriority(self):
+        if self._priority:
+            self._prioritySwitch.config(image = self._off_img)
+            self._priority = False
+        else:
+            self._prioritySwitch.config(image = self._on_img)
+            self._priority = True
 
     def createStandTable(self, bestellungPage):
         #frames
@@ -368,6 +395,7 @@ class BestellungPage():
         #reset time/price
         self._currentTime = 0
         self._currentPrice = 0
+        self._priority = False
 
         self._besucherPageManagement.fillOrderTableRows(self._ticket)
         self._besucherPageManagement.getPage().tkraise()
