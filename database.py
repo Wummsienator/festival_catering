@@ -185,11 +185,11 @@ class Database:
             if t == ticket:
                 if data["Tickets"][t]["password"] == password:
                     if data["Tickets"][t]["stand"]:
-                        return "Seller", data["Tickets"][t]["stand"]
+                        return True, data["Tickets"][t]["stand"]
                     else:
-                        return "Visitor", None
+                        return True, None
                 else:
-                    return "Invalid", None
+                    return False, None
 
 
 
