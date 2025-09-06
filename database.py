@@ -36,16 +36,16 @@ class Database:
         data = self.readData()
         for o2t in data["Order2Ticket"]:
             #get relation object
-            o2tObj = data["Order2Ticket"][o2t]
-            if o2tObj["ticket"] == ticket:
-                order = data["Orders"][o2tObj["order"]]
+            o2t_obj = data["Order2Ticket"][o2t]
+            if o2t_obj["ticket"] == ticket:
+                order = data["Orders"][o2t_obj["order"]]
                 #append order number
-                order["order"] = o2tObj["order"]
+                order["order"] = o2t_obj["order"]
                 #append stand number
                 for o2s in data["Order2Stand"]:
-                    o2sObj = data["Order2Stand"][o2s]
-                    if o2sObj["order"] == o2tObj["order"]:
-                        order["stand"] = o2sObj["stand"]
+                    o2s_obj  = data["Order2Stand"][o2s]
+                    if o2s_obj ["order"] == o2t_obj["order"]:
+                        order["stand"] = o2s_obj ["stand"]
                 #get status description
                 for s in data["Status"]:
                     if s == order["status"]:
@@ -58,11 +58,11 @@ class Database:
         data = self.readData()
         for o2s in data["Order2Stand"]:
             #get relation object
-            o2sObj = data["Order2Stand"][o2s]
-            if o2sObj["stand"] == stand:
-                order = data["Orders"][o2sObj["order"]]
+            o2s_obj  = data["Order2Stand"][o2s]
+            if o2s_obj ["stand"] == stand:
+                order = data["Orders"][o2s_obj ["order"]]
                 #append order number
-                order["order"] = o2sObj["order"]
+                order["order"] = o2s_obj ["order"]
                 #append stand number
                 order["stand"] = stand      
                 #get status description
@@ -72,7 +72,7 @@ class Database:
         orders.append(order)
         return orders
     
-    def placeOrder(self, stand, ticket, positionList, price, special_requests):
+    def placeOrder(self, stand, ticket, position_list, price, special_requests):
         data = self.readData()
         time = 0
         price = 0
@@ -80,7 +80,7 @@ class Database:
 
         #add positions
         counter = 1
-        for p in positionList:
+        for p in position_list:
             prod = data["Products"][p["product"]]
             price += p["quantity"] * prod["price"]
             time += p["quantity"] * prod["time"]
