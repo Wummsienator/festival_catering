@@ -254,7 +254,7 @@ class OrderPage():
 
     def setTicket(self, ticket):
         #check vip
-        isVip = self._database.readData()["Tickets"][ticket]["vip"]
+        isVip = self._database.checkVip(ticket)
 
         ticketTxt = "Ticket: " + ticket
         if isVip:

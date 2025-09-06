@@ -138,7 +138,7 @@ class VisitorPage():
             self._table.insert("", END, values=row, tags=("row",))
 
         #check vip
-        is_vip = self._database.readData()["Tickets"][ticket]["vip"]
+        is_vip = self._database.checkVip(ticket)
 
         ticket_txt = "Ticket: " + ticket
         if is_vip:
@@ -265,6 +265,6 @@ class VisitorPage():
         for i, row in enumerate(data):
             table.insert("", END, values=row, tags=("row",))
 
-        #special requests labe
+        #special requests label
         Label(popup, text="Sonderwünsche:", font=self._style_1).grid(row=2, column=0)
         Label(popup, text=special_requests, font=self._style_1).grid(row=3, column=0)

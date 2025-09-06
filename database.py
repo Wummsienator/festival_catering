@@ -5,7 +5,7 @@ class Database:
     def __init__(self):
         return
     
-    def readData(self):
+    def _readData(self):
         # Read from file and parse JSON
         with open("data.json", "r") as f:
             data = json.load(f)
@@ -18,13 +18,13 @@ class Database:
     
     def getproductsForStand(self, stand):
         products = []
-        data = self.readData()
+        data = self._readData()
         for p in data["Stands"][stand]["products"]:
             products.append(data["Products"][p])
         return products
     
     def adjustTimers(self):
-        data = self.readData()
+        data = self._readData()
         #adjust timers
         for o in data["Orders"]:
             if data["Orders"][o]["time"] > 0:
@@ -33,7 +33,7 @@ class Database:
 
     def getOrdersForTicket(self, ticket):
         orders = []
-        data = self.readData()
+        data = self._readData()
         for o2t in data["Order2Ticket"]:
             #get relation object
             o2t_obj = data["Order2Ticket"][o2t]
@@ -57,7 +57,7 @@ class Database:
     
     def getOrdersForStand(self, stand):
         orders = []
-        data = self.readData()
+        data = self._readData()
         for o2s in data["Order2Stand"]:
             #get relation object
             o2s_obj  = data["Order2Stand"][o2s]
@@ -76,7 +76,7 @@ class Database:
         return orders
     
     def placeOrder(self, stand, ticket, position_list, price, special_requests):
-        data = self.readData()
+        data = self._readData()
         time = 0
         price = 0
         positions = {}
@@ -120,10 +120,10 @@ class Database:
         self.writeData(data)
 
     def getCreditForTicket(self, ticket):
-        return self.readData()["Tickets"][ticket]["credit"]
+        return self._readData()["Tickets"][ticket]["credit"]
     
     def searchStand(self, standStr):
-        data = self.readData()
+        data = self._readData()
         rData = []
         for stand in data["Stands"]:
             if stand.startswith(standStr):
@@ -134,7 +134,7 @@ class Database:
         return rData
 
     def getProductsForStand(self, stand):
-        data = self.readData()
+        data = self._readData()
         products = []
 
         #check if stand exists
@@ -155,7 +155,7 @@ class Database:
         return products
     
     def addCreditForTicket(self, ticket, amount):
-        data = self.readData()
+        data = self._readData()
         #check if ticket exists
         for t in data["Tickets"]:
             if t == ticket:
@@ -168,7 +168,7 @@ class Database:
         if self.checkOrder2TicketExists(order, ticket):
             return
 
-        data = self.readData()
+        data = self._readData()
 
         #check if ticket exists
         for t in data["Tickets"]:
@@ -181,14 +181,14 @@ class Database:
                 break            
 
     def checkOrder2TicketExists(self, order, ticket):
-        data = self.readData()
+        data = self._readData()
         for o2t in data["Order2Ticket"]:
             if data["Order2Ticket"][o2t]["order"] == order and data["Order2Ticket"][o2t]["ticket"] == ticket:
                 return True
         return False
 
     def checkLogin(self, ticket, password):
-        data = self.readData()
+        data = self._readData()
         #check if ticket exists
         for t in data["Tickets"]:
             if t == ticket:
@@ -204,7 +204,7 @@ class Database:
 
 
     def getPositionsForOrder(self, order):
-        data = self.readData()
+        data = self._readData()
         positions = []
         special_requests = ""
         #check if order exists
@@ -220,3 +220,18 @@ class Database:
                 break
 
         return positions, special_requests
+
+    def checkVip(self, ticket):
+        return self._readData()["Tickets"][ticket]["vip"]
+    
+    def getProducts(self):
+        data = self._readData()
+        products = []
+        for p in data["Products"]:
+            product_data = data["Products"][p]
+            #append product id
+            product_data["product"] = p
+
+            products.append(product_data)
+
+        return products

@@ -20,6 +20,7 @@ class SellerPage():
             self.loadImages()
             self.createOrderTable(seller_page)
             self.createProductTable(seller_page)
+            self.createProductComboBox(seller_page)
 
             #labels
             self._stand_label = Label(seller_page, text="Stand Nr.: 1", font=self._style_1)
@@ -175,6 +176,20 @@ class SellerPage():
         for i, row in enumerate(data):
             self._table_2.insert("", END, values=row, tags=("row",))
 
+    def createProductComboBox(self, seller_page):
+        #get products
+        products = self._database.getProducts()
+        options = {}
+        for product in products:
+            options[product["product"]] = product["name"]
+
+        #create combobox values
+        display_values = [f"{v} ({k})" for k, v in options.items()]
+
+        #create combobox
+        self._product_combo = ttk.Combobox(seller_page, values=display_values, state="readonly") 
+        self._product_combo.grid(row=3, column=1)
+
     def open_popup(self, event=None):
         #get selection
         selected = self._table.focus()
@@ -235,6 +250,6 @@ class SellerPage():
         for i, row in enumerate(data):
             table.insert("", END, values=row, tags=("row",))
 
-        #special requests labe
+        #special requests label
         Label(popup, text="Sonderwünsche:", font=self._style_1).grid(row=2, column=0)
         Label(popup, text=special_requests, font=self._style_1).grid(row=3, column=0)
