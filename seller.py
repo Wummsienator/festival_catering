@@ -166,7 +166,7 @@ class SellerPage():
 
         for product in products:
             warning = ""
-            if int(product["quantity"]) > 10:
+            if int(product["quantity"]) < 10:
                 warning = "!!!"
             data.append( (product["name"], product["quantity"], warning) )
 

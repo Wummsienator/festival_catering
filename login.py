@@ -60,11 +60,24 @@ class LoginPage():
         ticket = self.ticket_val.get()
         password = self.password_val.get()
 
-        if self._database.checkLogin(ticket, password):
+        #check login validity and dependently get corresponding stand
+        check_login, stand = self._database.checkLogin(ticket, password)
+
+        if check_login == "Visitor":
             self.ticket_val.set("")
             self.password_val.set("")
             self._visitor_page_management.fillOrderTableRows(ticket)
             self._visitor_page_management.getPage().tkraise()
+        elif check_login == "Seller":
+            self.ticket_val.set("")
+            self.password_val.set("")
+            self._seller_page_management.fillOrderTableRows(stand)
+            self._seller_page_management.fillProductTableRows(stand)
+            self._seller_page_management.getPage().tkraise()
+
 
     def setVisitorPageManagement(self, visitor_page_management):
         self._visitor_page_management = visitor_page_management
+
+    def setSellerPageManagement(self, seller_page_management):
+        self._seller_page_management = seller_page_management

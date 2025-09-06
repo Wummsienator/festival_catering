@@ -184,9 +184,12 @@ class Database:
         for t in data["Tickets"]:
             if t == ticket:
                 if data["Tickets"][t]["password"] == password:
-                    return True
+                    if data["Tickets"][t]["stand"]:
+                        return "Seller", data["Tickets"][t]["stand"]
+                    else:
+                        return "Visitor", None
                 else:
-                    return False 
+                    return "Invalid", None
 
 
 

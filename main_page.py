@@ -36,12 +36,12 @@ seller_page = seller_page_management.getPage()
 seller_page.grid(row=0, column=1, sticky="nsew")
 
 login_page_management.setVisitorPageManagement(visitor_page_management)
+login_page_management.setSellerPageManagement(seller_page_management)
 visitor_page_management.setOrderPageManagement(order_page_management)
 order_page_management.setVisitorPageManagement(visitor_page_management)
 
 #settings
-# login_page.tkraise()
-seller_page.tkraise()
+login_page.tkraise()
 root.geometry("750x750")
 root.title("Festival Catering")
 root.resizable(False, False)
