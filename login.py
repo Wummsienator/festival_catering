@@ -2,10 +2,10 @@ from tkinter import *
 from PIL import Image, ImageTk
 
 class LoginPage():
-    def __init__(self, root, database, style1):
+    def __init__(self, root, database, style_1):
         self._root = root
         self._database = database
-        self._style1 = style1
+        self._style_1 = style_1
         self._login_page = ""
 
         #logo
@@ -38,20 +38,20 @@ class LoginPage():
             form_frame.grid(row=2, column=2, pady=20)
 
             #logo
-            Label(login_page, image=self._logo_img, font=self._style1).grid(row=1, column=2)
+            Label(login_page, image=self._logo_img, font=self._style_1).grid(row=1, column=2)
 
             #labels
-            Label(form_frame, text="Ticket:", font=self._style1).grid(row=0, column=0)
-            Label(form_frame, text="Password:", font=self._style1).grid(row=1, column=0)
+            Label(form_frame, text="Ticket:", font=self._style_1).grid(row=0, column=0)
+            Label(form_frame, text="Password:", font=self._style_1).grid(row=1, column=0)
 
             #input fields
             self.ticket_val= StringVar()
             self.password_val= StringVar()
-            Entry(form_frame, font=self._style1, bg="#D4F1F4", textvariable=self.ticket_val).grid(row=0, column=1)
-            Entry(form_frame, font=self._style1, bg="#D4F1F4", textvariable=self.password_val, show="*").grid(row=1, column=1)
+            Entry(form_frame, font=self._style_1, bg="#D4F1F4", textvariable=self.ticket_val).grid(row=0, column=1)
+            Entry(form_frame, font=self._style_1, bg="#D4F1F4", textvariable=self.password_val, show="*").grid(row=1, column=1)
 
             #button
-            Button(form_frame, text="Login", command=lambda: self.onLogin(), font=self._style1, background="#75E6DA").grid(row=2, column=0, columnspan=2)
+            Button(form_frame, text="Login", command=lambda: self.onLogin(), font=self._style_1, background="#75E6DA").grid(row=2, column=0, columnspan=2)
 
             self._login_page = login_page
         return self._login_page

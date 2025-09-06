@@ -4,10 +4,10 @@ from PIL import Image, ImageTk
 from elements import PlaceholderEntry
 
 class OrderPage():
-    def __init__(self, root, database, style1):
+    def __init__(self, root, database, style_1):
         self._root = root
         self._database = database
-        self._style1 = style1
+        self._style_1 = style_1
         self._orderPage = ""
         self._ticket = "1234567"
         self._selectedStand = ""
@@ -33,32 +33,32 @@ class OrderPage():
             self.createWarenkorbTable(orderPage)
 
             #labels
-            self._ticketLabel = Label(orderPage, text="Ticket: 1234567", font=self._style1)
+            self._ticketLabel = Label(orderPage, text="Ticket: 1234567", font=self._style_1)
             self._ticketLabel.grid(row=0, column=1)
-            self._creditLabel = Label(orderPage, text="Guthaben: 222€", font=self._style1)
+            self._creditLabel = Label(orderPage, text="Guthaben: 222€", font=self._style_1)
             self._creditLabel.grid(row=0, column=6)
 
-            self._timeLabel = Label(orderPage, text="Wartezeit: 0", font=self._style1)
+            self._timeLabel = Label(orderPage, text="Wartezeit: 0", font=self._style_1)
             self._timeLabel.grid(row=5, column=1)
-            self._priceLabel = Label(orderPage, text="Gesamtpreis: 0€", font=self._style1)
+            self._priceLabel = Label(orderPage, text="Gesamtpreis: 0€", font=self._style_1)
             self._priceLabel.grid(row=5, column=6)
 
-            Label(orderPage, image=self._logo_img, font=self._style1).grid(row=9, column=7)
-            Label(form_frame, text="⌕", font=self._style1).grid(row=0, column=1)
+            Label(orderPage, image=self._logo_img, font=self._style_1).grid(row=9, column=7)
+            Label(form_frame, text="⌕", font=self._style_1).grid(row=0, column=1)
 
             #buttons
-            Button(orderPage, text="€▷", command=lambda: self.addCredit(), font=self._style1, background="#75E6DA").grid(row=0, column=7)
-            Button(orderPage, text="Abbrechen", command=lambda: self.onCancel(), font=self._style1, background="#75E6DA").grid(row=8, column=2)
-            Button(orderPage, text="Bestellen", command=lambda: self.onOrder(), font=self._style1, background="#75E6DA").grid(row=8, column=5)
+            Button(orderPage, text="€▷", command=lambda: self.addCredit(), font=self._style_1, background="#75E6DA").grid(row=0, column=7)
+            Button(orderPage, text="Abbrechen", command=lambda: self.onCancel(), font=self._style_1, background="#75E6DA").grid(row=8, column=2)
+            Button(orderPage, text="Bestellen", command=lambda: self.onOrder(), font=self._style_1, background="#75E6DA").grid(row=8, column=5)
 
             #input fields
             self._stand_val = StringVar()
-            self._standIpt = PlaceholderEntry(form_frame, "Suche Stand", "grey", font=self._style1, bg="#D4F1F4", textvariable=self._stand_val)
+            self._standIpt = PlaceholderEntry(form_frame, "Suche Stand", "grey", font=self._style_1, bg="#D4F1F4", textvariable=self._stand_val)
             self._standIpt.grid(row=0, column=0)
             self._standIpt.bind("<Return>", self.onSearchStand)
 
             self._special_requests_val = StringVar()
-            self._special_requests_ipt = PlaceholderEntry(orderPage, "Sonderwünsche", "grey", font=self._style1, bg="#D4F1F4", textvariable=self._special_requests_val, width=50)
+            self._special_requests_ipt = PlaceholderEntry(orderPage, "Sonderwünsche", "grey", font=self._style_1, bg="#D4F1F4", textvariable=self._special_requests_val, width=50)
             self._special_requests_ipt.grid(row=6, column=1, columnspan=7)
 
             self._orderPage = orderPage
@@ -105,7 +105,7 @@ class OrderPage():
         form_frame = Frame(orderPage)
         form_frame.grid(row=7, column=2, columnspan=2)
         
-        Label(form_frame, text="Priorisieren:", font=self._style1).grid(row=0, column=0)
+        Label(form_frame, text="Priorisieren:", font=self._style_1).grid(row=0, column=0)
         self._prioritySwitch = Button(form_frame, image = self._off_img, bd = 0,command = self.switchPriority)
         self._prioritySwitch.grid(row=0, column=1)
 

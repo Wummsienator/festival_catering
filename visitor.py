@@ -3,10 +3,10 @@ from tkinter import ttk
 from PIL import Image, ImageTk
 
 class VisitorPage():
-    def __init__(self, root, database, style1):
+    def __init__(self, root, database, style_1):
         self._root = root
         self._database = database
-        self._style1 = style1
+        self._style_1 = style_1
         self._visitorPage = ""
         self._ticket = "1234567"
 
@@ -28,25 +28,25 @@ class VisitorPage():
             form_frame.grid(row=2, column=6, columnspan=2)
 
             #labels
-            self._ticketLabel = Label(visitorPage, text="Ticket: 1234567", font=self._style1)
+            self._ticketLabel = Label(visitorPage, text="Ticket: 1234567", font=self._style_1)
             self._ticketLabel.grid(row=0, column=1)
-            self._creditLabel = Label(visitorPage, text="Guthaben: 222€", font=self._style1)
+            self._creditLabel = Label(visitorPage, text="Guthaben: 222€", font=self._style_1)
             self._creditLabel.grid(row=0, column=6)
 
-            Label(form_frame, text="Ticket Freund:", font=self._style1).grid(row=0, column=0)
+            Label(form_frame, text="Ticket Freund:", font=self._style_1).grid(row=0, column=0)
 
-            Label(visitorPage, image=self._qr_img, font=self._style1).grid(row=3, column=1)
+            Label(visitorPage, image=self._qr_img, font=self._style_1).grid(row=3, column=1)
 
-            Label(visitorPage, image=self._logo_img, font=self._style1).grid(row=6, column=7)
+            Label(visitorPage, image=self._logo_img, font=self._style_1).grid(row=6, column=7)
 
             #buttons
-            Button(visitorPage, text="€▷", command=lambda: self.addCredit(), font=self._style1, background="#75E6DA").grid(row=0, column=7)
-            Button(visitorPage, text="Bestellung aufnehmen", command=lambda: self.onGoToOrderPage(), font=self._style1, background="#75E6DA").grid(row=2, column=1)
-            Button(form_frame, text="Bestellung freischalten", command=lambda: self.unlockTicketForFriend(), font=self._style1, background="#75E6DA").grid(row=2, column=1)
+            Button(visitorPage, text="€▷", command=lambda: self.addCredit(), font=self._style_1, background="#75E6DA").grid(row=0, column=7)
+            Button(visitorPage, text="Bestellung aufnehmen", command=lambda: self.onGoToOrderPage(), font=self._style_1, background="#75E6DA").grid(row=2, column=1)
+            Button(form_frame, text="Bestellung freischalten", command=lambda: self.unlockTicketForFriend(), font=self._style_1, background="#75E6DA").grid(row=2, column=1)
 
             #input fields
             self._friendTicket_val = StringVar()
-            Entry(form_frame, font=self._style1, bg="#D4F1F4", textvariable=self._friendTicket_val).grid(row=0, column=1)
+            Entry(form_frame, font=self._style_1, bg="#D4F1F4", textvariable=self._friendTicket_val).grid(row=0, column=1)
 
             self._visitorPage  = visitorPage
         return self._visitorPage
