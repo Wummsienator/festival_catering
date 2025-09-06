@@ -12,7 +12,7 @@ Guthaben-aufladen-Dialog erstmal für Prototyp weggelassen. Button lädt einfach
 
 Bei VIP Besuchern ist der Priorisieren-Schalter im Bestellungsmenü aktiviert. Hat aber erstmal keine Auswirkungen.
 
-Dialog für Einzelanzeige von Bestellpositionen haben wir auch erstmal ignoriert.
+Dialog für Einzelanzeige von Bestellpositionen per Doppeklick auf Zeile (Besucher- und Verkäufer-Ansicht).
 
 Benachrichtigungen sind erstmal nur fest simuliert.
 
