@@ -199,8 +199,8 @@ class Database:
                         return True, None
                 else:
                     return False, None
-            else:
-                return False, None
+        #ticket doesnt exist
+        return False, None
 
 
     def getPositionsForOrder(self, order):
