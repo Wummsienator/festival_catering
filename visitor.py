@@ -98,12 +98,12 @@ class VisitorPage():
 
         # Define table columns
         columns = ("Stand", "Wartezeit", "Status", "Bestellungsnummer")
-        self.table = ttk.Treeview(form_frame, columns=columns, show="headings", selectmode="browse", height=3)
+        self._table = ttk.Treeview(form_frame, columns=columns, show="headings", selectmode="browse", height=3)
 
         # Define headings
         for col in columns:
-            self.table.heading(col, text=col)
-            self.table.column(col, anchor="center", width=180)
+            self._table.heading(col, text=col)
+            self._table.column(col, anchor="center", width=180)
 
         # Style rows
         style = ttk.Style(visitor_page)
@@ -114,18 +114,20 @@ class VisitorPage():
 
         # Row styles
         style.configure("Treeview", font=("Arial", 11), rowheight=25)
-        self.table.tag_configure("row", background="#D4F1F4")   # baby blue
+        self._table.tag_configure("row", background="#D4F1F4")   # baby blue
 
-        self.table.grid(row=1, column=0, sticky="nsew")
+        self._table.grid(row=1, column=0, sticky="nsew")
 
         # Vertical scrollbar
-        vsb = ttk.Scrollbar(form_frame, orient="vertical", command=self.table.yview)
-        self.table.configure(yscrollcommand=vsb.set)
+        vsb = ttk.Scrollbar(form_frame, orient="vertical", command=self._table.yview)
+        self._table.configure(yscrollcommand=vsb.set)
         vsb.grid(row=1, column=1, sticky="ns")
+
+        self._table.bind("<Double-1>", self.open_popup)
     
     def fillOrderTableRows(self, ticket):
         #clear existing rows
-        self.table.delete(*self.table.get_children())
+        self._table.delete(*self._table.get_children())
         # Insert sample data
         data = []
         orders = self._database.getOrdersForTicket(ticket)
@@ -133,7 +135,7 @@ class VisitorPage():
             data.append( (order["stand"], order["time"], order["status_desc"], order["order"]) )
 
         for i, row in enumerate(data):
-            self.table.insert("", END, values=row, tags=("row",))
+            self._table.insert("", END, values=row, tags=("row",))
 
         #check vip
         is_vip = self._database.readData()["Tickets"][ticket]["vip"]
@@ -151,16 +153,16 @@ class VisitorPage():
     def createNotificationTable(self, visitor_page):
         # Define table columns
         column = "Benachrichtigungen:"
-        self.table2 = ttk.Treeview(visitor_page, columns=column, show="headings", selectmode="browse", height=3)
+        self._table2 = ttk.Treeview(visitor_page, columns=column, show="headings", selectmode="browse", height=3)
 
         # Define headings
-        self.table2.heading(column, text=column)
-        self.table2.column(column, anchor="center", width=600)
+        self._table2.heading(column, text=column)
+        self._table2.column(column, anchor="center", width=600)
 
         # Insert sample data
         data = [("Deine Bestellung kann in 20 Minuten an Stand 1 abgeholt werden.", ), ("Deine Bestellung an Stand 3 ist abholbereit", )]
         for i, row in enumerate(data):
-            self.table2.insert("", END, values=row, tags=("row",))
+            self._table2.insert("", END, values=row, tags=("row",))
 
         # Style rows
         style = ttk.Style(visitor_page)
@@ -171,11 +173,11 @@ class VisitorPage():
 
         # Row styles
         style.configure("Treeview", font=("Arial", 11), rowheight=25)
-        self.table2.tag_configure("row", background="#D4F1F4")   # baby blue
+        self._table2.tag_configure("row", background="#D4F1F4")   # baby blue
 
-        self.table2.grid(row=5, column=1, columnspan=7)
+        self._table2.grid(row=5, column=1, columnspan=7)
 
-        self.table2.bind("<<TreeviewSelect>>", self.disable_selection)
+        self._table2.bind("<<TreeviewSelect>>", self.disable_selection)
 
     def onGoToOrderPage(self):
         self._order_page_management.setTicket(self._ticket)
@@ -195,10 +197,74 @@ class VisitorPage():
     
     
     def unlockTicketForFriend(self):
-        selected = self.table.focus()
+        selected = self._table.focus()
         if not selected:
             return
-        values = self.table.item(selected, "values")
+        values = self._table.item(selected, "values")
         friend_ticket = self._friend_ticket_val.get()
 
         self._database.connectOrderToTicket(values[3], friend_ticket)
+
+    def open_popup(self, event=None):
+        #get selection
+        selected = self._table.focus()
+        if not selected:
+            return
+        selected_order = self._table.item(selected, "values")
+
+        # Create a popup window
+        popup = Toplevel(self._visitor_page)
+        popup.title("Bestellung: " + selected_order[0])
+        popup.geometry("400x300")
+
+        # Title label
+        title = Label(
+            popup,
+            text="Positionen:",
+            font=("Arial", 14, "bold"),
+            bg="#05445E",
+            fg="white",
+            width=30
+        )
+        title.grid(row=0, column=0)
+
+        # Define table columns
+        columns = ("Name", "Menge")
+        table = ttk.Treeview(popup, columns=columns, show="headings", selectmode="browse", height=4)
+
+        # Define headings
+        for col in columns:
+            table.heading(col, text=col)
+            table.column(col, anchor="center", width=120)
+
+        # Style rows
+        style = ttk.Style(popup)
+        style.theme_use("default")
+
+        # Header style
+        style.configure("Treeview.Heading", font=("Arial", 11, "bold"), background="#05445E", foreground="white")
+
+        # Row styles
+        style.configure("Treeview", font=("Arial", 11), rowheight=25)
+        table.tag_configure("row", background="#D4F1F4")   # baby blue
+
+        table.grid(row=1, column=0, sticky="nsew")
+
+        # Vertical scrollbar
+        vsb = ttk.Scrollbar(popup, orient="vertical", command=table.yview)
+        self._table.configure(yscrollcommand=vsb.set)
+        vsb.grid(row=1, column=1, sticky="ns")
+
+        #fill rows
+        data = []
+        positions, special_requests = self._database.getPositionsForOrder(selected_order[0])
+
+        for position in positions:
+            data.append( (position["name"], position["quantity"]) )
+
+        for i, row in enumerate(data):
+            table.insert("", END, values=row, tags=("row",))
+
+        #special requests labe
+        Label(popup, text="Sonderwünsche:", font=self._style_1).grid(row=2, column=0)
+        Label(popup, text=special_requests, font=self._style_1).grid(row=3, column=0)

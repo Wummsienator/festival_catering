@@ -222,7 +222,7 @@ class SellerPage():
 
         # Vertical scrollbar
         vsb = ttk.Scrollbar(popup, orient="vertical", command=table.yview)
-        self._table_2.configure(yscrollcommand=vsb.set)
+        table.configure(yscrollcommand=vsb.set)
         vsb.grid(row=1, column=1, sticky="ns")
 
         #fill rows
