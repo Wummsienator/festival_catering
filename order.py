@@ -8,7 +8,7 @@ class OrderPage():
         self._root = root
         self._database = database
         self._style_1 = style_1
-        self._orderPage = ""
+        self._order_page = ""
         self._ticket = "1234567"
         self._selectedStand = ""
         self._currentTime = 0
@@ -16,40 +16,40 @@ class OrderPage():
         self._priority = False
 
     def getPage(self):
-        if not self._orderPage:
+        if not self._order_page:
             #page
-            orderPage = Frame(self._root)
+            order_page = Frame(self._root)
 
             #frames
-            form_frame = Frame(orderPage)
+            form_frame = Frame(order_page)
             form_frame.grid(row=1, column=0, columnspan=2)
 
-            self.createColumns(orderPage)
-            self.createRows(orderPage)
+            self.createColumns(order_page)
+            self.createRows(order_page)
             self.loadImages()
-            self.createPrioritySwitch(orderPage)
-            self.createStandTable(orderPage)
-            self.createBestellkarteTable(orderPage)
-            self.createWarenkorbTable(orderPage)
+            self.createPrioritySwitch(order_page)
+            self.createStandTable(order_page)
+            self.createBestellkarteTable(order_page)
+            self.createWarenkorbTable(order_page)
 
             #labels
-            self._ticketLabel = Label(orderPage, text="Ticket: 1234567", font=self._style_1)
+            self._ticketLabel = Label(order_page, text="Ticket: 1234567", font=self._style_1)
             self._ticketLabel.grid(row=0, column=1)
-            self._creditLabel = Label(orderPage, text="Guthaben: 222€", font=self._style_1)
+            self._creditLabel = Label(order_page, text="Guthaben: 222€", font=self._style_1)
             self._creditLabel.grid(row=0, column=6)
 
-            self._timeLabel = Label(orderPage, text="Wartezeit: 0", font=self._style_1)
+            self._timeLabel = Label(order_page, text="Wartezeit: 0", font=self._style_1)
             self._timeLabel.grid(row=5, column=1)
-            self._priceLabel = Label(orderPage, text="Gesamtpreis: 0€", font=self._style_1)
+            self._priceLabel = Label(order_page, text="Gesamtpreis: 0€", font=self._style_1)
             self._priceLabel.grid(row=5, column=6)
 
-            Label(orderPage, image=self._logo_img, font=self._style_1).grid(row=9, column=7)
+            Label(order_page, image=self._logo_img, font=self._style_1).grid(row=9, column=7)
             Label(form_frame, text="⌕", font=self._style_1).grid(row=0, column=1)
 
             #buttons
-            Button(orderPage, text="€▷", command=lambda: self.addCredit(), font=self._style_1, background="#75E6DA").grid(row=0, column=7)
-            Button(orderPage, text="Abbrechen", command=lambda: self.onCancel(), font=self._style_1, background="#75E6DA").grid(row=8, column=2)
-            Button(orderPage, text="Bestellen", command=lambda: self.onOrder(), font=self._style_1, background="#75E6DA").grid(row=8, column=5)
+            Button(order_page, text="€▷", command=lambda: self.addCredit(), font=self._style_1, background="#75E6DA").grid(row=0, column=7)
+            Button(order_page, text="Abbrechen", command=lambda: self.onCancel(), font=self._style_1, background="#75E6DA").grid(row=8, column=2)
+            Button(order_page, text="Bestellen", command=lambda: self.onOrder(), font=self._style_1, background="#75E6DA").grid(row=8, column=5)
 
             #input fields
             self._stand_val = StringVar()
@@ -58,34 +58,34 @@ class OrderPage():
             self._standIpt.bind("<Return>", self.onSearchStand)
 
             self._special_requests_val = StringVar()
-            self._special_requests_ipt = PlaceholderEntry(orderPage, "Sonderwünsche", "grey", font=self._style_1, bg="#D4F1F4", textvariable=self._special_requests_val, width=50)
+            self._special_requests_ipt = PlaceholderEntry(order_page, "Sonderwünsche", "grey", font=self._style_1, bg="#D4F1F4", textvariable=self._special_requests_val, width=50)
             self._special_requests_ipt.grid(row=6, column=1, columnspan=7)
 
-            self._orderPage = orderPage
-        return self._orderPage
+            self._order_page = order_page
+        return self._order_page
     
-    def createColumns(self, orderPage):
-        orderPage.grid_columnconfigure(0, weight=1)
-        orderPage.grid_columnconfigure(1, weight=1)
-        orderPage.grid_columnconfigure(2, weight=1)
-        orderPage.grid_columnconfigure(3, weight=1)
-        orderPage.grid_columnconfigure(4, weight=1)
-        orderPage.grid_columnconfigure(5, weight=1)
-        orderPage.grid_columnconfigure(6, weight=1)
-        orderPage.grid_columnconfigure(7, weight=1)
-        orderPage.grid_columnconfigure(8, weight=1)
+    def createColumns(self, order_page):
+        order_page.grid_columnconfigure(0, weight=1)
+        order_page.grid_columnconfigure(1, weight=1)
+        order_page.grid_columnconfigure(2, weight=1)
+        order_page.grid_columnconfigure(3, weight=1)
+        order_page.grid_columnconfigure(4, weight=1)
+        order_page.grid_columnconfigure(5, weight=1)
+        order_page.grid_columnconfigure(6, weight=1)
+        order_page.grid_columnconfigure(7, weight=1)
+        order_page.grid_columnconfigure(8, weight=1)
 
-    def createRows(self, orderPage):
-        orderPage.grid_rowconfigure(0, weight=1)
-        orderPage.grid_rowconfigure(1, weight=1)
-        orderPage.grid_rowconfigure(2, weight=1)
-        orderPage.grid_rowconfigure(3, weight=1)
-        orderPage.grid_rowconfigure(4, weight=1)
-        orderPage.grid_rowconfigure(5, weight=1)
-        orderPage.grid_rowconfigure(6, weight=1)
-        orderPage.grid_rowconfigure(7, weight=1)
-        orderPage.grid_rowconfigure(8, weight=1)
-        orderPage.grid_rowconfigure(9, weight=1)
+    def createRows(self, order_page):
+        order_page.grid_rowconfigure(0, weight=1)
+        order_page.grid_rowconfigure(1, weight=1)
+        order_page.grid_rowconfigure(2, weight=1)
+        order_page.grid_rowconfigure(3, weight=1)
+        order_page.grid_rowconfigure(4, weight=1)
+        order_page.grid_rowconfigure(5, weight=1)
+        order_page.grid_rowconfigure(6, weight=1)
+        order_page.grid_rowconfigure(7, weight=1)
+        order_page.grid_rowconfigure(8, weight=1)
+        order_page.grid_rowconfigure(9, weight=1)
 
     def loadImages(self):
         logo_pil = Image.open("img/logo.png")
@@ -100,9 +100,9 @@ class OrderPage():
         off_pil = off_pil.resize((50, 25), Image.Resampling.LANCZOS)
         self._off_img = ImageTk.PhotoImage(off_pil)
 
-    def createPrioritySwitch(self, orderPage):
+    def createPrioritySwitch(self, order_page):
         #create Frame 
-        form_frame = Frame(orderPage)
+        form_frame = Frame(order_page)
         form_frame.grid(row=7, column=2, columnspan=2)
         
         Label(form_frame, text="Priorisieren:", font=self._style_1).grid(row=0, column=0)
@@ -117,9 +117,9 @@ class OrderPage():
             self._prioritySwitch.config(image = self._on_img)
             self._priority = True
 
-    def createStandTable(self, orderPage):
+    def createStandTable(self, order_page):
         #frames
-        form_frame = Frame(orderPage)
+        form_frame = Frame(order_page)
         form_frame.grid(row=2, column=0, columnspan=3)
 
         # Title label
@@ -143,7 +143,7 @@ class OrderPage():
             self.table.column(col, anchor="center", width=180)
 
         # Style rows
-        style = ttk.Style(orderPage)
+        style = ttk.Style(order_page)
         style.theme_use("default")
 
         # Header style
@@ -162,9 +162,9 @@ class OrderPage():
 
         self.table.bind("<<TreeviewSelect>>", self.onSelectStand)
 
-    def createBestellkarteTable(self, orderPage):
+    def createBestellkarteTable(self, order_page):
         #frames
-        form_frame = Frame(orderPage)
+        form_frame = Frame(order_page)
         form_frame.grid(row=3, column=1, columnspan=7)
 
         # Title label
@@ -188,7 +188,7 @@ class OrderPage():
             self.table2.column(col, anchor="center", width=180)
 
         # Style rows
-        style = ttk.Style(orderPage)
+        style = ttk.Style(order_page)
         style.theme_use("default")
 
         # Header style
@@ -207,9 +207,9 @@ class OrderPage():
 
         self.table2.bind("<Double-1>", self.onAddOrderPosition)
 
-    def createWarenkorbTable(self, orderPage):
+    def createWarenkorbTable(self, order_page):
         #frames
-        form_frame = Frame(orderPage)
+        form_frame = Frame(order_page)
         form_frame.grid(row=4, column=1, columnspan=7)
 
         # Title label
@@ -233,7 +233,7 @@ class OrderPage():
             self.table3.column(col, anchor="center", width=180)
 
         # Style rows
-        style = ttk.Style(orderPage)
+        style = ttk.Style(order_page)
         style.theme_use("default")
 
         # Header style

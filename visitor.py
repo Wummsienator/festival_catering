@@ -10,7 +10,7 @@ class VisitorPage():
         self._visitor_page = ""
         self._ticket = "1234567"
 
-        self._orderPage = Frame(root)
+        self._order_page = Frame(root)
 
     def getPage(self):
         if not self._visitor_page:

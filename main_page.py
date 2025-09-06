@@ -27,8 +27,8 @@ visitor_page = visitor_page_management.getPage()
 visitor_page.grid(row=0, column=1, sticky="nsew")
 
 order_page_management = OrderPage(root, database, style_1)
-orderPage = order_page_management.getPage()
-orderPage.grid(row=0, column=1, sticky="nsew")
+order_page = order_page_management.getPage()
+order_page.grid(row=0, column=1, sticky="nsew")
 
 login_page_management.setVisitorPageManagement(visitor_page_management)
 visitor_page_management.setOrderPageManagement(order_page_management)
