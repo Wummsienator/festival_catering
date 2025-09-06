@@ -122,7 +122,7 @@ class OrderPage():
         form_frame = Frame(order_page)
         form_frame.grid(row=2, column=0, columnspan=3)
 
-        # Title label
+        #title label
         title = Label(
             form_frame,
             text="Stand Auswahl:",
@@ -133,29 +133,29 @@ class OrderPage():
         )
         title.grid(row=0, column=0)
 
-        # Define table columns
+        #define table columns
         columns = ("Nummer", "Name")
         self._table = ttk.Treeview(form_frame, columns=columns, show="headings", selectmode="browse", height=3)
 
-        # Define headings
+        #define headings
         for col in columns:
             self._table.heading(col, text=col)
             self._table.column(col, anchor="center", width=180)
 
-        # Style rows
+        #style rows
         style = ttk.Style(order_page)
         style.theme_use("default")
 
-        # Header style
+        #header style
         style.configure("Treeview.Heading", font=("Arial", 11, "bold"), background="#05445E", foreground="white")
 
-        # Row styles
+        #row styles
         style.configure("Treeview", font=("Arial", 11), rowheight=25)
         self._table.tag_configure("row", background="#D4F1F4")   # baby blue
 
         self._table.grid(row=1, column=0)
 
-        # Vertical scrollbar
+        #vertical scrollbar
         vsb = ttk.Scrollbar(form_frame, orient="vertical", command=self._table.yview)
         self._table.configure(yscrollcommand=vsb.set)
         vsb.grid(row=1, column=1, sticky="ns")
@@ -167,7 +167,7 @@ class OrderPage():
         form_frame = Frame(order_page)
         form_frame.grid(row=3, column=1, columnspan=7)
 
-        # Title label
+        #title label
         title = Label(
             form_frame,
             text="Bestellkarte:",
@@ -178,29 +178,29 @@ class OrderPage():
         )
         title.grid(row=0, column=0)
 
-        # Define table columns
+        #define table columns
         columns = ("Name", "Wartezeit", "Preis", "Lagerbestand")
         self._table_2 = ttk.Treeview(form_frame, columns=columns, show="headings", selectmode="browse", height=4)
 
-        # Define headings
+        #define headings
         for col in columns:
             self._table_2.heading(col, text=col)
             self._table_2.column(col, anchor="center", width=180)
 
-        # Style rows
+        #style rows
         style = ttk.Style(order_page)
         style.theme_use("default")
 
-        # Header style
+        #header style
         style.configure("Treeview.Heading", font=("Arial", 11, "bold"), background="#05445E", foreground="white")
 
-        # Row styles
+        #row styles
         style.configure("Treeview", font=("Arial", 11), rowheight=25)
         self._table_2.tag_configure("row", background="#D4F1F4")   # baby blue
 
         self._table_2.grid(row=1, column=0)
 
-        # Vertical scrollbar
+        #vertical scrollbar
         vsb = ttk.Scrollbar(form_frame, orient="vertical", command=self._table_2.yview)
         self._table_2.configure(yscrollcommand=vsb.set)
         vsb.grid(row=1, column=1, sticky="ns")
@@ -212,7 +212,7 @@ class OrderPage():
         form_frame = Frame(order_page)
         form_frame.grid(row=4, column=1, columnspan=7)
 
-        # Title label
+        #title label
         title = Label(
             form_frame,
             text="Warenkorb:",
@@ -223,29 +223,29 @@ class OrderPage():
         )
         title.grid(row=0, column=0)
 
-        # Define table columns
+        #define table columns
         columns = ("Name", "Wartezeit", "Preis", "Menge")
         self._table_3 = ttk.Treeview(form_frame, columns=columns, show="headings", selectmode="browse", height=4)
 
-        # Define headings
+        #define headings
         for col in columns:
             self._table_3.heading(col, text=col)
             self._table_3.column(col, anchor="center", width=180)
 
-        # Style rows
+        #style rows
         style = ttk.Style(order_page)
         style.theme_use("default")
 
-        # Header style
+        #header style
         style.configure("Treeview.Heading", font=("Arial", 11, "bold"), background="#05445E", foreground="white")
 
-        # Row styles
+        #row styles
         style.configure("Treeview", font=("Arial", 11), rowheight=25)
         self._table_3.tag_configure("row", background="#D4F1F4")   # baby blue
 
         self._table_3.grid(row=1, column=0)
 
-        # Vertical scrollbar
+        #vertical scrollbar
         vsb = ttk.Scrollbar(form_frame, orient="vertical", command=self._table_3.yview)
         self._table_3.configure(yscrollcommand=vsb.set)
         vsb.grid(row=1, column=1, sticky="ns")
@@ -272,7 +272,7 @@ class OrderPage():
 
         #clear existing rows
         self._table.delete(*self._table.get_children())
-        # Insert sample data
+        #insert sample data
         data = []
         stands = self._database.searchStand(standStr)
 
@@ -290,7 +290,7 @@ class OrderPage():
 
         #clear existing rows
         self._table_2.delete(*self._table_2.get_children())
-        # Insert sample data
+        #insert sample data
         data = []
         ids = []
         products = self._database.getProductsForStand(selected_stand)

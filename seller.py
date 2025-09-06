@@ -62,7 +62,7 @@ class SellerPage():
         form_frame = Frame(seller_page)
         form_frame.grid(row=1, column=1, columnspan=7)
 
-        # Title label
+        #title label
         title = Label(
             form_frame,
             text="Offene Bestellungen:",
@@ -73,29 +73,29 @@ class SellerPage():
         )
         title.grid(row=0, column=0)
 
-        # Define table columns
+        #define table columns
         columns = ("Bestellung Nr.", "Zeitstempel", "Status",)
         self._table = ttk.Treeview(form_frame, columns=columns, show="headings", selectmode="browse", height=3)
 
-        # Define headings
+        #define headings
         for col in columns:
             self._table.heading(col, text=col)
             self._table.column(col, anchor="center", width=180)
 
-        # Style rows
+        #style rows
         style = ttk.Style(seller_page)
         style.theme_use("default")
 
-        # Header style
+        #header style
         style.configure("Treeview.Heading", font=("Arial", 11, "bold"), background="#05445E", foreground="white")
 
-        # Row styles
+        #row styles
         style.configure("Treeview", font=("Arial", 11), rowheight=25)
         self._table.tag_configure("row", background="#D4F1F4")   # baby blue
 
         self._table.grid(row=1, column=0, sticky="nsew")
 
-        # Vertical scrollbar
+        #vertical scrollbar
         vsb = ttk.Scrollbar(form_frame, orient="vertical", command=self._table.yview)
         self._table.configure(yscrollcommand=vsb.set)
         vsb.grid(row=1, column=1, sticky="ns")
@@ -107,7 +107,7 @@ class SellerPage():
         form_frame = Frame(seller_page)
         form_frame.grid(row=2, column=1, columnspan=7)
 
-        # Title label
+        #title label
         title = Label(
             form_frame,
             text="Bestandsanzeige:",
@@ -118,29 +118,29 @@ class SellerPage():
         )
         title.grid(row=0, column=0)
 
-        # Define table columns
+        #define table columns
         columns = ("Name", "Menge", "Warnung",)
         self._table_2 = ttk.Treeview(form_frame, columns=columns, show="headings", selectmode="browse", height=3)
 
-        # Define headings
+        #define headings
         for col in columns:
             self._table_2.heading(col, text=col)
             self._table_2.column(col, anchor="center", width=180)
 
-        # Style rows
+        #style rows
         style = ttk.Style(seller_page)
         style.theme_use("default")
 
-        # Header style
+        #header style
         style.configure("Treeview.Heading", font=("Arial", 11, "bold"), background="#05445E", foreground="white")
 
-        # Row styles
+        #row styles
         style.configure("Treeview", font=("Arial", 11), rowheight=25)
         self._table_2.tag_configure("row", background="#D4F1F4")   # baby blue
 
         self._table_2.grid(row=1, column=0, sticky="nsew")
 
-        # Vertical scrollbar
+        #vertical scrollbar
         vsb = ttk.Scrollbar(form_frame, orient="vertical", command=self._table_2.yview)
         self._table_2.configure(yscrollcommand=vsb.set)
         vsb.grid(row=1, column=1, sticky="ns")
@@ -153,7 +153,7 @@ class SellerPage():
     def fillOrderTableRows(self, stand):
         #clear existing rows
         self._table.delete(*self._table.get_children())
-        # Insert sample data
+        #insert sample data
         data = []
         orders = self._database.getOrdersForStand(stand)
 
@@ -169,7 +169,7 @@ class SellerPage():
     def fillProductTableRows(self, stand):
         #clear existing rows
         self._table_2.delete(*self._table_2.get_children())
-        # Insert sample data
+        #insert sample data
         data = []
         products = self._database.getProductsForStand(stand)
 
@@ -238,12 +238,12 @@ class SellerPage():
             return
         selected_order = self._table.item(selected, "values")
 
-        # Create a popup window
+        #create a popup window
         popup = Toplevel(self._seller_page)
         popup.title("Bestellung: " + selected_order[0])
         popup.geometry("400x300")
 
-        # Title label
+        #title label
         title = Label(
             popup,
             text="Positionen:",
@@ -254,29 +254,29 @@ class SellerPage():
         )
         title.grid(row=0, column=0)
 
-        # Define table columns
+        #define table columns
         columns = ("Name", "Menge")
         table = ttk.Treeview(popup, columns=columns, show="headings", selectmode="browse", height=4)
 
-        # Define headings
+        #define headings
         for col in columns:
             table.heading(col, text=col)
             table.column(col, anchor="center", width=120)
 
-        # Style rows
+        #style rows
         style = ttk.Style(popup)
         style.theme_use("default")
 
-        # Header style
+        #header style
         style.configure("Treeview.Heading", font=("Arial", 11, "bold"), background="#05445E", foreground="white")
 
-        # Row styles
+        #row styles
         style.configure("Treeview", font=("Arial", 11), rowheight=25)
         table.tag_configure("row", background="#D4F1F4")   # baby blue
 
         table.grid(row=1, column=0, sticky="nsew")
 
-        # Vertical scrollbar
+        #vertical scrollbar
         vsb = ttk.Scrollbar(popup, orient="vertical", command=table.yview)
         table.configure(yscrollcommand=vsb.set)
         vsb.grid(row=1, column=1, sticky="ns")

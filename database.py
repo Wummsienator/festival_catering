@@ -6,7 +6,7 @@ class Database:
         return
     
     def _readData(self):
-        # Read from file and parse JSON
+        #read from file and parse JSON
         with open("data.json", "r") as f:
             data = json.load(f)
         return data
