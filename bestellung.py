@@ -422,6 +422,10 @@ class BestellungPage():
         self.table2.delete(*self.table2.get_children())
         self.table3.delete(*self.table3.get_children())
 
+        #clear input fields
+        self._stand_val.set("")
+        self._special_requests_val.set("")
+
         #reset time/price
         self._currentTime = 0
         self._currentPrice = 0
@@ -438,12 +442,17 @@ class BestellungPage():
         orderPositions = []
         warenkorbItems = self.table3.get_children()
 
+        #special requests
+        special_requests = ""
+        if self._special_requests_val.get() != "Sonderwünsche":
+            special_requests = self._special_requests_val.get()
+
         if warenkorbItems:
             for itemID in warenkorbItems:
                 item = self.table3.item(itemID, "values")
                 orderPositions.append({"product": itemID, "quantity": int(item[3])})
 
-            self._database.placeOrder(self._selectedStand, self._ticket, orderPositions, self._currentPrice)
+            self._database.placeOrder(self._selectedStand, self._ticket, orderPositions, self._currentPrice, special_requests)
         self.onCancel()
 
     def setBesucherPageManagement(self, besucherPageManagement):

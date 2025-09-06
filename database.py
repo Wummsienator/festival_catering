@@ -72,7 +72,7 @@ class Database:
         orders.append(order)
         return orders
     
-    def placeOrder(self, stand, ticket, positionList, price):
+    def placeOrder(self, stand, ticket, positionList, price, special_requests):
         data = self.readData()
         time = 0
         price = 0
@@ -93,12 +93,12 @@ class Database:
 
             counter += 1
             
-        #update timestamp
+        #get timestamp
         x = datetime.datetime.now()
         timestamp = str(x.day) + "." + str(x.month) + "." + str(x.year) + " - " + str(x.hour) + ":" + str(x.minute)
 
         #add order
-        data["Orders"][data["GlobalIDs"]["Orders"]] = {"time": time, "timestamp": timestamp, "price": price, "status": "1", "positions": positions}
+        data["Orders"][data["GlobalIDs"]["Orders"]] = {"time": time, "timestamp": timestamp, "price": price, "status": "1", "specialRequests": special_requests, "positions": positions}
 
         #add order2stand
         data["Order2Stand"][data["GlobalIDs"]["Order2Stand"]] = {"order": str(data["GlobalIDs"]["Orders"]), "stand": stand}

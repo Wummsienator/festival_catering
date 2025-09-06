@@ -73,6 +73,7 @@
             "timestamp": "1.9.2025 - 9:33",
             "price": 22,
             "status": "1",
+            "specialRequests": "",
             "positions": {
                 "1": {
                     "product": "1",
@@ -89,6 +90,7 @@
             "timestamp": "5.9.2025 - 17:17",
             "price": 10,
             "status": "2",
+            "specialRequests": "Viel Soße",
             "positions": {
                 "1": {
                     "product": "4",
