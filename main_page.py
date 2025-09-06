@@ -3,7 +3,7 @@ from tkinter import font
 from database import Database
 from login import LoginPage
 from besucher import BesucherPage
-from bestellung import BestellungPage
+from order import OrderPage
 
 root = Tk()
 database = Database()
@@ -26,13 +26,13 @@ besucherPageManagement = BesucherPage(root, database, style1)
 besucherPage = besucherPageManagement.getPage()
 besucherPage.grid(row=0, column=1, sticky="nsew")
 
-bestellungPageManagement =BestellungPage(root, database, style1)
-bestellungPage = bestellungPageManagement.getPage()
-bestellungPage.grid(row=0, column=1, sticky="nsew")
+orderPageManagement = OrderPage(root, database, style1)
+orderPage = orderPageManagement.getPage()
+orderPage.grid(row=0, column=1, sticky="nsew")
 
 loginPageManagement.setBesucherPageManagement(besucherPageManagement)
-besucherPageManagement.setBestellungPageManagement(bestellungPageManagement)
-bestellungPageManagement.setBesucherPageManagement(besucherPageManagement)
+besucherPageManagement.setOrderPageManagement(orderPageManagement)
+orderPageManagement.setBesucherPageManagement(besucherPageManagement)
 
 #settings
 loginPage.tkraise()

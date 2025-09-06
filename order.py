@@ -3,12 +3,12 @@ from tkinter import ttk
 from PIL import Image, ImageTk
 from elements import PlaceholderEntry
 
-class BestellungPage():
+class OrderPage():
     def __init__(self, root, database, style1):
         self._root = root
         self._database = database
         self._style1 = style1
-        self._bestellungPage = ""
+        self._orderPage = ""
         self._ticket = "1234567"
         self._selectedStand = ""
         self._currentTime = 0
@@ -16,40 +16,40 @@ class BestellungPage():
         self._priority = False
 
     def getPage(self):
-        if not self._bestellungPage:
+        if not self._orderPage:
             #page
-            bestellungPage = Frame(self._root)
+            orderPage = Frame(self._root)
 
             #frames
-            form_frame = Frame(bestellungPage)
+            form_frame = Frame(orderPage)
             form_frame.grid(row=1, column=0, columnspan=2)
 
-            self.createColumns(bestellungPage)
-            self.createRows(bestellungPage)
+            self.createColumns(orderPage)
+            self.createRows(orderPage)
             self.loadImages()
-            self.createPrioritySwitch(bestellungPage)
-            self.createStandTable(bestellungPage)
-            self.createBestellkarteTable(bestellungPage)
-            self.createWarenkorbTable(bestellungPage)
+            self.createPrioritySwitch(orderPage)
+            self.createStandTable(orderPage)
+            self.createBestellkarteTable(orderPage)
+            self.createWarenkorbTable(orderPage)
 
             #labels
-            self._ticketLabel = Label(bestellungPage, text="Ticket: 1234567", font=self._style1)
+            self._ticketLabel = Label(orderPage, text="Ticket: 1234567", font=self._style1)
             self._ticketLabel.grid(row=0, column=1)
-            self._creditLabel = Label(bestellungPage, text="Guthaben: 222€", font=self._style1)
+            self._creditLabel = Label(orderPage, text="Guthaben: 222€", font=self._style1)
             self._creditLabel.grid(row=0, column=6)
 
-            self._timeLabel = Label(bestellungPage, text="Wartezeit: 0", font=self._style1)
+            self._timeLabel = Label(orderPage, text="Wartezeit: 0", font=self._style1)
             self._timeLabel.grid(row=5, column=1)
-            self._priceLabel = Label(bestellungPage, text="Gesamtpreis: 0€", font=self._style1)
+            self._priceLabel = Label(orderPage, text="Gesamtpreis: 0€", font=self._style1)
             self._priceLabel.grid(row=5, column=6)
 
-            Label(bestellungPage, image=self._logo_img, font=self._style1).grid(row=9, column=7)
+            Label(orderPage, image=self._logo_img, font=self._style1).grid(row=9, column=7)
             Label(form_frame, text="⌕", font=self._style1).grid(row=0, column=1)
 
             #buttons
-            Button(bestellungPage, text="€▷", command=lambda: self.addCredit(), font=self._style1, background="#75E6DA").grid(row=0, column=7)
-            Button(bestellungPage, text="Abbrechen", command=lambda: self.onCancel(), font=self._style1, background="#75E6DA").grid(row=8, column=2)
-            Button(bestellungPage, text="Bestellen", command=lambda: self.onOrder(), font=self._style1, background="#75E6DA").grid(row=8, column=5)
+            Button(orderPage, text="€▷", command=lambda: self.addCredit(), font=self._style1, background="#75E6DA").grid(row=0, column=7)
+            Button(orderPage, text="Abbrechen", command=lambda: self.onCancel(), font=self._style1, background="#75E6DA").grid(row=8, column=2)
+            Button(orderPage, text="Bestellen", command=lambda: self.onOrder(), font=self._style1, background="#75E6DA").grid(row=8, column=5)
 
             #input fields
             self._stand_val = StringVar()
@@ -58,34 +58,34 @@ class BestellungPage():
             self._standIpt.bind("<Return>", self.onSearchStand)
 
             self._special_requests_val = StringVar()
-            self._special_requests_ipt = PlaceholderEntry(bestellungPage, "Sonderwünsche", "grey", font=self._style1, bg="#D4F1F4", textvariable=self._special_requests_val, width=50)
+            self._special_requests_ipt = PlaceholderEntry(orderPage, "Sonderwünsche", "grey", font=self._style1, bg="#D4F1F4", textvariable=self._special_requests_val, width=50)
             self._special_requests_ipt.grid(row=6, column=1, columnspan=7)
 
-            self._bestellungPage = bestellungPage
-        return self._bestellungPage
+            self._orderPage = orderPage
+        return self._orderPage
     
-    def createColumns(self, bestellungPage):
-        bestellungPage.grid_columnconfigure(0, weight=1)
-        bestellungPage.grid_columnconfigure(1, weight=1)
-        bestellungPage.grid_columnconfigure(2, weight=1)
-        bestellungPage.grid_columnconfigure(3, weight=1)
-        bestellungPage.grid_columnconfigure(4, weight=1)
-        bestellungPage.grid_columnconfigure(5, weight=1)
-        bestellungPage.grid_columnconfigure(6, weight=1)
-        bestellungPage.grid_columnconfigure(7, weight=1)
-        bestellungPage.grid_columnconfigure(8, weight=1)
+    def createColumns(self, orderPage):
+        orderPage.grid_columnconfigure(0, weight=1)
+        orderPage.grid_columnconfigure(1, weight=1)
+        orderPage.grid_columnconfigure(2, weight=1)
+        orderPage.grid_columnconfigure(3, weight=1)
+        orderPage.grid_columnconfigure(4, weight=1)
+        orderPage.grid_columnconfigure(5, weight=1)
+        orderPage.grid_columnconfigure(6, weight=1)
+        orderPage.grid_columnconfigure(7, weight=1)
+        orderPage.grid_columnconfigure(8, weight=1)
 
-    def createRows(self, bestellungPage):
-        bestellungPage.grid_rowconfigure(0, weight=1)
-        bestellungPage.grid_rowconfigure(1, weight=1)
-        bestellungPage.grid_rowconfigure(2, weight=1)
-        bestellungPage.grid_rowconfigure(3, weight=1)
-        bestellungPage.grid_rowconfigure(4, weight=1)
-        bestellungPage.grid_rowconfigure(5, weight=1)
-        bestellungPage.grid_rowconfigure(6, weight=1)
-        bestellungPage.grid_rowconfigure(7, weight=1)
-        bestellungPage.grid_rowconfigure(8, weight=1)
-        bestellungPage.grid_rowconfigure(9, weight=1)
+    def createRows(self, orderPage):
+        orderPage.grid_rowconfigure(0, weight=1)
+        orderPage.grid_rowconfigure(1, weight=1)
+        orderPage.grid_rowconfigure(2, weight=1)
+        orderPage.grid_rowconfigure(3, weight=1)
+        orderPage.grid_rowconfigure(4, weight=1)
+        orderPage.grid_rowconfigure(5, weight=1)
+        orderPage.grid_rowconfigure(6, weight=1)
+        orderPage.grid_rowconfigure(7, weight=1)
+        orderPage.grid_rowconfigure(8, weight=1)
+        orderPage.grid_rowconfigure(9, weight=1)
 
     def loadImages(self):
         logo_pil = Image.open("img/logo.png")
@@ -100,9 +100,9 @@ class BestellungPage():
         off_pil = off_pil.resize((50, 25), Image.Resampling.LANCZOS)
         self._off_img = ImageTk.PhotoImage(off_pil)
 
-    def createPrioritySwitch(self, bestellungPage):
+    def createPrioritySwitch(self, orderPage):
         #create Frame 
-        form_frame = Frame(bestellungPage)
+        form_frame = Frame(orderPage)
         form_frame.grid(row=7, column=2, columnspan=2)
         
         Label(form_frame, text="Priorisieren:", font=self._style1).grid(row=0, column=0)
@@ -117,9 +117,9 @@ class BestellungPage():
             self._prioritySwitch.config(image = self._on_img)
             self._priority = True
 
-    def createStandTable(self, bestellungPage):
+    def createStandTable(self, orderPage):
         #frames
-        form_frame = Frame(bestellungPage)
+        form_frame = Frame(orderPage)
         form_frame.grid(row=2, column=0, columnspan=3)
 
         # Title label
@@ -143,7 +143,7 @@ class BestellungPage():
             self.table.column(col, anchor="center", width=180)
 
         # Style rows
-        style = ttk.Style(bestellungPage)
+        style = ttk.Style(orderPage)
         style.theme_use("default")
 
         # Header style
@@ -162,9 +162,9 @@ class BestellungPage():
 
         self.table.bind("<<TreeviewSelect>>", self.onSelectStand)
 
-    def createBestellkarteTable(self, bestellungPage):
+    def createBestellkarteTable(self, orderPage):
         #frames
-        form_frame = Frame(bestellungPage)
+        form_frame = Frame(orderPage)
         form_frame.grid(row=3, column=1, columnspan=7)
 
         # Title label
@@ -188,7 +188,7 @@ class BestellungPage():
             self.table2.column(col, anchor="center", width=180)
 
         # Style rows
-        style = ttk.Style(bestellungPage)
+        style = ttk.Style(orderPage)
         style.theme_use("default")
 
         # Header style
@@ -207,9 +207,9 @@ class BestellungPage():
 
         self.table2.bind("<Double-1>", self.onAddOrderPosition)
 
-    def createWarenkorbTable(self, bestellungPage):
+    def createWarenkorbTable(self, orderPage):
         #frames
-        form_frame = Frame(bestellungPage)
+        form_frame = Frame(orderPage)
         form_frame.grid(row=4, column=1, columnspan=7)
 
         # Title label
@@ -233,7 +233,7 @@ class BestellungPage():
             self.table3.column(col, anchor="center", width=180)
 
         # Style rows
-        style = ttk.Style(bestellungPage)
+        style = ttk.Style(orderPage)
         style.theme_use("default")
 
         # Header style

@@ -10,7 +10,7 @@ class BesucherPage():
         self._besucherPage = ""
         self._ticket = "1234567"
 
-        self._bestellungPage = Frame(root)
+        self._orderPage = Frame(root)
 
     def getPage(self):
         if not self._besucherPage:
@@ -41,7 +41,7 @@ class BesucherPage():
 
             #buttons
             Button(besucherPage, text="€▷", command=lambda: self.addCredit(), font=self._style1, background="#75E6DA").grid(row=0, column=7)
-            Button(besucherPage, text="Bestellung aufnehmen", command=lambda: self.onGoToBestellungPage(), font=self._style1, background="#75E6DA").grid(row=2, column=1)
+            Button(besucherPage, text="Bestellung aufnehmen", command=lambda: self.onGoToOrderPage(), font=self._style1, background="#75E6DA").grid(row=2, column=1)
             Button(form_frame, text="Bestellung freischalten", command=lambda: self.unlockTicketForFriend(), font=self._style1, background="#75E6DA").grid(row=2, column=1)
 
             #input fields
@@ -184,15 +184,15 @@ class BesucherPage():
         values = self.table.item(selected, "values")
         print("Selected row:", values)
 
-    def onGoToBestellungPage(self):
-        self._bestellungPageManagement.setTicket(self._ticket)
-        self._bestellungPageManagement.getPage().tkraise()
+    def onGoToOrderPage(self):
+        self._orderPageManagement.setTicket(self._ticket)
+        self._orderPageManagement.getPage().tkraise()
 
     def disable_selection(self, event=None):
         event.widget.selection_remove(event.widget.selection())
 
-    def setBestellungPageManagement(self, bestellungPageManagement):
-        self._bestellungPageManagement = bestellungPageManagement
+    def setOrderPageManagement(self, orderPageManagement):
+        self._orderPageManagement = orderPageManagement
 
     def addCredit(self):
         self._database.addCreditForTicket(self._ticket, 10)
