@@ -8,7 +8,7 @@ class OrderPage():
         self._root = root
         self._database = database
         self._style_1 = style_1
-        self._order_page = ""
+        self._order_page = None
         self._ticket = "1234567"
         self._selected_stand = ""
         self._current_time = 0

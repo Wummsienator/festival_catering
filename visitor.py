@@ -7,10 +7,10 @@ class VisitorPage():
         self._root = root
         self._database = database
         self._style_1 = style_1
-        self._visitor_page = ""
+        self._visitor_page = None
         self._ticket = "1234567"
 
-        self._order_page = Frame(root)
+        self._order_page = None
 
     def getPage(self):
         if not self._visitor_page:

@@ -4,6 +4,7 @@ from database import Database
 from login import LoginPage
 from visitor import VisitorPage
 from order import OrderPage
+from seller import SellerPage
 
 root = Tk()
 database = Database()
@@ -29,6 +30,10 @@ visitor_page.grid(row=0, column=1, sticky="nsew")
 order_page_management = OrderPage(root, database, style_1)
 order_page = order_page_management.getPage()
 order_page.grid(row=0, column=1, sticky="nsew")
+
+seller_page_management = SellerPage(root, database, style_1)
+seller_page = seller_page_management.getPage()
+seller_page.grid(row=0, column=1, sticky="nsew")
 
 login_page_management.setVisitorPageManagement(visitor_page_management)
 visitor_page_management.setOrderPageManagement(order_page_management)

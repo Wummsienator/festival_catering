@@ -6,7 +6,7 @@ class LoginPage():
         self._root = root
         self._database = database
         self._style_1 = style_1
-        self._login_page = ""
+        self._login_page = None
 
         #logo
         logo_pil = Image.open("img/logo.png")
