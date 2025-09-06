@@ -26,13 +26,13 @@ visitor_page_management = VisitorPage(root, database, style_1)
 visitor_page = visitor_page_management.getPage()
 visitor_page.grid(row=0, column=1, sticky="nsew")
 
-orderPageManagement = OrderPage(root, database, style_1)
-orderPage = orderPageManagement.getPage()
+order_page_management = OrderPage(root, database, style_1)
+orderPage = order_page_management.getPage()
 orderPage.grid(row=0, column=1, sticky="nsew")
 
 login_page_management.setVisitorPageManagement(visitor_page_management)
-visitor_page_management.setOrderPageManagement(orderPageManagement)
-orderPageManagement.setVisitorPageManagement(visitor_page_management)
+visitor_page_management.setOrderPageManagement(order_page_management)
+order_page_management.setVisitorPageManagement(visitor_page_management)
 
 #settings
 login_page.tkraise()

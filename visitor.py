@@ -185,14 +185,14 @@ class VisitorPage():
         print("Selected row:", values)
 
     def onGoToOrderPage(self):
-        self._orderPageManagement.setTicket(self._ticket)
-        self._orderPageManagement.getPage().tkraise()
+        self._order_page_management.setTicket(self._ticket)
+        self._order_page_management.getPage().tkraise()
 
     def disable_selection(self, event=None):
         event.widget.selection_remove(event.widget.selection())
 
-    def setOrderPageManagement(self, orderPageManagement):
-        self._orderPageManagement = orderPageManagement
+    def setOrderPageManagement(self, order_page_management):
+        self._order_page_management = order_page_management
 
     def addCredit(self):
         self._database.addCreditForTicket(self._ticket, 10)
