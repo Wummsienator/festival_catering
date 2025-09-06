@@ -11,7 +11,7 @@ class Database:
             data = json.load(f)
         return data
     
-    def writeData(self, data):
+    def _writeData(self, data):
         json_str = json.dumps(data, indent=4)
         with open("data.json", "w") as f:
             f.write(json_str)
@@ -29,7 +29,7 @@ class Database:
         for o in data["Orders"]:
             if data["Orders"][o]["time"] > 0:
                 data["Orders"][o]["time"] = data["Orders"][o]["time"] - 1
-        self.writeData(data)
+        self._writeData(data)
 
     def getOrdersForTicket(self, ticket):
         orders = []
@@ -117,7 +117,7 @@ class Database:
         #update credit for ticket
         data["Tickets"][ticket]["credit"] = data["Tickets"][ticket]["credit"] - price
 
-        self.writeData(data)
+        self._writeData(data)
 
     def getCreditForTicket(self, ticket):
         return self._readData()["Tickets"][ticket]["credit"]
@@ -160,7 +160,7 @@ class Database:
         for t in data["Tickets"]:
             if t == ticket:
                 data["Tickets"][t]["credit"] = data["Tickets"][t]["credit"] + amount
-                self.writeData(data)
+                self._writeData(data)
                 break
 
 
@@ -177,7 +177,7 @@ class Database:
                 data["Order2Ticket"][data["GlobalIDs"]["Order2Ticket"]] = {"order": order, "ticket": ticket}
                 #update id
                 data["GlobalIDs"]["Order2Ticket"] = data["GlobalIDs"]["Order2Ticket"] + 1
-                self.writeData(data)
+                self._writeData(data)
                 break            
 
     def checkOrder2TicketExists(self, order, ticket):
@@ -235,3 +235,18 @@ class Database:
             products.append(product_data)
 
         return products
+
+    def addProductForStand(self, stand, product, quantity):
+        data = self._readData()
+        #check if stand already has the product
+        found = False
+        for p in data["Stands"][stand]["products"]:   
+            if p["product"] == product:
+                p["quantity"] = p["quantity"] + quantity
+                found = True
+                break
+        #else add new product    
+        if not found:
+            data["Stands"][stand]["products"].append({"product": product, "quantity": quantity})
+        
+        self._writeData(data)

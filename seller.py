@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 from PIL import Image, ImageTk
+from elements import PlaceholderEntry
 
 class SellerPage():
     def __init__(self, root, database, style_1):
@@ -186,9 +187,44 @@ class SellerPage():
         #create combobox values
         display_values = [f"{v} ({k})" for k, v in options.items()]
 
+        #style
+        style = ttk.Style(seller_page)
+        style.theme_use("default")
+
         #create combobox
-        self._product_combo = ttk.Combobox(seller_page, values=display_values, state="readonly") 
+        self._product_combo = ttk.Combobox(seller_page, values=display_values, state="readonly", font=self._style_1) 
         self._product_combo.grid(row=3, column=1)
+        self._product_combo.set("Produkt wählen")
+
+        #quantity input
+        validate_int = (seller_page.register(self.validate_int), "%P")  
+        self._quantity_val = StringVar()
+        quantity_ipt = PlaceholderEntry(seller_page, "Menge", "grey", font=self._style_1, bg="#D4F1F4", textvariable=self._quantity_val, validate="key", validatecommand=validate_int)
+        quantity_ipt.grid(row=3, column=2)
+
+        #button
+        Button(seller_page, text="Bestand hinzufügen", command=lambda: self.onAddProduct(), font=self._style_1, background="#75E6DA").grid(row=3, column=6)
+
+    def validate_int(self, new_value):
+        if new_value == "" or new_value == "Menge":   # allow empty string and placeholder value
+            return True
+        return new_value.isdigit()
+
+    def onAddProduct(self, event=None):
+        display = self._product_combo.get()
+        quantity = self._quantity_val.get()
+        if not display or not quantity or quantity == "Menge":
+            return
+
+        key = display.split("(", 1)[1].strip(")")   #extract key from display string
+
+        #update data
+        self._database.addProductForStand(self._stand, key, int(quantity))
+        self.fillProductTableRows(self._stand)
+
+        #clear fields
+        self._product_combo.set("Produkt wählen")
+        self._quantity_val.set("")
 
     def open_popup(self, event=None):
         #get selection
