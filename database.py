@@ -206,6 +206,7 @@ class Database:
     def getPositionsForOrder(self, order):
         data = self.readData()
         positions = []
+        special_requests = ""
         #check if order exists
         for o in data["Orders"]:
             if o == order:
@@ -215,6 +216,7 @@ class Database:
                     position_data["name"] = data["Products"][position_data["product"]]["name"]
 
                     positions.append(position_data)
+                special_requests = data["Orders"][o]["specialRequests"]
                 break
 
-        return positions
+        return positions, special_requests

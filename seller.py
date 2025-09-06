@@ -200,7 +200,7 @@ class SellerPage():
 
         # Define table columns
         columns = ("Name", "Menge")
-        table = ttk.Treeview(popup, columns=columns, show="headings", selectmode="browse", height=3)
+        table = ttk.Treeview(popup, columns=columns, show="headings", selectmode="browse", height=4)
 
         # Define headings
         for col in columns:
@@ -225,3 +225,16 @@ class SellerPage():
         self._table_2.configure(yscrollcommand=vsb.set)
         vsb.grid(row=1, column=1, sticky="ns")
 
+        #fill rows
+        data = []
+        positions, special_requests = self._database.getPositionsForOrder(selected_order[0])
+
+        for position in positions:
+            data.append( (position["name"], position["quantity"]) )
+
+        for i, row in enumerate(data):
+            table.insert("", END, values=row, tags=("row",))
+
+        #special requests labe
+        Label(popup, text="Sonderwünsche:", font=self._style_1).grid(row=2, column=0)
+        Label(popup, text=special_requests, font=self._style_1).grid(row=3, column=0)
