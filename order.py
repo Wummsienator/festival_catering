@@ -53,9 +53,9 @@ class OrderPage():
 
             #input fields
             self._stand_val = StringVar()
-            self._standIpt = PlaceholderEntry(form_frame, "Suche Stand", "grey", font=self._style_1, bg="#D4F1F4", textvariable=self._stand_val)
-            self._standIpt.grid(row=0, column=0)
-            self._standIpt.bind("<Return>", self.onSearchStand)
+            self._stand_ipt = PlaceholderEntry(form_frame, "Suche Stand", "grey", font=self._style_1, bg="#D4F1F4", textvariable=self._stand_val)
+            self._stand_ipt.grid(row=0, column=0)
+            self._stand_ipt.bind("<Return>", self.onSearchStand)
 
             self._special_requests_val = StringVar()
             self._special_requests_ipt = PlaceholderEntry(order_page, "Sonderwünsche", "grey", font=self._style_1, bg="#D4F1F4", textvariable=self._special_requests_val, width=50)
@@ -106,15 +106,15 @@ class OrderPage():
         form_frame.grid(row=7, column=2, columnspan=2)
         
         Label(form_frame, text="Priorisieren:", font=self._style_1).grid(row=0, column=0)
-        self._prioritySwitch = Button(form_frame, image = self._off_img, bd = 0,command = self.switchPriority)
-        self._prioritySwitch.grid(row=0, column=1)
+        self._priority_switch = Button(form_frame, image = self._off_img, bd = 0,command = self.switchPriority)
+        self._priority_switch.grid(row=0, column=1)
 
     def switchPriority(self):
         if self._priority:
-            self._prioritySwitch.config(image = self._off_img)
+            self._priority_switch.config(image = self._off_img)
             self._priority = False
         else:
-            self._prioritySwitch.config(image = self._on_img)
+            self._priority_switch.config(image = self._on_img)
             self._priority = True
 
     def createStandTable(self, order_page):
@@ -180,12 +180,12 @@ class OrderPage():
 
         # Define table columns
         columns = ("Name", "Wartezeit", "Preis", "Lagerbestand")
-        self.table2 = ttk.Treeview(form_frame, columns=columns, show="headings", selectmode="browse", height=4)
+        self.table_2 = ttk.Treeview(form_frame, columns=columns, show="headings", selectmode="browse", height=4)
 
         # Define headings
         for col in columns:
-            self.table2.heading(col, text=col)
-            self.table2.column(col, anchor="center", width=180)
+            self.table_2.heading(col, text=col)
+            self.table_2.column(col, anchor="center", width=180)
 
         # Style rows
         style = ttk.Style(order_page)
@@ -196,16 +196,16 @@ class OrderPage():
 
         # Row styles
         style.configure("Treeview", font=("Arial", 11), rowheight=25)
-        self.table2.tag_configure("row", background="#D4F1F4")   # baby blue
+        self.table_2.tag_configure("row", background="#D4F1F4")   # baby blue
 
-        self.table2.grid(row=1, column=0)
+        self.table_2.grid(row=1, column=0)
 
         # Vertical scrollbar
-        vsb = ttk.Scrollbar(form_frame, orient="vertical", command=self.table2.yview)
-        self.table2.configure(yscrollcommand=vsb.set)
+        vsb = ttk.Scrollbar(form_frame, orient="vertical", command=self.table_2.yview)
+        self.table_2.configure(yscrollcommand=vsb.set)
         vsb.grid(row=1, column=1, sticky="ns")
 
-        self.table2.bind("<Double-1>", self.onAddOrderPosition)
+        self.table_2.bind("<Double-1>", self.onAddOrderPosition)
 
     def createWarenkorbTable(self, order_page):
         #frames
@@ -225,12 +225,12 @@ class OrderPage():
 
         # Define table columns
         columns = ("Name", "Wartezeit", "Preis", "Menge")
-        self.table3 = ttk.Treeview(form_frame, columns=columns, show="headings", selectmode="browse", height=4)
+        self.table_3 = ttk.Treeview(form_frame, columns=columns, show="headings", selectmode="browse", height=4)
 
         # Define headings
         for col in columns:
-            self.table3.heading(col, text=col)
-            self.table3.column(col, anchor="center", width=180)
+            self.table_3.heading(col, text=col)
+            self.table_3.column(col, anchor="center", width=180)
 
         # Style rows
         style = ttk.Style(order_page)
@@ -241,16 +241,16 @@ class OrderPage():
 
         # Row styles
         style.configure("Treeview", font=("Arial", 11), rowheight=25)
-        self.table3.tag_configure("row", background="#D4F1F4")   # baby blue
+        self.table_3.tag_configure("row", background="#D4F1F4")   # baby blue
 
-        self.table3.grid(row=1, column=0)
+        self.table_3.grid(row=1, column=0)
 
         # Vertical scrollbar
-        vsb = ttk.Scrollbar(form_frame, orient="vertical", command=self.table3.yview)
-        self.table3.configure(yscrollcommand=vsb.set)
+        vsb = ttk.Scrollbar(form_frame, orient="vertical", command=self.table_3.yview)
+        self.table_3.configure(yscrollcommand=vsb.set)
         vsb.grid(row=1, column=1, sticky="ns")
 
-        self.table3.bind("<Double-1>", self.onRemoveOrderPosition)
+        self.table_3.bind("<Double-1>", self.onRemoveOrderPosition)
 
     def setTicket(self, ticket):
         #check vip
@@ -259,9 +259,9 @@ class OrderPage():
         ticketTxt = "Ticket: " + ticket
         if isVip:
             ticketTxt = ticketTxt + " ☆"
-            self._prioritySwitch.config(state="active") 
+            self._priority_switch.config(state="active") 
         else:
-            self._prioritySwitch.config(state="disabled") 
+            self._priority_switch.config(state="disabled") 
         self._ticket_label.config(text=ticketTxt) 
         creditTxt = "Guthaben: " + str(self._database.getCreditForTicket(ticket)) + "€"
         self._credit_label.config(text=creditTxt) 
@@ -289,7 +289,7 @@ class OrderPage():
         selected_stand = self.table.item(selected, "values")[0]
 
         #clear existing rows
-        self.table2.delete(*self.table2.get_children())
+        self.table_2.delete(*self.table_2.get_children())
         # Insert sample data
         data = []
         ids = []
@@ -300,7 +300,7 @@ class OrderPage():
             ids.append(product["product"])
 
         for i, row in enumerate(data):
-            self.table2.insert("", END, iid=ids[i], values=row, tags=("row",))
+            self.table_2.insert("", END, iid=ids[i], values=row, tags=("row",))
 
         self._selected_stand = selected_stand
         self.clearWarenkorb()
@@ -310,13 +310,13 @@ class OrderPage():
         self._current_price = 0
 
         #clear existing rows
-        self.table3.delete(*self.table3.get_children())
+        self.table_3.delete(*self.table_3.get_children())
 
     def onAddOrderPosition(self, event=None):
-        selected = self.table2.focus()
+        selected = self.table_2.focus()
         if not selected:
             return
-        selectedProduct = self.table2.item(selected, "values")
+        selectedProduct = self.table_2.item(selected, "values")
 
         #check available quantity
         if selectedProduct[3] == "0":
@@ -324,15 +324,15 @@ class OrderPage():
         
         #update available cquantity
         updatedRow = (selectedProduct[0], selectedProduct[1], selectedProduct[2], int(selectedProduct[3]) - 1)
-        self.table2.item(selected, values=updatedRow)
+        self.table_2.item(selected, values=updatedRow)
 
         #update warenkorb
         found = False
-        itemIDs = self.table3.get_children()
+        itemIDs = self.table_3.get_children()
         for id in itemIDs:
             if id == selected:
                 found = True
-                item = self.table3.item(id, "values")
+                item = self.table_3.item(id, "values")
                 currentQuantity = int(item[3])
                 #update time
                 current_time = int(item[1])
@@ -345,7 +345,7 @@ class OrderPage():
 
                 #update table
                 newItem = (item[0], newTime, newPrice, newQuantity)
-                self.table3.item(selected, values=newItem)
+                self.table_3.item(selected, values=newItem)
 
                 #update time/price
                 self._current_time += current_time // currentQuantity
@@ -357,7 +357,7 @@ class OrderPage():
             for product in products:
                 if selected == product["product"]:
                     newRow = (product["name"], product["time"], product["price"], 1)
-                    self.table3.insert("", END, iid=selected, values=newRow, tags=("row",))
+                    self.table_3.insert("", END, iid=selected, values=newRow, tags=("row",))
 
                     #update time/price
                     self._current_time += product["time"]
@@ -372,14 +372,14 @@ class OrderPage():
         self._price_label.config(text=priceTxt) 
 
     def onRemoveOrderPosition(self, event=None):
-        selected = self.table3.focus()
+        selected = self.table_3.focus()
         if not selected:
             return
-        selectedProduct = self.table3.item(selected, "values")
+        selectedProduct = self.table_3.item(selected, "values")
 
         #update warenkorb
         if selectedProduct[3] == "1":
-            self.table3.delete(selected)
+            self.table_3.delete(selected)
 
             #update time/price
             currentQuantity = int(selectedProduct[3])
@@ -401,16 +401,16 @@ class OrderPage():
 
             #update table
             newItem = (selectedProduct[0], newTime, newPrice, newQuantity)
-            self.table3.item(selected, values=newItem)
+            self.table_3.item(selected, values=newItem)
 
             #update time/price
             self._current_time -= current_time // currentQuantity
             self._current_price -= current_price // currentQuantity
 
         #update available quantity
-        bestellkarteItem = self.table2.item(selected, "values")
+        bestellkarteItem = self.table_2.item(selected, "values")
         updatedRow = (bestellkarteItem[0], bestellkarteItem[1], bestellkarteItem[2], int(bestellkarteItem[3]) + 1)
-        self.table2.item(selected, values=updatedRow)
+        self.table_2.item(selected, values=updatedRow)
 
         self.updateTimePriceLabels()
 
@@ -419,8 +419,8 @@ class OrderPage():
 
         #clear tables
         self.table.delete(*self.table.get_children())
-        self.table2.delete(*self.table2.get_children())
-        self.table3.delete(*self.table3.get_children())
+        self.table_2.delete(*self.table_2.get_children())
+        self.table_3.delete(*self.table_3.get_children())
 
         #clear input fields
         self._stand_val.set("")
@@ -440,7 +440,7 @@ class OrderPage():
             return
 
         orderPositions = []
-        warenkorbItems = self.table3.get_children()
+        warenkorbItems = self.table_3.get_children()
 
         #special requests
         special_requests = ""
@@ -449,7 +449,7 @@ class OrderPage():
 
         if warenkorbItems:
             for itemID in warenkorbItems:
-                item = self.table3.item(itemID, "values")
+                item = self.table_3.item(itemID, "values")
                 orderPositions.append({"product": itemID, "quantity": int(item[3])})
 
             self._database.placeOrder(self._selected_stand, self._ticket, orderPositions, self._current_price, special_requests)
