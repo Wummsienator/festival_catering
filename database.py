@@ -69,7 +69,7 @@ class Database:
                 for s in data["Status"]:
                     if s == order["status"]:
                         order["status_desc"] = data["Status"][s]
-        orders.append(order)
+                orders.append(order)
         return orders
     
     def placeOrder(self, stand, ticket, position_list, price, special_requests):

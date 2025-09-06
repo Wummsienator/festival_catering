@@ -40,7 +40,8 @@ visitor_page_management.setOrderPageManagement(order_page_management)
 order_page_management.setVisitorPageManagement(visitor_page_management)
 
 #settings
-login_page.tkraise()
+# login_page.tkraise()
+seller_page.tkraise()
 root.geometry("750x750")
 root.title("Festival Catering")
 root.resizable(False, False)
