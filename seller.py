@@ -145,6 +145,11 @@ class SellerPage():
         self._table_2.configure(yscrollcommand=vsb.set)
         vsb.grid(row=1, column=1, sticky="ns")
 
+        self._table_2.bind("<<TreeviewSelect>>", self.disable_selection)
+
+    def disable_selection(self, event=None):
+        event.widget.selection_remove(event.widget.selection())
+
     def fillOrderTableRows(self, stand):
         #clear existing rows
         self._table.delete(*self._table.get_children())
