@@ -6,7 +6,7 @@ class LoginPage():
         self._root = root
         self._database = database
         self._style1 = style1
-        self._loginPage = ""
+        self._login_page = ""
 
         #logo
         logo_pil = Image.open("img/logo.png")
@@ -15,30 +15,30 @@ class LoginPage():
         self._logo_img = ImageTk.PhotoImage(logo_pil)
 
     def getPage(self):
-        if not self._loginPage:
+        if not self._login_page:
             #page
-            loginPage = Frame(self._root)
+            login_page = Frame(self._root)
 
             #define columns
-            loginPage.grid_columnconfigure(0, weight=1)
-            loginPage.grid_columnconfigure(1, weight=1)
-            loginPage.grid_columnconfigure(2, weight=1)
-            loginPage.grid_columnconfigure(3, weight=1)
-            loginPage.grid_columnconfigure(4, weight=1)
+            login_page.grid_columnconfigure(0, weight=1)
+            login_page.grid_columnconfigure(1, weight=1)
+            login_page.grid_columnconfigure(2, weight=1)
+            login_page.grid_columnconfigure(3, weight=1)
+            login_page.grid_columnconfigure(4, weight=1)
 
             #define rows
-            loginPage.grid_rowconfigure(0, weight=1)
-            loginPage.grid_rowconfigure(1, weight=1)
-            loginPage.grid_rowconfigure(2, weight=1)
-            loginPage.grid_rowconfigure(3, weight=1)
-            loginPage.grid_rowconfigure(4, weight=1)
+            login_page.grid_rowconfigure(0, weight=1)
+            login_page.grid_rowconfigure(1, weight=1)
+            login_page.grid_rowconfigure(2, weight=1)
+            login_page.grid_rowconfigure(3, weight=1)
+            login_page.grid_rowconfigure(4, weight=1)
 
             #frames
-            form_frame = Frame(loginPage)
+            form_frame = Frame(login_page)
             form_frame.grid(row=2, column=2, pady=20)
 
             #logo
-            Label(loginPage, image=self._logo_img, font=self._style1).grid(row=1, column=2)
+            Label(login_page, image=self._logo_img, font=self._style1).grid(row=1, column=2)
 
             #labels
             Label(form_frame, text="Ticket:", font=self._style1).grid(row=0, column=0)
@@ -53,8 +53,8 @@ class LoginPage():
             #button
             Button(form_frame, text="Login", command=lambda: self.onLogin(), font=self._style1, background="#75E6DA").grid(row=2, column=0, columnspan=2)
 
-            self._loginPage = loginPage
-        return self._loginPage
+            self._login_page = login_page
+        return self._login_page
 
     def onLogin(self):
         ticket = self.ticket_val.get()

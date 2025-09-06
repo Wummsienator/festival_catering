@@ -18,9 +18,9 @@ root.grid_columnconfigure(2, weight=1)
 root.grid_rowconfigure(0, weight=1)
 
 #pages
-loginPageManagement = LoginPage(root, database, style1)
-loginPage = loginPageManagement.getPage()
-loginPage.grid(row=0, column=1, sticky="nsew")
+login_page_management = LoginPage(root, database, style1)
+login_page = login_page_management.getPage()
+login_page.grid(row=0, column=1, sticky="nsew")
 
 visitorPageManagement = VisitorPage(root, database, style1)
 visitorPage = visitorPageManagement.getPage()
@@ -30,12 +30,12 @@ orderPageManagement = OrderPage(root, database, style1)
 orderPage = orderPageManagement.getPage()
 orderPage.grid(row=0, column=1, sticky="nsew")
 
-loginPageManagement.setVisitorPageManagement(visitorPageManagement)
+login_page_management.setVisitorPageManagement(visitorPageManagement)
 visitorPageManagement.setOrderPageManagement(orderPageManagement)
 orderPageManagement.setVisitorPageManagement(visitorPageManagement)
 
 #settings
-loginPage.tkraise()
+login_page.tkraise()
 root.geometry("750x750")
 root.title("Festival Catering")
 root.resizable(False, False)
