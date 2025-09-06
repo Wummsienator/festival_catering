@@ -431,8 +431,8 @@ class OrderPage():
         self._currentPrice = 0
         self._priority = False
 
-        self._visitorPageManagement.fillOrderTableRows(self._ticket)
-        self._visitorPageManagement.getPage().tkraise()
+        self._visitor_page_management.fillOrderTableRows(self._ticket)
+        self._visitor_page_management.getPage().tkraise()
 
     def onOrder(self):
         #not enough credit
@@ -455,8 +455,8 @@ class OrderPage():
             self._database.placeOrder(self._selectedStand, self._ticket, orderPositions, self._currentPrice, special_requests)
         self.onCancel()
 
-    def setVisitorPageManagement(self, visitorPageManagement):
-        self._visitorPageManagement = visitorPageManagement
+    def setVisitorPageManagement(self, visitor_page_management):
+        self._visitor_page_management = visitor_page_management
 
     def addCredit(self):
         self._database.addCreditForTicket(self._ticket, 10)

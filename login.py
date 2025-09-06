@@ -63,8 +63,8 @@ class LoginPage():
         if self._database.checkLogin(ticket, password):
             self.ticket_val.set("")
             self.password_val.set("")
-            self._visitorPageManagement.fillOrderTableRows(ticket)
-            self._visitorPageManagement.getPage().tkraise()
+            self._visitor_page_management.fillOrderTableRows(ticket)
+            self._visitor_page_management.getPage().tkraise()
 
-    def setVisitorPageManagement(self, visitorPageManagement):
-        self._visitorPageManagement = visitorPageManagement
+    def setVisitorPageManagement(self, visitor_page_management):
+        self._visitor_page_management = visitor_page_management
