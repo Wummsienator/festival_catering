@@ -10,9 +10,9 @@ class OrderPage():
         self._style_1 = style_1
         self._order_page = ""
         self._ticket = "1234567"
-        self._selectedStand = ""
-        self._currentTime = 0
-        self._currentPrice = 0
+        self._selected_stand = ""
+        self._current_time = 0
+        self._current_price = 0
         self._priority = False
 
     def getPage(self):
@@ -33,15 +33,15 @@ class OrderPage():
             self.createWarenkorbTable(order_page)
 
             #labels
-            self._ticketLabel = Label(order_page, text="Ticket: 1234567", font=self._style_1)
-            self._ticketLabel.grid(row=0, column=1)
-            self._creditLabel = Label(order_page, text="Guthaben: 222€", font=self._style_1)
-            self._creditLabel.grid(row=0, column=6)
+            self._ticket_label = Label(order_page, text="Ticket: 1234567", font=self._style_1)
+            self._ticket_label.grid(row=0, column=1)
+            self._credit_label = Label(order_page, text="Guthaben: 222€", font=self._style_1)
+            self._credit_label.grid(row=0, column=6)
 
-            self._timeLabel = Label(order_page, text="Wartezeit: 0", font=self._style_1)
-            self._timeLabel.grid(row=5, column=1)
-            self._priceLabel = Label(order_page, text="Gesamtpreis: 0€", font=self._style_1)
-            self._priceLabel.grid(row=5, column=6)
+            self._time_label = Label(order_page, text="Wartezeit: 0", font=self._style_1)
+            self._time_label.grid(row=5, column=1)
+            self._price_label = Label(order_page, text="Gesamtpreis: 0€", font=self._style_1)
+            self._price_label.grid(row=5, column=6)
 
             Label(order_page, image=self._logo_img, font=self._style_1).grid(row=9, column=7)
             Label(form_frame, text="⌕", font=self._style_1).grid(row=0, column=1)
@@ -262,9 +262,9 @@ class OrderPage():
             self._prioritySwitch.config(state="active") 
         else:
             self._prioritySwitch.config(state="disabled") 
-        self._ticketLabel.config(text=ticketTxt) 
+        self._ticket_label.config(text=ticketTxt) 
         creditTxt = "Guthaben: " + str(self._database.getCreditForTicket(ticket)) + "€"
-        self._creditLabel.config(text=creditTxt) 
+        self._credit_label.config(text=creditTxt) 
         self._ticket = ticket
 
     def onSearchStand(self, event=None):
@@ -286,14 +286,14 @@ class OrderPage():
         selected = self.table.focus()
         if not selected:
             return
-        selectedStand = self.table.item(selected, "values")[0]
+        selected_stand = self.table.item(selected, "values")[0]
 
         #clear existing rows
         self.table2.delete(*self.table2.get_children())
         # Insert sample data
         data = []
         ids = []
-        products = self._database.getProductsForStand(selectedStand)
+        products = self._database.getProductsForStand(selected_stand)
 
         for product in products:
             data.append( (product["name"], product["time"], product["price"], product["quantity"]) )
@@ -302,12 +302,12 @@ class OrderPage():
         for i, row in enumerate(data):
             self.table2.insert("", END, iid=ids[i], values=row, tags=("row",))
 
-        self._selectedStand = selectedStand
+        self._selected_stand = selected_stand
         self.clearWarenkorb()
 
     def clearWarenkorb(self):
-        self._currentTime = 0
-        self._currentPrice = 0
+        self._current_time = 0
+        self._current_price = 0
 
         #clear existing rows
         self.table3.delete(*self.table3.get_children())
@@ -335,11 +335,11 @@ class OrderPage():
                 item = self.table3.item(id, "values")
                 currentQuantity = int(item[3])
                 #update time
-                currentTime = int(item[1])
-                newTime = currentTime + ( currentTime // currentQuantity) 
+                current_time = int(item[1])
+                newTime = current_time + ( current_time // currentQuantity) 
                 #update price
-                currentPrice = int(item[2])
-                newPrice = currentPrice + ( currentPrice // currentQuantity)
+                current_price = int(item[2])
+                newPrice = current_price + ( current_price // currentQuantity)
                 #update quantity
                 newQuantity = currentQuantity + 1
 
@@ -348,28 +348,28 @@ class OrderPage():
                 self.table3.item(selected, values=newItem)
 
                 #update time/price
-                self._currentTime += currentTime // currentQuantity
-                self._currentPrice += currentPrice // currentQuantity
+                self._current_time += current_time // currentQuantity
+                self._current_price += current_price // currentQuantity
 
         
         if not found:
-            products = self._database.getProductsForStand(self._selectedStand)
+            products = self._database.getProductsForStand(self._selected_stand)
             for product in products:
                 if selected == product["product"]:
                     newRow = (product["name"], product["time"], product["price"], 1)
                     self.table3.insert("", END, iid=selected, values=newRow, tags=("row",))
 
                     #update time/price
-                    self._currentTime += product["time"]
-                    self._currentPrice += product["price"]
+                    self._current_time += product["time"]
+                    self._current_price += product["price"]
 
         self.updateTimePriceLabels()
 
     def updateTimePriceLabels(self):
-        timeTxt = "Wartezeit: " + str(self._currentTime)
-        self._timeLabel.config(text=timeTxt)
-        priceTxt = "Gesamtpreis: " + str(self._currentPrice) + "€"
-        self._priceLabel.config(text=priceTxt) 
+        timeTxt = "Wartezeit: " + str(self._current_time)
+        self._time_label.config(text=timeTxt)
+        priceTxt = "Gesamtpreis: " + str(self._current_price) + "€"
+        self._price_label.config(text=priceTxt) 
 
     def onRemoveOrderPosition(self, event=None):
         selected = self.table3.focus()
@@ -383,19 +383,19 @@ class OrderPage():
 
             #update time/price
             currentQuantity = int(selectedProduct[3])
-            currentTime = int(selectedProduct[1])
-            currentPrice = int(selectedProduct[2])
+            current_time = int(selectedProduct[1])
+            current_price = int(selectedProduct[2])
             
-            self._currentTime -= currentTime // currentQuantity
-            self._currentPrice -= currentPrice // currentQuantity
+            self._current_time -= current_time // currentQuantity
+            self._current_price -= current_price // currentQuantity
         else:
             currentQuantity = int(selectedProduct[3])
             #update time
-            currentTime = int(selectedProduct[1])
-            newTime = currentTime - ( currentTime // currentQuantity) 
+            current_time = int(selectedProduct[1])
+            newTime = current_time - ( current_time // currentQuantity) 
             #update price
-            currentPrice = int(selectedProduct[2])
-            newPrice = currentPrice - ( currentPrice // currentQuantity)
+            current_price = int(selectedProduct[2])
+            newPrice = current_price - ( current_price // currentQuantity)
             #update quantity
             newQuantity = currentQuantity - 1
 
@@ -404,8 +404,8 @@ class OrderPage():
             self.table3.item(selected, values=newItem)
 
             #update time/price
-            self._currentTime -= currentTime // currentQuantity
-            self._currentPrice -= currentPrice // currentQuantity
+            self._current_time -= current_time // currentQuantity
+            self._current_price -= current_price // currentQuantity
 
         #update available quantity
         bestellkarteItem = self.table2.item(selected, "values")
@@ -427,8 +427,8 @@ class OrderPage():
         self._special_requests_val.set("")
 
         #reset time/price
-        self._currentTime = 0
-        self._currentPrice = 0
+        self._current_time = 0
+        self._current_price = 0
         self._priority = False
 
         self._visitor_page_management.fillOrderTableRows(self._ticket)
@@ -436,7 +436,7 @@ class OrderPage():
 
     def onOrder(self):
         #not enough credit
-        if self._currentPrice > self._database.getCreditForTicket(self._ticket):
+        if self._current_price > self._database.getCreditForTicket(self._ticket):
             return
 
         orderPositions = []
@@ -452,7 +452,7 @@ class OrderPage():
                 item = self.table3.item(itemID, "values")
                 orderPositions.append({"product": itemID, "quantity": int(item[3])})
 
-            self._database.placeOrder(self._selectedStand, self._ticket, orderPositions, self._currentPrice, special_requests)
+            self._database.placeOrder(self._selected_stand, self._ticket, orderPositions, self._current_price, special_requests)
         self.onCancel()
 
     def setVisitorPageManagement(self, visitor_page_management):
@@ -462,5 +462,5 @@ class OrderPage():
         self._database.addCreditForTicket(self._ticket, 10)
 
         creditTxt = "Guthaben: " + str(self._database.getCreditForTicket(self._ticket)) + "€"
-        self._creditLabel.config(text=creditTxt) 
+        self._credit_label.config(text=creditTxt) 
 
