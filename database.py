@@ -51,6 +51,8 @@ class Database:
                     if s == order["status"]:
                         order["status_desc"] = data["Status"][s]
                 orders.append(order)
+                break
+
         return orders
     
     def getOrdersForStand(self, stand):
@@ -66,10 +68,11 @@ class Database:
                 #append stand number
                 order["stand"] = stand      
                 #get status description
-                for s in data["Status"]:
-                    if s == order["status"]:
-                        order["status_desc"] = data["Status"][s]
+                order["status_desc"] = data["Status"][order["status"]]
+
                 orders.append(order)
+                break
+
         return orders
     
     def placeOrder(self, stand, ticket, position_list, price, special_requests):
@@ -134,36 +137,40 @@ class Database:
         data = self.readData()
         products = []
 
-        #find stand
+        #check if stand exists
         for s in data["Stands"]:
             if s == stand:
                 stProd = data["Stands"][s]["products"]
                 #get product informations
                 for stP in stProd:
-                    for p in data["Products"]:
-                        if stP["product"] == p:
-                            productData = data["Products"][p]
-                            #append product id
-                            productData["product"] = p
-                            #append quantity
-                            productData["quantity"] = stP["quantity"]
-                            
-                            products.append(productData)
+                    productData = data["Products"][stP["product"]]
+                    #append product id
+                    productData["product"] = stP["product"]
+                    #append quantity
+                    productData["quantity"] = stP["quantity"]
+                    
+                    products.append(productData)
+                break
+
         return products
     
     def addCreditForTicket(self, ticket, amount):
         data = self.readData()
+        #check if ticket exists
         for t in data["Tickets"]:
             if t == ticket:
                 data["Tickets"][t]["credit"] = data["Tickets"][t]["credit"] + amount
+                self.writeData(data)
+                break
 
-        self.writeData(data)
 
     def connectOrderToTicket(self, order, ticket):
         if self.checkOrder2TicketExists(order, ticket):
             return
 
         data = self.readData()
+
+        #check if ticket exists
         for t in data["Tickets"]:
             if t == ticket:
                 #add order2ticket
@@ -171,6 +178,7 @@ class Database:
                 #update id
                 data["GlobalIDs"]["Order2Ticket"] = data["GlobalIDs"]["Order2Ticket"] + 1
                 self.writeData(data)
+                break            
 
     def checkOrder2TicketExists(self, order, ticket):
         data = self.readData()
@@ -181,6 +189,7 @@ class Database:
 
     def checkLogin(self, ticket, password):
         data = self.readData()
+        #check if ticket exists
         for t in data["Tickets"]:
             if t == ticket:
                 if data["Tickets"][t]["password"] == password:
@@ -190,6 +199,22 @@ class Database:
                         return True, None
                 else:
                     return False, None
+            else:
+                return False, None
 
 
+    def getPositionsForOrder(self, order):
+        data = self.readData()
+        positions = []
+        #check if order exists
+        for o in data["Orders"]:
+            if o == order:
+                for position in data["Orders"][o]["positions"]:
+                    position_data = data["Orders"][o]["positions"][position]
+                    #append product name                    
+                    position_data["name"] = data["Products"][position_data["product"]]["name"]
 
+                    positions.append(position_data)
+                break
+
+        return positions
