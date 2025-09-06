@@ -51,7 +51,6 @@ class Database:
                     if s == order["status"]:
                         order["status_desc"] = data["Status"][s]
                 orders.append(order)
-                break
 
         return orders
     
@@ -71,7 +70,6 @@ class Database:
                 order["status_desc"] = data["Status"][order["status"]]
 
                 orders.append(order)
-                break
 
         return orders
     
@@ -218,6 +216,7 @@ class Database:
                     positions.append(position_data)
                 special_requests = data["Orders"][o]["specialRequests"]
                 break
+            print(order)
 
         return positions, special_requests
 

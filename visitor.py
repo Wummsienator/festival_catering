@@ -257,7 +257,7 @@ class VisitorPage():
 
         #fill rows
         data = []
-        positions, special_requests = self._database.getPositionsForOrder(selected_order[0])
+        positions, special_requests = self._database.getPositionsForOrder(selected_order[3])
 
         for position in positions:
             data.append( (position["name"], position["quantity"]) )
