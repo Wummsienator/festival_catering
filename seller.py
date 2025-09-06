@@ -29,6 +29,9 @@ class SellerPage():
 
             Label(seller_page, image=self._logo_img, font=self._style_1).grid(row=6, column=7)
 
+            #buttons
+            Button(seller_page, text="Status weiterschalten", command=lambda: self.onChangeStatus(), font=self._style_1, background="#75E6DA").grid(row=2, column=1, columnspan=2)
+
             self._seller_page = seller_page
         return self._seller_page
     
@@ -105,7 +108,7 @@ class SellerPage():
     def createProductTable(self, seller_page):
         #frames
         form_frame = Frame(seller_page)
-        form_frame.grid(row=2, column=1, columnspan=7)
+        form_frame.grid(row=3, column=1, columnspan=7)
 
         #title label
         title = Label(
@@ -198,17 +201,17 @@ class SellerPage():
 
         #create combobox
         self._product_combo = ttk.Combobox(seller_page, values=display_values, state="readonly", font=self._style_1) 
-        self._product_combo.grid(row=3, column=1)
+        self._product_combo.grid(row=4, column=1)
         self._product_combo.set("Produkt wählen")
 
         #quantity input
         validate_int = (seller_page.register(self.validate_int), "%P")  
         self._quantity_val = StringVar()
         quantity_ipt = PlaceholderEntry(seller_page, "Menge", "grey", font=self._style_1, bg="#D4F1F4", textvariable=self._quantity_val, validate="key", validatecommand=validate_int)
-        quantity_ipt.grid(row=3, column=2)
+        quantity_ipt.grid(row=4, column=2)
 
         #button
-        Button(seller_page, text="Bestand hinzufügen", command=lambda: self.onAddProduct(), font=self._style_1, background="#75E6DA").grid(row=3, column=6)
+        Button(seller_page, text="Bestand hinzufügen", command=lambda: self.onAddProduct(), font=self._style_1, background="#75E6DA").grid(row=4, column=6)
 
     def validate_int(self, new_value):
         if new_value == "" or new_value == "Menge":   # allow empty string and placeholder value
@@ -294,3 +297,13 @@ class SellerPage():
         #special requests label
         Label(popup, text="Sonderwünsche:", font=self._style_1).grid(row=2, column=0)
         Label(popup, text=special_requests, font=self._style_1).grid(row=3, column=0)
+
+    def onChangeStatus(self, event=None):
+        selected = self._table.focus()
+        if not selected:
+            return
+        selected_order = self._table.item(selected, "values")
+
+        #update data
+        self._database.changeStatusForOrder(selected_order[0])
+        self.fillOrderTableRows(self._stand)

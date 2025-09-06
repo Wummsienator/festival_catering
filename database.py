@@ -250,3 +250,14 @@ class Database:
             data["Stands"][stand]["products"].append({"product": product, "quantity": quantity})
         
         self._writeData(data)
+
+    def changeStatusForOrder(self, order):
+        data = self._readData()
+        #check if order exists
+        for o in data["Orders"]:
+            if o == order:
+                current_status = int(data["Orders"][o]["status"])
+                #works as long as there is a linear order 
+                if current_status < 3:
+                    data["Orders"][o]["status"] = str(current_status + 1)
+        self._writeData(data)
