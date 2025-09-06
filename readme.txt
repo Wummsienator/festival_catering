@@ -23,3 +23,5 @@ Freigabe von Ticket an Freunde funktioniert, gibt aber keine Rückmeldung auf Er
 Kein Fehler für Bestellung wenn zu wenig Guthaben. Aber einfach nicht ausgeführt.
 
 Keine Skalierung.
+
+Button "Status weiterschalten" schiebt den Status der gewählten Bestellung weiter. Liese sich nich gut in der Tabellenzeile selbst anhängen, wie usprünglich geplant.
