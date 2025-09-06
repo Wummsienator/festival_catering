@@ -123,7 +123,7 @@ class VisitorPage():
         self._table.configure(yscrollcommand=vsb.set)
         vsb.grid(row=1, column=1, sticky="ns")
 
-        self._table.bind("<Double-1>", self.open_popup)
+        self._table.bind("<Double-1>", self.openPopup)
     
     def fillOrderTableRows(self, ticket):
         #clear existing rows
@@ -205,7 +205,7 @@ class VisitorPage():
 
         self._database.connectOrderToTicket(values[3], friend_ticket)
 
-    def open_popup(self, event=None):
+    def openPopup(self, event=None):
         #get selection
         selected = self._table.focus()
         if not selected:
