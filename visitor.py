@@ -7,69 +7,69 @@ class VisitorPage():
         self._root = root
         self._database = database
         self._style_1 = style_1
-        self._visitorPage = ""
+        self._visitor_page = ""
         self._ticket = "1234567"
 
         self._orderPage = Frame(root)
 
     def getPage(self):
-        if not self._visitorPage:
+        if not self._visitor_page:
             #page
-            visitorPage = Frame(self._root)
+            visitor_page = Frame(self._root)
 
-            self.createColumns(visitorPage)
-            self.createRows(visitorPage)
+            self.createColumns(visitor_page)
+            self.createRows(visitor_page)
             self.loadImages()
-            self.createOrderTable(visitorPage)
-            self.createNotificationTable(visitorPage)
+            self.createOrderTable(visitor_page)
+            self.createNotificationTable(visitor_page)
 
             #frames
-            form_frame = Frame(visitorPage)
+            form_frame = Frame(visitor_page)
             form_frame.grid(row=2, column=6, columnspan=2)
 
             #labels
-            self._ticketLabel = Label(visitorPage, text="Ticket: 1234567", font=self._style_1)
+            self._ticketLabel = Label(visitor_page, text="Ticket: 1234567", font=self._style_1)
             self._ticketLabel.grid(row=0, column=1)
-            self._creditLabel = Label(visitorPage, text="Guthaben: 222€", font=self._style_1)
+            self._creditLabel = Label(visitor_page, text="Guthaben: 222€", font=self._style_1)
             self._creditLabel.grid(row=0, column=6)
 
             Label(form_frame, text="Ticket Freund:", font=self._style_1).grid(row=0, column=0)
 
-            Label(visitorPage, image=self._qr_img, font=self._style_1).grid(row=3, column=1)
+            Label(visitor_page, image=self._qr_img, font=self._style_1).grid(row=3, column=1)
 
-            Label(visitorPage, image=self._logo_img, font=self._style_1).grid(row=6, column=7)
+            Label(visitor_page, image=self._logo_img, font=self._style_1).grid(row=6, column=7)
 
             #buttons
-            Button(visitorPage, text="€▷", command=lambda: self.addCredit(), font=self._style_1, background="#75E6DA").grid(row=0, column=7)
-            Button(visitorPage, text="Bestellung aufnehmen", command=lambda: self.onGoToOrderPage(), font=self._style_1, background="#75E6DA").grid(row=2, column=1)
+            Button(visitor_page, text="€▷", command=lambda: self.addCredit(), font=self._style_1, background="#75E6DA").grid(row=0, column=7)
+            Button(visitor_page, text="Bestellung aufnehmen", command=lambda: self.onGoToOrderPage(), font=self._style_1, background="#75E6DA").grid(row=2, column=1)
             Button(form_frame, text="Bestellung freischalten", command=lambda: self.unlockTicketForFriend(), font=self._style_1, background="#75E6DA").grid(row=2, column=1)
 
             #input fields
             self._friendTicket_val = StringVar()
             Entry(form_frame, font=self._style_1, bg="#D4F1F4", textvariable=self._friendTicket_val).grid(row=0, column=1)
 
-            self._visitorPage  = visitorPage
-        return self._visitorPage
+            self._visitor_page  = visitor_page
+        return self._visitor_page
     
-    def createColumns(self, visitorPage):
-        visitorPage.grid_columnconfigure(0, weight=1)
-        visitorPage.grid_columnconfigure(1, weight=1)
-        visitorPage.grid_columnconfigure(2, weight=1)
-        visitorPage.grid_columnconfigure(3, weight=1)
-        visitorPage.grid_columnconfigure(4, weight=1)
-        visitorPage.grid_columnconfigure(5, weight=1)
-        visitorPage.grid_columnconfigure(6, weight=1)
-        visitorPage.grid_columnconfigure(7, weight=1)
-        visitorPage.grid_columnconfigure(8, weight=1)
+    def createColumns(self, visitor_page):
+        visitor_page.grid_columnconfigure(0, weight=1)
+        visitor_page.grid_columnconfigure(1, weight=1)
+        visitor_page.grid_columnconfigure(2, weight=1)
+        visitor_page.grid_columnconfigure(3, weight=1)
+        visitor_page.grid_columnconfigure(4, weight=1)
+        visitor_page.grid_columnconfigure(5, weight=1)
+        visitor_page.grid_columnconfigure(6, weight=1)
+        visitor_page.grid_columnconfigure(7, weight=1)
+        visitor_page.grid_columnconfigure(8, weight=1)
 
-    def createRows(self, visitorPage):
-        visitorPage.grid_rowconfigure(0, weight=1)
-        visitorPage.grid_rowconfigure(1, weight=1)
-        visitorPage.grid_rowconfigure(2, weight=1)
-        visitorPage.grid_rowconfigure(3, weight=1)
-        visitorPage.grid_rowconfigure(4, weight=1)
-        visitorPage.grid_rowconfigure(5, weight=1)
-        visitorPage.grid_rowconfigure(6, weight=1)
+    def createRows(self, visitor_page):
+        visitor_page.grid_rowconfigure(0, weight=1)
+        visitor_page.grid_rowconfigure(1, weight=1)
+        visitor_page.grid_rowconfigure(2, weight=1)
+        visitor_page.grid_rowconfigure(3, weight=1)
+        visitor_page.grid_rowconfigure(4, weight=1)
+        visitor_page.grid_rowconfigure(5, weight=1)
+        visitor_page.grid_rowconfigure(6, weight=1)
     
     def loadImages(self):
         logo_pil = Image.open("img/logo.png")
@@ -80,9 +80,9 @@ class VisitorPage():
         qr_pil = qr_pil.resize((150, 150), Image.Resampling.LANCZOS)
         self._qr_img = ImageTk.PhotoImage(qr_pil)
     
-    def createOrderTable(self, visitorPage):
+    def createOrderTable(self, visitor_page):
         #frames
-        form_frame = Frame(visitorPage)
+        form_frame = Frame(visitor_page)
         form_frame.grid(row=1, column=1, columnspan=7)
 
         # Title label
@@ -106,7 +106,7 @@ class VisitorPage():
             self.table.column(col, anchor="center", width=180)
 
         # Style rows
-        style = ttk.Style(visitorPage)
+        style = ttk.Style(visitor_page)
         style.theme_use("default")
 
         # Header style
@@ -150,10 +150,10 @@ class VisitorPage():
         #update ticket
         self._ticket = ticket
 
-    def createNotificationTable(self, visitorPage):
+    def createNotificationTable(self, visitor_page):
         # Define table columns
         column = "Benachrichtigungen:"
-        self.table2 = ttk.Treeview(visitorPage, columns=column, show="headings", selectmode="browse", height=3)
+        self.table2 = ttk.Treeview(visitor_page, columns=column, show="headings", selectmode="browse", height=3)
 
         # Define headings
         self.table2.heading(column, text=column)
@@ -165,7 +165,7 @@ class VisitorPage():
             self.table2.insert("", END, values=row, tags=("row",))
 
         # Style rows
-        style = ttk.Style(visitorPage)
+        style = ttk.Style(visitor_page)
         style.theme_use("default")
 
         # Header style

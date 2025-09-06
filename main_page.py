@@ -23,8 +23,8 @@ login_page = login_page_management.getPage()
 login_page.grid(row=0, column=1, sticky="nsew")
 
 visitor_page_management = VisitorPage(root, database, style_1)
-visitorPage = visitor_page_management.getPage()
-visitorPage.grid(row=0, column=1, sticky="nsew")
+visitor_page = visitor_page_management.getPage()
+visitor_page.grid(row=0, column=1, sticky="nsew")
 
 orderPageManagement = OrderPage(root, database, style_1)
 orderPage = orderPageManagement.getPage()
