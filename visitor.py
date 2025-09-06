@@ -28,10 +28,10 @@ class VisitorPage():
             form_frame.grid(row=2, column=6, columnspan=2)
 
             #labels
-            self._ticketLabel = Label(visitor_page, text="Ticket: 1234567", font=self._style_1)
-            self._ticketLabel.grid(row=0, column=1)
-            self._creditLabel = Label(visitor_page, text="Guthaben: 222€", font=self._style_1)
-            self._creditLabel.grid(row=0, column=6)
+            self._ticket_label = Label(visitor_page, text="Ticket: 1234567", font=self._style_1)
+            self._ticket_label.grid(row=0, column=1)
+            self._credit_label = Label(visitor_page, text="Guthaben: 222€", font=self._style_1)
+            self._credit_label.grid(row=0, column=6)
 
             Label(form_frame, text="Ticket Freund:", font=self._style_1).grid(row=0, column=0)
 
@@ -45,8 +45,8 @@ class VisitorPage():
             Button(form_frame, text="Bestellung freischalten", command=lambda: self.unlockTicketForFriend(), font=self._style_1, background="#75E6DA").grid(row=2, column=1)
 
             #input fields
-            self._friendTicket_val = StringVar()
-            Entry(form_frame, font=self._style_1, bg="#D4F1F4", textvariable=self._friendTicket_val).grid(row=0, column=1)
+            self._friend_ticket_val = StringVar()
+            Entry(form_frame, font=self._style_1, bg="#D4F1F4", textvariable=self._friend_ticket_val).grid(row=0, column=1)
 
             self._visitor_page  = visitor_page
         return self._visitor_page
@@ -122,8 +122,6 @@ class VisitorPage():
         vsb = ttk.Scrollbar(form_frame, orient="vertical", command=self.table.yview)
         self.table.configure(yscrollcommand=vsb.set)
         vsb.grid(row=1, column=1, sticky="ns")
-
-        # self.table.bind("<<TreeviewSelect>>", self.on_select)
     
     def fillOrderTableRows(self, ticket):
         #clear existing rows
@@ -138,14 +136,14 @@ class VisitorPage():
             self.table.insert("", END, values=row, tags=("row",))
 
         #check vip
-        isVip = self._database.readData()["Tickets"][ticket]["vip"]
+        is_vip = self._database.readData()["Tickets"][ticket]["vip"]
 
-        ticketTxt = "Ticket: " + ticket
-        if isVip:
-            ticketTxt = ticketTxt + " ☆"
-        self._ticketLabel.config(text=ticketTxt) 
-        creditTxt = "Guthaben: " + str(self._database.getCreditForTicket(ticket)) + "€"
-        self._creditLabel.config(text=creditTxt) 
+        ticket_txt = "Ticket: " + ticket
+        if is_vip:
+            ticket_txt = ticket_txt + " ☆"
+        self._ticket_label.config(text=ticket_txt) 
+        credit_txt = "Guthaben: " + str(self._database.getCreditForTicket(ticket)) + "€"
+        self._credit_label.config(text=credit_txt) 
 
         #update ticket
         self._ticket = ticket
@@ -178,11 +176,6 @@ class VisitorPage():
         self.table2.grid(row=5, column=1, columnspan=7)
 
         self.table2.bind("<<TreeviewSelect>>", self.disable_selection)
-    
-    def on_select(self, event=None):
-        selected = self.table.focus()
-        values = self.table.item(selected, "values")
-        print("Selected row:", values)
 
     def onGoToOrderPage(self):
         self._order_page_management.setTicket(self._ticket)
@@ -197,8 +190,8 @@ class VisitorPage():
     def addCredit(self):
         self._database.addCreditForTicket(self._ticket, 10)
 
-        creditTxt = "Guthaben: " + str(self._database.getCreditForTicket(self._ticket)) + "€"
-        self._creditLabel.config(text=creditTxt) 
+        credit_txt = "Guthaben: " + str(self._database.getCreditForTicket(self._ticket)) + "€"
+        self._credit_label.config(text=credit_txt) 
     
     
     def unlockTicketForFriend(self):
@@ -206,6 +199,6 @@ class VisitorPage():
         if not selected:
             return
         values = self.table.item(selected, "values")
-        friendTicket = self._friendTicket_val.get()
+        friend_ticket = self._friend_ticket_val.get()
 
-        self._database.connectOrderToTicket(values[3], friendTicket)
+        self._database.connectOrderToTicket(values[3], friend_ticket)
