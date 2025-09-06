@@ -172,6 +172,3 @@ class SellerPage():
 
         for i, row in enumerate(data):
             self.table_2.insert("", END, values=row, tags=("row",))
-
-        #update stand
-        self._stand = stand
