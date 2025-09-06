@@ -179,7 +179,7 @@ class BesucherPage():
 
         self.table2.bind("<<TreeviewSelect>>", self.disable_selection)
     
-    def on_select(self, event):
+    def on_select(self, event=None):
         selected = self.table.focus()
         values = self.table.item(selected, "values")
         print("Selected row:", values)
@@ -188,7 +188,7 @@ class BesucherPage():
         self._bestellungPageManagement.setTicket(self._ticket)
         self._bestellungPageManagement.getPage().tkraise()
 
-    def disable_selection(self, event):
+    def disable_selection(self, event=None):
         event.widget.selection_remove(event.widget.selection())
 
     def setBestellungPageManagement(self, bestellungPageManagement):

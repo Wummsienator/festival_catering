@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 from PIL import Image, ImageTk
+from elements import PlaceholderEntry
 
 class BestellungPage():
     def __init__(self, root, database, style1):
@@ -42,19 +43,23 @@ class BestellungPage():
             self._priceLabel = Label(bestellungPage, text="Gesamtpreis: 0€", font=self._style1)
             self._priceLabel.grid(row=5, column=6)
 
-            Label(bestellungPage, image=self._logo_img, font=self._style1).grid(row=8, column=7)
+            Label(bestellungPage, image=self._logo_img, font=self._style1).grid(row=9, column=7)
             Label(form_frame, text="⌕", font=self._style1).grid(row=0, column=1)
 
             #buttons
             Button(bestellungPage, text="€▷", command=lambda: self.addCredit(), font=self._style1, background="#75E6DA").grid(row=0, column=7)
-            Button(bestellungPage, text="Abbrechen", command=lambda: self.onCancel(), font=self._style1, background="#75E6DA").grid(row=7, column=2)
-            Button(bestellungPage, text="Bestellen", command=lambda: self.onOrder(), font=self._style1, background="#75E6DA").grid(row=7, column=5)
+            Button(bestellungPage, text="Abbrechen", command=lambda: self.onCancel(), font=self._style1, background="#75E6DA").grid(row=8, column=2)
+            Button(bestellungPage, text="Bestellen", command=lambda: self.onOrder(), font=self._style1, background="#75E6DA").grid(row=8, column=5)
 
             #input fields
             self._stand_val = StringVar()
-            self._standIpt = Entry(form_frame, font=self._style1, bg="#D4F1F4", textvariable=self._stand_val)
+            self._standIpt = PlaceholderEntry(form_frame, "Suche Stand", "grey", font=self._style1, bg="#D4F1F4", textvariable=self._stand_val)
             self._standIpt.grid(row=0, column=0)
             self._standIpt.bind("<Return>", self.onSearchStand)
+
+            self._special_requests_val = StringVar()
+            self._special_requests_ipt = PlaceholderEntry(bestellungPage, "Sonderwünsche", "grey", font=self._style1, bg="#D4F1F4", textvariable=self._special_requests_val, width=50)
+            self._special_requests_ipt.grid(row=6, column=1, columnspan=7)
 
             self._bestellungPage = bestellungPage
         return self._bestellungPage
@@ -80,6 +85,7 @@ class BestellungPage():
         bestellungPage.grid_rowconfigure(6, weight=1)
         bestellungPage.grid_rowconfigure(7, weight=1)
         bestellungPage.grid_rowconfigure(8, weight=1)
+        bestellungPage.grid_rowconfigure(9, weight=1)
 
     def loadImages(self):
         logo_pil = Image.open("img/logo.png")
@@ -97,7 +103,7 @@ class BestellungPage():
     def createPrioritySwitch(self, bestellungPage):
         #create Frame 
         form_frame = Frame(bestellungPage)
-        form_frame.grid(row=6, column=2, columnspan=2)
+        form_frame.grid(row=7, column=2, columnspan=2)
         
         Label(form_frame, text="Priorisieren:", font=self._style1).grid(row=0, column=0)
         self._prioritySwitch = Button(form_frame, image = self._off_img, bd = 0,command = self.switchPriority)
@@ -261,7 +267,7 @@ class BestellungPage():
         self._creditLabel.config(text=creditTxt) 
         self._ticket = ticket
 
-    def onSearchStand(self, event):
+    def onSearchStand(self, event=None):
         standStr = self._stand_val.get()
 
         #clear existing rows
@@ -276,7 +282,7 @@ class BestellungPage():
         for i, row in enumerate(data):
             self.table.insert("", END, values=row, tags=("row",))
 
-    def onSelectStand(self, event):
+    def onSelectStand(self, event=None):
         selected = self.table.focus()
         if not selected:
             return
@@ -306,7 +312,7 @@ class BestellungPage():
         #clear existing rows
         self.table3.delete(*self.table3.get_children())
 
-    def onAddOrderPosition(self, event):
+    def onAddOrderPosition(self, event=None):
         selected = self.table2.focus()
         if not selected:
             return
@@ -365,7 +371,7 @@ class BestellungPage():
         priceTxt = "Gesamtpreis: " + str(self._currentPrice) + "€"
         self._priceLabel.config(text=priceTxt) 
 
-    def onRemoveOrderPosition(self, event):
+    def onRemoveOrderPosition(self, event=None):
         selected = self.table3.focus()
         if not selected:
             return
