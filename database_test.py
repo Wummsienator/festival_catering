@@ -47,6 +47,39 @@ class Database:
     
     def getPositionsForOrder(self, order):
         positions = []
+        select = f"""
+                    SELECT op.*, p.Name FROM OrderPositions AS op
+                    INNER JOIN Products AS p ON p.ProductID = op.ProductID 
+                    WHERE op.OrderID = {order}
+                 """
+        for row in self._cursor.execute(select):
+            positions.append({"order": row[0], "position": row[1], "product": row[2], "name": row[4], "quantity": row[3]})
+        return positions
+    
+    def get_special_requests_for_order(self, order):
+        select = f"""
+                    SELECT SpecialRequest FROM Orders
+                    WHERE OrderID = {order}
+                 """
+        for row in self._cursor.execute(select):
+            return row[0]
+        
+    def getProducts(self):
+        products = []
+        select = f"""
+                    SELECT * FROM Products
+                 """
+        for row in self._cursor.execute(select):
+            products.append({"ID": row[0], "name": row[1], "price": row[2], "time": row[3]})
+        return products
+    
+    def checkVip(self, ticket):
+        select = f"""
+            SELECT VIP FROM Tickets
+            WHERE TicketNR = {ticket}
+            """
+        for row in self._cursor.execute(select):
+            return row[0]
 
 # cursor.execute("SELECT * FROM Tickets")
 # for row in cursor:
@@ -57,3 +90,7 @@ test = Database()
 # print(test.getProductsForStand(1))
 # print(test.getOrdersForTicket(1234567))
 # print(test.getOrdersForStand(3))
+# print(test.getPositionsForOrder(1))
+# print(test.get_special_requests_for_order(1))
+# print(test.getProducts())
+print(test.checkVip(8910111))
