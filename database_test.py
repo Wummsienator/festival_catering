@@ -1,4 +1,5 @@
 import pyodbc 
+import datetime
 
 class Database:
     def __init__(self):
@@ -75,11 +76,58 @@ class Database:
     
     def checkVip(self, ticket):
         select = f"""
-            SELECT VIP FROM Tickets
-            WHERE TicketNR = {ticket}
-            """
+                 SELECT VIP FROM Tickets
+                 WHERE TicketNR = {ticket}
+                 """
         for row in self._cursor.execute(select):
             return row[0]
+        
+    def placeOrder(self, stand, ticket, position_list, price, special_requests):
+        #get new IDs
+        new_order_id = ''
+        new_order2ticket_id = ''
+        select = """
+                 SELECT Name, NextID FROM GlobalIDs
+                 WHERE Name = 'Orders' OR Name = 'Order2Ticket'
+                 """
+        for row in self._cursor.execute(select):
+            if row[0] == "Orders":
+                new_order_id = row[1]
+            elif row[0] == "Order2Ticket":
+                new_order2ticket_id = row[1]
+
+        # self._cursor.execute(f"UPDATE GlobalIDs SET NextID = {new_order_id + 1} WHERE Name = 'Orders'")
+        # self._cursor.execute(f"UPDATE GlobalIDs SET NextID = {new_order2ticket_id + 1} WHERE Name = 'Order2Ticket'")
+        # self._cursor.commit()
+
+        #add new order
+        time = 0
+        price = 0
+        products = []
+        for p in position_list:
+            products.append(f'{p["product"]}') 
+        placeholders = ",".join("?" for _ in products)
+
+        select = f"""
+                 SELECT * FROM Products
+                 WHERE Name IN ({placeholders})
+                 """
+        
+        self._cursor.execute(select, products)
+        r_rows = self._cursor.fetchall()
+
+        for index, row in enumerate(r_rows):
+            price += position_list[index]["quantity"] * row[2]
+            time += position_list[index]["quantity"] * row[3]
+
+            insert = f"""
+                     INSERT INTO OrderPositions
+                     VALUES ({new_order_id},{index + 1},{row[0]},{position_list[index]["quantity"]})
+                     """
+            self._cursor.execute(insert)
+
+        
+        # self._cursor.commit()
 
 # cursor.execute("SELECT * FROM Tickets")
 # for row in cursor:
@@ -93,4 +141,8 @@ test = Database()
 # print(test.getPositionsForOrder(1))
 # print(test.get_special_requests_for_order(1))
 # print(test.getProducts())
-print(test.checkVip(8910111))
+# print(test.checkVip(8910111))
+test.placeOrder(1, 121212122121, [{"product": "Pizza Hawaii", "quantity": 3}, {"product": "Pizza Kebab", "quantity": 1}], 5, '123456')
+
+
+
