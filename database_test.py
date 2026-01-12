@@ -231,7 +231,19 @@ class Database:
 
     # def addProductForStand(self, stand, product, quantity):
 
-    # def changeStatusForOrder(self, order):
+    def changeStatusForOrder(self, order):
+        select = f"""
+                 SELECT StatusID FROM Orders
+                 WHERE OrderID = {order}
+                 """
+        #check if order exists
+        for row in self._cursor.execute(select):
+            #check if not final status
+            if row[0] < 4:
+                print(row[0])
+                #update status
+                self._cursor.execute(f"UPDATE Orders SET StatusID = StatusID + 1 WHERE OrderID = {order}")
+                self._cursor.commit()
 
 test = Database()
 # print(test.getProductsForStand(1))
@@ -250,5 +262,6 @@ test = Database()
 # test.connectOrderToTicket(1, 8910111)
 # print(test.checkOrder2TicketExists(1, 1234567))
 # print(test.checkOrder2TicketExists(1, 8910111))
+test.changeStatusForOrder(2)
 
 
