@@ -193,6 +193,45 @@ class Database:
                 False, None
         #ticket doesnt exist
         return False, None
+    
+    def connectOrderToTicket(self, order, ticket):
+        if self.checkOrder2TicketExists(order, ticket):
+            return
+        
+        #get new id
+        new_order2ticket_id = ''
+        select = """
+                 SELECT NextID FROM GlobalIDs
+                 WHERE Name = 'Order2Ticket'
+                 """
+        
+        for row in self._cursor.execute(select):
+            new_order2ticket_id = row [0]
+
+        self._cursor.execute(f"UPDATE GlobalIDs SET NextID = NextID + 1 WHERE Name = 'Order2Ticket'")
+
+        #link ticket to order
+        insert = f"""
+                 INSERT INTO Order2Ticket
+                 VALUES ({new_order2ticket_id},{order},{ticket})
+                 """
+        
+        self._cursor.execute(insert)
+        self._cursor.commit()
+    
+    def checkOrder2TicketExists(self, order, ticket):
+        select = f"""
+                 SELECT ID FROM Order2Ticket
+                 WHERE OrderID = {order} AND TicketNR = {ticket}
+                 """
+        
+        for row in self._cursor.execute(select):
+            return True
+        return False
+
+    # def addProductForStand(self, stand, product, quantity):
+
+    # def changeStatusForOrder(self, order):
 
 test = Database()
 # print(test.getProductsForStand(1))
@@ -207,5 +246,9 @@ test = Database()
 # print(test.checkLogin(1234567, "OneTwoThreeForSix"))
 # print(test.checkLogin(1234567, "OneTwoThreeForFive"))
 # print(test.checkLogin(11111111, "Admin"))
+# test.connectOrderToTicket(1, 1234567)
+# test.connectOrderToTicket(1, 8910111)
+# print(test.checkOrder2TicketExists(1, 1234567))
+# print(test.checkOrder2TicketExists(1, 8910111))
 
 
