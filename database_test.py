@@ -167,12 +167,32 @@ class Database:
 
     def getCreditForTicket(self, ticket):
         select = f"""
-            SELECT Credit FROM Tickets
-            WHERE TicketNR = {ticket}
-            """
+                 SELECT Credit FROM Tickets
+                 WHERE TicketNR = {ticket}
+                 """
         
         for row in self._cursor.execute(select):
             return row[0]
+        
+    def checkLogin(self, ticket, password):
+        select = f"""
+                 SELECT * FROM Tickets
+                 WHERE TicketNR = {ticket}
+                 """
+        
+        #check if ticket exists
+        for row in self._cursor.execute(select):
+            #check password
+            if row[1] == password:
+                #check if ticket is connected to stand
+                if row[4]:
+                    return True, row[4]
+                else:
+                    return True, None
+            else:
+                False, None
+        #ticket doesnt exist
+        return False, None
 
 test = Database()
 # print(test.getProductsForStand(1))
@@ -182,8 +202,10 @@ test = Database()
 # print(test.get_special_requests_for_order(1))
 # print(test.getProducts())
 # print(test.checkVip(8910111))
-print(test.placeOrder(1, 1234567, [{"product": "Pizza Hawaii", "quantity": 3}, {"product": "Pizza Kebab", "quantity": 1}], '123456'))
+# print(test.placeOrder(1, 1234567, [{"product": "Pizza Hawaii", "quantity": 3}, {"product": "Pizza Kebab", "quantity": 1}], '123456'))
 # print(test.getCreditForTicket(1234567))
-
+# print(test.checkLogin(1234567, "OneTwoThreeForSix"))
+# print(test.checkLogin(1234567, "OneTwoThreeForFive"))
+# print(test.checkLogin(11111111, "Admin"))
 
 
