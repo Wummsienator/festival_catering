@@ -1,5 +1,6 @@
 import pyodbc 
 import datetime
+from decimal import *
 
 class Database:
     def __init__(self):
@@ -82,7 +83,7 @@ class Database:
         for row in self._cursor.execute(select):
             return row[0]
         
-    def placeOrder(self, stand, ticket, position_list, price, special_requests):
+    def placeOrder(self, stand, ticket, position_list, special_requests):    #returns boolean if order could be placed
         #get new IDs
         new_order_id = ''
         new_order2ticket_id = ''
@@ -96,9 +97,8 @@ class Database:
             elif row[0] == "Order2Ticket":
                 new_order2ticket_id = row[1]
 
-        # self._cursor.execute(f"UPDATE GlobalIDs SET NextID = {new_order_id + 1} WHERE Name = 'Orders'")
-        # self._cursor.execute(f"UPDATE GlobalIDs SET NextID = {new_order2ticket_id + 1} WHERE Name = 'Order2Ticket'")
-        # self._cursor.commit()
+        self._cursor.execute(f"UPDATE GlobalIDs SET NextID = NextID + 1 WHERE Name = 'Orders'")
+        self._cursor.execute(f"UPDATE GlobalIDs SET NextID = NextID + 1 WHERE Name = 'Order2Ticket'")
 
         #add new order
         time = 0
@@ -116,6 +116,7 @@ class Database:
         self._cursor.execute(select, products)
         r_rows = self._cursor.fetchall()
 
+        #positions for new order
         for index, row in enumerate(r_rows):
             price += position_list[index]["quantity"] * row[2]
             time += position_list[index]["quantity"] * row[3]
@@ -126,13 +127,52 @@ class Database:
                      """
             self._cursor.execute(insert)
 
+        #check if ticket has enough credits
+        if self.getCreditForTicket(ticket) < price:
+            return False
+
+        #new order
+        insert = """
+                 INSERT INTO Orders
+                 VALUES (?, ?, ?, ?, ?, ?, ?)
+                 """
         
-        # self._cursor.commit()
+        params = (
+            new_order_id,
+            time,                     
+            datetime.datetime.now(),     #because date object conversion doesn't work in string directly
+            price,
+            1,
+            special_requests,
+            stand
+        )
+        
+        self._cursor.execute(insert, params)
 
-# cursor.execute("SELECT * FROM Tickets")
-# for row in cursor:
-#     print('row = %r' % (row,))
+        #order2ticket
+        insert = f"""
+                 INSERT INTO Order2Ticket
+                 VALUES ({new_order2ticket_id},{new_order_id},{ticket})
+                 """
+        
+        self._cursor.execute(insert)
 
+        #update credit
+        self._cursor.execute(f"UPDATE Tickets SET Credit = Credit - {price} WHERE TicketNR = {ticket}")
+        
+        self._cursor.commit()
+
+        #success
+        return True   
+
+    def getCreditForTicket(self, ticket):
+        select = f"""
+            SELECT Credit FROM Tickets
+            WHERE TicketNR = {ticket}
+            """
+        
+        for row in self._cursor.execute(select):
+            return row[0]
 
 test = Database()
 # print(test.getProductsForStand(1))
@@ -142,7 +182,8 @@ test = Database()
 # print(test.get_special_requests_for_order(1))
 # print(test.getProducts())
 # print(test.checkVip(8910111))
-test.placeOrder(1, 121212122121, [{"product": "Pizza Hawaii", "quantity": 3}, {"product": "Pizza Kebab", "quantity": 1}], 5, '123456')
+print(test.placeOrder(1, 1234567, [{"product": "Pizza Hawaii", "quantity": 3}, {"product": "Pizza Kebab", "quantity": 1}], '123456'))
+# print(test.getCreditForTicket(1234567))
 
 
 
