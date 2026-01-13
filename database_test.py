@@ -264,6 +264,17 @@ class Database:
                 self._cursor.execute(f"UPDATE Orders SET StatusID = StatusID + 1 WHERE OrderID = {order}")
                 self._cursor.commit()
 
+    def searchStand(self, standStr):
+        stands = []
+        select = f"""
+                 SELECT * FROM Stands
+                 WHERE Name LIKE '%{standStr}%'
+                 """
+        
+        for row in self._cursor.execute(select):
+            stands.append({"ID": row[0], "name": row[1]})
+        return stands
+
 test = Database()
 # print(test.getProductsForStand(1))
 # print(test.getOrdersForTicket(1234567))
@@ -282,6 +293,8 @@ test = Database()
 # print(test.checkOrder2TicketExists(1, 1234567))
 # print(test.checkOrder2TicketExists(1, 8910111))
 # test.changeStatusForOrder(2)
-# test.addProductForStand(1,2,45)
+# test.addProductForStand(1,3,45)
+# print(test.searchStand("Soup"))
+# print(test.searchStand("zz"))
 
 
