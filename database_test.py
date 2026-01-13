@@ -21,7 +21,7 @@ class Database:
                     WHERE s2p.StandID = {stand}
                  """
         for row in self._cursor.execute(select):
-            products.append({"ID": row[0], "name": row[1], "price": row[2], "time": row[3], "quantity": row[4]})
+            products.append({"ID": row[0], "name": row[1], "price": round(row[2], 2), "time": row[3], "quantity": row[4]})
         return products
     
     def getOrdersForTicket(self, ticket):
@@ -33,7 +33,7 @@ class Database:
                     WHERE o2t.TicketNR = {ticket}
                  """
         for row in self._cursor.execute(select):
-            orders.append({"ID": row[0], "time": row[1], "timestamp": row[2], "price": row[3], "status": row[4], "status_desc": row[7], "special_request": row[5], "stand": row[6]})
+            orders.append({"ID": row[0], "time": row[1], "timestamp": row[2], "price": round(row[3], 2), "status": row[4], "status_desc": row[7], "special_request": row[5], "stand": row[6]})
         return orders
     
     def getOrdersForStand(self, stand):
@@ -44,7 +44,7 @@ class Database:
                     WHERE o.StandID = {stand}
                  """
         for row in self._cursor.execute(select):
-            orders.append({"ID": row[0], "time": row[1], "timestamp": row[2], "price": row[3], "status": row[4], "status_desc": row[7], "special_request": row[5], "stand": row[6]})
+            orders.append({"ID": row[0], "time": row[1], "timestamp": row[2], "price": round(row[3], 2), "status": row[4], "status_desc": row[7], "special_request": row[5], "stand": row[6]})
         return orders
     
     def getPositionsForOrder(self, order):
@@ -72,7 +72,7 @@ class Database:
                     SELECT * FROM Products
                  """
         for row in self._cursor.execute(select):
-            products.append({"ID": row[0], "name": row[1], "price": row[2], "time": row[3]})
+            products.append({"ID": row[0], "name": row[1], "price": round(row[2], 2), "time": row[3]})
         return products
     
     def checkVip(self, ticket):
@@ -83,7 +83,11 @@ class Database:
         for row in self._cursor.execute(select):
             return row[0]
         
-    def placeOrder(self, stand, ticket, position_list, special_requests):    #returns boolean if order could be placed
+    def placeOrder(self, stand, ticket, position_list, price, special_requests):    #returns boolean if order could be placed
+        #check if ticket has enough credits
+        if self.getCreditForTicket(ticket) < price:
+            return False
+
         #get new IDs
         new_order_id = ''
         new_order2ticket_id = ''
@@ -102,15 +106,15 @@ class Database:
 
         #add new order
         time = 0
-        price = 0
+        # price = 0
         products = []
         for p in position_list:
-            products.append(f'{p["product"]}') 
+            products.append(p["productID"]) 
         placeholders = ",".join("?" for _ in products)
 
         select = f"""
                  SELECT * FROM Products
-                 WHERE Name IN ({placeholders})
+                 WHERE ProductID IN ({placeholders})
                  """
         
         self._cursor.execute(select, products)
@@ -118,7 +122,7 @@ class Database:
 
         #positions for new order
         for index, row in enumerate(r_rows):
-            price += position_list[index]["quantity"] * row[2]
+            # price += position_list[index]["quantity"] * row[2]
             time += position_list[index]["quantity"] * row[3]
 
             insert = f"""
@@ -126,10 +130,6 @@ class Database:
                      VALUES ({new_order_id},{index + 1},{row[0]},{position_list[index]["quantity"]})
                      """
             self._cursor.execute(insert)
-
-        #check if ticket has enough credits
-        if self.getCreditForTicket(ticket) < price:
-            return False
 
         #new order
         insert = """
@@ -264,7 +264,7 @@ class Database:
                 self._cursor.execute(f"UPDATE Orders SET StatusID = StatusID + 1 WHERE OrderID = {order}")
                 self._cursor.commit()
 
-    def searchStand(self, standStr):
+    def search_stand(self, standStr):
         stands = []
         select = f"""
                  SELECT * FROM Stands
@@ -283,7 +283,7 @@ test = Database()
 # print(test.get_special_requests_for_order(1))
 # print(test.getProducts())
 # print(test.checkVip(8910111))
-# print(test.placeOrder(1, 1234567, [{"product": "Pizza Hawaii", "quantity": 3}, {"product": "Pizza Kebab", "quantity": 1}], '123456'))
+# print(test.placeOrder(1, 1234567, [{"productID": 1, "quantity": 3}, {"productID": 2, "quantity": 1}], 33, '123456'))
 # print(test.getCreditForTicket(1234567))
 # print(test.checkLogin(1234567, "OneTwoThreeForSix"))
 # print(test.checkLogin(1234567, "OneTwoThreeForFive"))
@@ -294,7 +294,7 @@ test = Database()
 # print(test.checkOrder2TicketExists(1, 8910111))
 # test.changeStatusForOrder(2)
 # test.addProductForStand(1,3,45)
-# print(test.searchStand("Soup"))
-# print(test.searchStand("zz"))
+# print(test.search_stand("Soup"))
+# print(test.search_stand("zz"))
 
 

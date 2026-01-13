@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import ttk
 from PIL import Image, ImageTk
 from elements import PlaceholderEntry
+from decimal import *
 
 class OrderPage():
     def __init__(self, root, database, style_1):
@@ -12,7 +13,7 @@ class OrderPage():
         self._ticket = "1234567"
         self._selected_stand = ""
         self._current_time = 0
-        self._current_price = 0
+        self._current_price = Decimal(0.00)
         self._priority = False
 
     def getPage(self):
@@ -268,16 +269,16 @@ class OrderPage():
         self._ticket = ticket
 
     def onSearchStand(self, event=None):
-        standStr = self._stand_val.get()
+        stand_str = self._stand_val.get()
 
         #clear existing rows
         self._table.delete(*self._table.get_children())
         #insert sample data
         data = []
-        stands = self._database.searchStand(standStr)
+        stands = self._database.search_stand(stand_str)
 
         for stand in stands:
-            data.append( (stand["stand"], stand["name"]) )
+            data.append( (stand["ID"], stand["name"]) )
 
         for i, row in enumerate(data):
             self._table.insert("", END, values=row, tags=("row",))
@@ -297,7 +298,7 @@ class OrderPage():
 
         for product in products:
             data.append( (product["name"], product["time"], product["price"], product["quantity"]) )
-            ids.append(product["product"])
+            ids.append(product["ID"])
 
         for i, row in enumerate(data):
             self._table_2.insert("", END, iid=ids[i], values=row, tags=("row",))
@@ -307,7 +308,7 @@ class OrderPage():
 
     def clearWarenkorb(self):
         self._current_time = 0
-        self._current_price = 0
+        self._current_price = Decimal(0.00)
 
         #clear existing rows
         self._table_3.delete(*self._table_3.get_children())
@@ -338,7 +339,7 @@ class OrderPage():
                 current_time = int(item[1])
                 new_time = current_time + ( current_time // current_quantity) 
                 #update price
-                current_price = int(item[2])
+                current_price = Decimal(item[2])
                 new_price = current_price + ( current_price // current_quantity)
                 #update quantity
                 new_quantity = current_quantity + 1
@@ -355,7 +356,7 @@ class OrderPage():
         if not found:
             products = self._database.getProductsForStand(self._selected_stand)
             for product in products:
-                if selected == product["product"]:
+                if int(selected) == product["ID"]:
                     newRow = (product["name"], product["time"], product["price"], 1)
                     self._table_3.insert("", END, iid=selected, values=newRow, tags=("row",))
 
@@ -384,7 +385,7 @@ class OrderPage():
             #update time/price
             current_quantity = int(selected_product[3])
             current_time = int(selected_product[1])
-            current_price = int(selected_product[2])
+            current_price = Decimal(selected_product[2])
             
             self._current_time -= current_time // current_quantity
             self._current_price -= current_price // current_quantity
@@ -394,7 +395,7 @@ class OrderPage():
             current_time = int(selected_product[1])
             new_time = current_time - ( current_time // current_quantity) 
             #update price
-            current_price = int(selected_product[2])
+            current_price = Decimal(selected_product[2])
             new_price = current_price - ( current_price // current_quantity)
             #update quantity
             new_quantity = current_quantity - 1
@@ -428,7 +429,7 @@ class OrderPage():
 
         #reset time/price
         self._current_time = 0
-        self._current_price = 0
+        self._current_price = Decimal(0.00)
         self._priority = False
 
         self._visitor_page_management.fillOrderTableRows(self._ticket)
@@ -450,7 +451,7 @@ class OrderPage():
         if warenkorb_items:
             for item_id in warenkorb_items:
                 item = self._table_3.item(item_id, "values")
-                order_positions.append({"product": item_id, "quantity": int(item[3])})
+                order_positions.append({"productID": int(item_id), "quantity": int(item[3])})
 
             self._database.placeOrder(self._selected_stand, self._ticket, order_positions, self._current_price, special_requests)
         self.onCancel()
