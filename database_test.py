@@ -282,6 +282,6 @@ test = Database()
 # print(test.checkOrder2TicketExists(1, 1234567))
 # print(test.checkOrder2TicketExists(1, 8910111))
 # test.changeStatusForOrder(2)
-test.addProductForStand(1,2,45)
+# test.addProductForStand(1,2,45)
 
 
