@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter import font
 # from database import Database
-from database_test import Database
+from database import Database
 from login import LoginPage
 from visitor import VisitorPage
 from order import OrderPage
