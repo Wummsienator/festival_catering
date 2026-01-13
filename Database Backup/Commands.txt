@@ -1,0 +1,14 @@
+#Create Backup
+
+BACKUP DATABASE FestivalCateringAPP
+TO DISK = 'E:\Documents\Berufsschule\LF10\LF10_Projekt_Festival_Catering\Database Backup\FestivalCateringAPP_Initial.bak'
+WITH INIT;
+
+#Load Backup
+ALTER DATABASE FestivalCateringAPP SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+
+RESTORE DATABASE FestivalCateringAPP
+FROM DISK = 'E:\Documents\Berufsschule\LF10\LF10_Projekt_Festival_Catering\Database Backup\FestivalCateringAPP_Initial.bak'
+WITH REPLACE;
+
+ALTER DATABASE FestivalCateringAPP SET MULTI_USER;
