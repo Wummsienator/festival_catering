@@ -229,7 +229,26 @@ class Database:
             return True
         return False
 
-    # def addProductForStand(self, stand, product, quantity):
+    def addProductForStand(self, stand, product, quantity):
+        select = f"""
+                 SELECT * FROM Stand2Product
+                 WHERE StandID = {stand} AND ProductID = {product}
+                 """
+        
+        #check if product already exists on stand
+        for row in self._cursor.execute(select):
+            self._cursor.execute(f"UPDATE Stand2Product SET Quantity = Quantity + {quantity} WHERE StandID = {stand} AND ProductID = {product}")
+            self._cursor.commit()
+            return
+        
+        #add new product on stand
+        insert = f"""
+                 INSERT INTO Stand2Product
+                 VALUES ({stand},{product},{quantity})
+                 """
+        
+        self._cursor.execute(insert)
+        self._cursor.commit()
 
     def changeStatusForOrder(self, order):
         select = f"""
@@ -262,6 +281,7 @@ test = Database()
 # test.connectOrderToTicket(1, 8910111)
 # print(test.checkOrder2TicketExists(1, 1234567))
 # print(test.checkOrder2TicketExists(1, 8910111))
-test.changeStatusForOrder(2)
+# test.changeStatusForOrder(2)
+test.addProductForStand(1,2,45)
 
 
