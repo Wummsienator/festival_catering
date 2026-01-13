@@ -279,26 +279,5 @@ class Database:
         return stands
 
 test = Database()
-# print(test.getProductsForStand(1))
-# print(test.getOrdersForTicket(1234567))
-# print(test.getOrdersForStand(3))
-# print(test.getPositionsForOrder(1))
-# print(test.get_special_requests_for_order(1))
-# print(test.getProducts())
-# print(test.checkVip(8910111))
-# print(test.placeOrder(1, 1234567, [{"productID": 1, "quantity": 3}, {"productID": 2, "quantity": 1}], 33, '123456'))
-# print(test.getCreditForTicket(1234567))
-# print(test.checkLogin(1234567, "OneTwoThreeForSix"))
-# print(test.checkLogin(1234567, "OneTwoThreeForFive"))
-# print(test.checkLogin(11111111, "Admin"))
-# print(test.checkLogin(121212211221, "adasdad"))
-# test.connectOrderToTicket(1, 1234567)
-# test.connectOrderToTicket(1, 8910111)
-# print(test.checkOrder2TicketExists(1, 1234567))
-# print(test.checkOrder2TicketExists(1, 8910111))
-# test.changeStatusForOrder(2)
-# test.addProductForStand(1,3,45)
-# print(test.search_stand("Soup"))
-# print(test.search_stand("zz"))
 
 
