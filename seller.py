@@ -161,7 +161,7 @@ class SellerPage():
         orders = self._database.getOrdersForStand(stand)
 
         for order in orders:
-            data.append( (order["order"], order["timestamp"], order["status_desc"]) )
+            data.append( (order["ID"], order["timestamp"], order["status_desc"]) )
 
         for i, row in enumerate(data):
             self._table.insert("", END, values=row, tags=("row",))

@@ -63,8 +63,9 @@ class Database:
                     SELECT SpecialRequest FROM Orders
                     WHERE OrderID = {order}
                  """
-        for row in self._cursor.execute(select):
-            return row[0]
+        
+        return self._cursor.execute(select).fetchone()[0]
+
         
     def getProducts(self):
         products = []
@@ -171,8 +172,8 @@ class Database:
                  WHERE TicketNR = {ticket}
                  """
         
-        for row in self._cursor.execute(select):
-            return round(row[0],2)
+        row = self._cursor.execute(select).fetchone()
+        return round(row[0],2)
         
     def checkLogin(self, ticket, password):
         select = f"""
@@ -181,7 +182,8 @@ class Database:
                  """
         
         #check if ticket exists
-        for row in self._cursor.execute(select):
+        row = self._cursor.execute(select).fetchone()
+        if row:
             #check password
             if row[1] == password:
                 #check if ticket is connected to stand
@@ -190,9 +192,10 @@ class Database:
                 else:
                     return True, None
             else:
-                False, None
-        #ticket doesnt exist
-        return False, None
+                return False, None
+        else:
+            #ticket doesnt exist
+            return False, None
     
     def connectOrderToTicket(self, order, ticket):
         if self.checkOrder2TicketExists(order, ticket):
@@ -205,8 +208,7 @@ class Database:
                  WHERE Name = 'Order2Ticket'
                  """
         
-        for row in self._cursor.execute(select):
-            new_order2ticket_id = row [0]
+        new_order2ticket_id = self._cursor.execute(select).fetchone()[0]
 
         self._cursor.execute(f"UPDATE GlobalIDs SET NextID = NextID + 1 WHERE Name = 'Order2Ticket'")
 
@@ -225,9 +227,10 @@ class Database:
                  WHERE OrderID = {order} AND TicketNR = {ticket}
                  """
         
-        for row in self._cursor.execute(select):
+        if self._cursor.execute(select).fetchone():
             return True
-        return False
+        else:
+            return False
 
     def addProductForStand(self, stand, product, quantity):
         select = f"""
@@ -236,7 +239,7 @@ class Database:
                  """
         
         #check if product already exists on stand
-        for row in self._cursor.execute(select):
+        if self._cursor.execute(select).fetchone():
             self._cursor.execute(f"UPDATE Stand2Product SET Quantity = Quantity + {quantity} WHERE StandID = {stand} AND ProductID = {product}")
             self._cursor.commit()
             return
@@ -255,14 +258,14 @@ class Database:
                  SELECT StatusID FROM Orders
                  WHERE OrderID = {order}
                  """
-        #check if order exists
-        for row in self._cursor.execute(select):
-            #check if not final status
-            if row[0] < 4:
-                print(row[0])
-                #update status
-                self._cursor.execute(f"UPDATE Orders SET StatusID = StatusID + 1 WHERE OrderID = {order}")
-                self._cursor.commit()
+
+        row = self._cursor.execute(select).fetchone()
+
+        #check if order exists and is not in final status
+        if row and row[0] < 4:
+            #update status
+            self._cursor.execute(f"UPDATE Orders SET StatusID = StatusID + 1 WHERE OrderID = {order}")
+            self._cursor.commit()
 
     def search_stand(self, standStr):
         stands = []
@@ -288,6 +291,7 @@ test = Database()
 # print(test.checkLogin(1234567, "OneTwoThreeForSix"))
 # print(test.checkLogin(1234567, "OneTwoThreeForFive"))
 # print(test.checkLogin(11111111, "Admin"))
+# print(test.checkLogin(121212211221, "adasdad"))
 # test.connectOrderToTicket(1, 1234567)
 # test.connectOrderToTicket(1, 8910111)
 # print(test.checkOrder2TicketExists(1, 1234567))
