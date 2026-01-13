@@ -190,7 +190,7 @@ class SellerPage():
         products = self._database.getProducts()
         options = {}
         for product in products:
-            options[product["product"]] = product["name"]
+            options[product["ID"]] = product["name"]
 
         #create combobox values
         display_values = [f"{v} ({k})" for k, v in options.items()]

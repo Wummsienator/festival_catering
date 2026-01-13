@@ -172,7 +172,7 @@ class Database:
                  """
         
         for row in self._cursor.execute(select):
-            return row[0]
+            return round(row[0],2)
         
     def checkLogin(self, ticket, password):
         select = f"""

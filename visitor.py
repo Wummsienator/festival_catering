@@ -132,7 +132,7 @@ class VisitorPage():
         data = []
         orders = self._database.getOrdersForTicket(ticket)
         for order in orders:
-            data.append( (order["stand"], order["time"], order["status_desc"], order["order"]) )
+            data.append( (order["stand"], order["time"], order["status_desc"], order["ID"]) )
 
         for i, row in enumerate(data):
             self._table.insert("", END, values=row, tags=("row",))
@@ -257,7 +257,8 @@ class VisitorPage():
 
         #fill rows
         data = []
-        positions, special_requests = self._database.getPositionsForOrder(selected_order[3])
+        positions = self._database.getPositionsForOrder(selected_order[3])
+        special_requests = self._database.get_special_requests_for_order(selected_order[3])
 
         for position in positions:
             data.append( (position["name"], position["quantity"]) )
