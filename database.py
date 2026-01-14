@@ -278,6 +278,5 @@ class Database:
             stands.append({"ID": row[0], "name": row[1]})
         return stands
 
-test = Database()
 
 
