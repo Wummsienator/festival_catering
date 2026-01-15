@@ -51,12 +51,12 @@ class LoginPage():
             Entry(form_frame, font=self._style_1, bg="#D4F1F4", textvariable=self.password_val, show="*").grid(row=1, column=1)
 
             #button
-            Button(form_frame, text="Login", command=lambda: self.on_login(), font=self._style_1, background="#75E6DA").grid(row=2, column=0, columnspan=2)
+            Button(form_frame, text="Login", command=lambda: self._on_login(), font=self._style_1, background="#75E6DA").grid(row=2, column=0, columnspan=2)
 
             self._login_page = login_page
         return self._login_page
 
-    def on_login(self):
+    def _on_login(self):
         ticket = self.ticket_val.get()
         password = self.password_val.get()
 

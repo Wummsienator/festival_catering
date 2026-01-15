@@ -180,7 +180,7 @@ class VisitorPage():
         self._table2.bind("<<TreeviewSelect>>", self._disable_selection)
 
     def _on_go_to_order_page(self):
-        self._order_page_management.setTicket(self._ticket)
+        self._order_page_management.set_ticket(self._ticket)
         self._order_page_management.get_page().tkraise()
 
     def _disable_selection(self, event=None):

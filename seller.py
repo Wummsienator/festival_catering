@@ -205,15 +205,15 @@ class SellerPage():
         self._product_combo.set("Produkt wählen")
 
         #quantity input
-        validate_int = (seller_page.register(self.validate_int), "%P")  
+        _validate_int = (seller_page.register(self._validate_int), "%P")  
         self._quantity_val = StringVar()
-        quantity_ipt = PlaceholderEntry(seller_page, "Menge", "grey", font=self._style_1, bg="#D4F1F4", textvariable=self._quantity_val, validate="key", validatecommand=validate_int)
+        quantity_ipt = PlaceholderEntry(seller_page, "Menge", "grey", font=self._style_1, bg="#D4F1F4", textvariable=self._quantity_val, validate="key", validatecommand=_validate_int)
         quantity_ipt.grid(row=4, column=2)
 
         #button
         Button(seller_page, text="Bestand hinzufügen", command=lambda: self._on_add_product(), font=self._style_1, background="#75E6DA").grid(row=4, column=6)
 
-    def validate_int(self, new_value):
+    def _validate_int(self, new_value):
         if new_value == "" or new_value == "Menge":   # allow empty string and placeholder value
             return True
         return new_value.isdigit()

@@ -253,7 +253,7 @@ class OrderPage():
 
         self._table_3.bind("<Double-1>", self._on_remove_order_position)
 
-    def setTicket(self, ticket):
+    def set_ticket(self, ticket):
         #check vip
         isVip = self._database.check_vip(ticket)
 
