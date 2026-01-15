@@ -8,7 +8,7 @@ class VisitorPage():
         self._database = database
         self._style_1 = style_1
         self._visitor_page = None
-        self._ticket = "1234567"
+        self._ticket = None
 
         self._order_page = None
 

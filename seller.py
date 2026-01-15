@@ -9,7 +9,7 @@ class SellerPage():
         self._database = database
         self._style_1 = style_1
         self._seller_page = None
-        self._stand = "1"
+        self._stand = None
 
     def get_page(self):
         if not self._seller_page:
