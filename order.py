@@ -10,8 +10,8 @@ class OrderPage():
         self._database = database
         self._style_1 = style_1
         self._order_page = None
-        self._ticket = "1234567"
-        self._selected_stand = ""
+        self._ticket = None
+        self._selected_stand = None
         self._current_time = 0
         self._current_price = Decimal(0.00)
         self._priority = False
