@@ -24,15 +24,15 @@ login_page = login_page_management.get_page()
 login_page.grid(row=0, column=1, sticky="nsew")
 
 visitor_page_management = VisitorPage(root, database, style_1)
-visitor_page = visitor_page_management.getPage()
+visitor_page = visitor_page_management.get_page()
 visitor_page.grid(row=0, column=1, sticky="nsew")
 
 order_page_management = OrderPage(root, database, style_1)
-order_page = order_page_management.getPage()
+order_page = order_page_management.get_page()
 order_page.grid(row=0, column=1, sticky="nsew")
 
 seller_page_management = SellerPage(root, database, style_1)
-seller_page = seller_page_management.getPage()
+seller_page = seller_page_management.get_page()
 seller_page.grid(row=0, column=1, sticky="nsew")
 
 login_page_management.set_visitor_pageManagement(visitor_page_management)

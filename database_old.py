@@ -163,7 +163,7 @@ class Database:
 
 
     def connect_order_to_ticket(self, order, ticket):
-        if self.check_order2ticket_exists(order, ticket):
+        if self._check_order2ticket_exists(order, ticket):
             return
 
         data = self._read_data()
@@ -178,7 +178,7 @@ class Database:
                 self._write_data(data)
                 break            
 
-    def check_order2ticket_exists(self, order, ticket):
+    def _check_order2ticket_exists(self, order, ticket):
         data = self._read_data()
         for o2t in data["Order2Ticket"]:
             if data["Order2Ticket"][o2t]["order"] == order and data["Order2Ticket"][o2t]["ticket"] == ticket:

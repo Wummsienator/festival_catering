@@ -67,14 +67,14 @@ class LoginPage():
             if not stand:
                 self.ticket_val.set("")
                 self.password_val.set("")
-                self._visitor_page_management.fillOrderTableRows(ticket)
-                self._visitor_page_management.getPage().tkraise()
+                self._visitor_page_management.fill_order_table_rows(ticket)
+                self._visitor_page_management.get_page().tkraise()
             else:
                 self.ticket_val.set("")
                 self.password_val.set("")
-                self._seller_page_management.fillOrderTableRows(stand)
+                self._seller_page_management.fill_order_table_rows(stand)
                 self._seller_page_management.fillProductTableRows(stand)
-                self._seller_page_management.getPage().tkraise()
+                self._seller_page_management.get_page().tkraise()
 
 
     def set_visitor_pageManagement(self, visitor_page_management):

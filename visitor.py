@@ -12,14 +12,14 @@ class VisitorPage():
 
         self._order_page = None
 
-    def getPage(self):
+    def get_page(self):
         if not self._visitor_page:
             #page
             visitor_page = Frame(self._root)
 
-            self.createColumns(visitor_page)
-            self.createRows(visitor_page)
-            self.loadImages()
+            self._create_columns(visitor_page)
+            self._create_rows(visitor_page)
+            self._load_images()
             self.createOrderTable(visitor_page)
             self.createNotificationTable(visitor_page)
 
@@ -40,7 +40,7 @@ class VisitorPage():
             Label(visitor_page, image=self._logo_img, font=self._style_1).grid(row=6, column=7)
 
             #buttons
-            Button(visitor_page, text="€▷", command=lambda: self.addCredit(), font=self._style_1, background="#75E6DA").grid(row=0, column=7)
+            Button(visitor_page, text="€▷", command=lambda: self._add_credit(), font=self._style_1, background="#75E6DA").grid(row=0, column=7)
             Button(visitor_page, text="Bestellung aufnehmen", command=lambda: self.onGoToOrderPage(), font=self._style_1, background="#75E6DA").grid(row=2, column=1)
             Button(form_frame, text="Bestellung freischalten", command=lambda: self.unlockTicketForFriend(), font=self._style_1, background="#75E6DA").grid(row=2, column=1)
 
@@ -51,7 +51,7 @@ class VisitorPage():
             self._visitor_page  = visitor_page
         return self._visitor_page
     
-    def createColumns(self, visitor_page):
+    def _create_columns(self, visitor_page):
         visitor_page.grid_columnconfigure(0, weight=1)
         visitor_page.grid_columnconfigure(1, weight=1)
         visitor_page.grid_columnconfigure(2, weight=1)
@@ -62,7 +62,7 @@ class VisitorPage():
         visitor_page.grid_columnconfigure(7, weight=1)
         visitor_page.grid_columnconfigure(8, weight=1)
 
-    def createRows(self, visitor_page):
+    def _create_rows(self, visitor_page):
         visitor_page.grid_rowconfigure(0, weight=1)
         visitor_page.grid_rowconfigure(1, weight=1)
         visitor_page.grid_rowconfigure(2, weight=1)
@@ -71,7 +71,7 @@ class VisitorPage():
         visitor_page.grid_rowconfigure(5, weight=1)
         visitor_page.grid_rowconfigure(6, weight=1)
     
-    def loadImages(self):
+    def _load_images(self):
         logo_pil = Image.open("img/logo.png")
         logo_pil = logo_pil.resize((50, 50), Image.Resampling.LANCZOS)
         self._logo_img = ImageTk.PhotoImage(logo_pil)
@@ -125,7 +125,7 @@ class VisitorPage():
 
         self._table.bind("<Double-1>", self.openPopup)
     
-    def fillOrderTableRows(self, ticket):
+    def fill_order_table_rows(self, ticket):
         #clear existing rows
         self._table.delete(*self._table.get_children())
         #insert sample data
@@ -181,7 +181,7 @@ class VisitorPage():
 
     def onGoToOrderPage(self):
         self._order_page_management.setTicket(self._ticket)
-        self._order_page_management.getPage().tkraise()
+        self._order_page_management.get_page().tkraise()
 
     def disable_selection(self, event=None):
         event.widget.selection_remove(event.widget.selection())
@@ -189,7 +189,7 @@ class VisitorPage():
     def setOrderPageManagement(self, order_page_management):
         self._order_page_management = order_page_management
 
-    def addCredit(self):
+    def _add_credit(self):
         self._database.add_credit_for_ticket(self._ticket, 10)
 
         credit_txt = "Guthaben: " + str(self._database.get_credit_for_ticket(self._ticket)) + "€"

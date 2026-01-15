@@ -11,14 +11,14 @@ class SellerPage():
         self._seller_page = None
         self._stand = "1"
 
-    def getPage(self):
+    def get_page(self):
         if not self._seller_page:
             #page
             seller_page = Frame(self._root)
 
-            self.createColumns(seller_page)
-            self.createRows(seller_page)
-            self.loadImages()
+            self._create_columns(seller_page)
+            self._create_rows(seller_page)
+            self._load_images()
             self.createOrderTable(seller_page)
             self.createProductTable(seller_page)
             self.createProductComboBox(seller_page)
@@ -35,7 +35,7 @@ class SellerPage():
             self._seller_page = seller_page
         return self._seller_page
     
-    def createColumns(self, seller_page):
+    def _create_columns(self, seller_page):
         seller_page.grid_columnconfigure(0, weight=1)
         seller_page.grid_columnconfigure(1, weight=1)
         seller_page.grid_columnconfigure(2, weight=1)
@@ -46,7 +46,7 @@ class SellerPage():
         seller_page.grid_columnconfigure(7, weight=1)
         seller_page.grid_columnconfigure(8, weight=1)
 
-    def createRows(self, seller_page):
+    def _create_rows(self, seller_page):
         seller_page.grid_rowconfigure(0, weight=1)
         seller_page.grid_rowconfigure(1, weight=1)
         seller_page.grid_rowconfigure(2, weight=1)
@@ -55,7 +55,7 @@ class SellerPage():
         seller_page.grid_rowconfigure(5, weight=1)
         seller_page.grid_rowconfigure(6, weight=1)
 
-    def loadImages(self):
+    def _load_images(self):
         logo_pil = Image.open("img/logo.png")
         logo_pil = logo_pil.resize((50, 50), Image.Resampling.LANCZOS)
         self._logo_img = ImageTk.PhotoImage(logo_pil)
@@ -153,7 +153,7 @@ class SellerPage():
     def disable_selection(self, event=None):
         event.widget.selection_remove(event.widget.selection())
 
-    def fillOrderTableRows(self, stand):
+    def fill_order_table_rows(self, stand):
         #clear existing rows
         self._table.delete(*self._table.get_children())
         #insert sample data
@@ -306,4 +306,4 @@ class SellerPage():
 
         #update data
         self._database.change_status_for_order(selected_order[0])
-        self.fillOrderTableRows(self._stand)
+        self.fill_order_table_rows(self._stand)

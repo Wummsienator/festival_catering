@@ -198,7 +198,7 @@ class Database:
             return False, None
     
     def connect_order_to_ticket(self, order, ticket):
-        if self.check_order2ticket_exists(order, ticket):
+        if self._check_order2ticket_exists(order, ticket):
             return
         
         #get new id
@@ -221,7 +221,7 @@ class Database:
         self._cursor.execute(insert)
         self._cursor.commit()
     
-    def check_order2ticket_exists(self, order, ticket):
+    def _check_order2ticket_exists(self, order, ticket):
         select = f"""
                  SELECT ID FROM Order2Ticket
                  WHERE OrderID = {order} AND TicketNR = {ticket}
