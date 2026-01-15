@@ -73,7 +73,7 @@ class LoginPage():
                 self.ticket_val.set("")
                 self.password_val.set("")
                 self._seller_page_management.fill_order_table_rows(stand)
-                self._seller_page_management.fillProductTableRows(stand)
+                self._seller_page_management.fill_product_table_rows(stand)
                 self._seller_page_management.get_page().tkraise()
 
 

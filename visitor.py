@@ -20,8 +20,8 @@ class VisitorPage():
             self._create_columns(visitor_page)
             self._create_rows(visitor_page)
             self._load_images()
-            self.createOrderTable(visitor_page)
-            self.createNotificationTable(visitor_page)
+            self._create_order_table(visitor_page)
+            self._create_notification_table(visitor_page)
 
             #frames
             form_frame = Frame(visitor_page)
@@ -41,8 +41,8 @@ class VisitorPage():
 
             #buttons
             Button(visitor_page, text="€▷", command=lambda: self._add_credit(), font=self._style_1, background="#75E6DA").grid(row=0, column=7)
-            Button(visitor_page, text="Bestellung aufnehmen", command=lambda: self.onGoToOrderPage(), font=self._style_1, background="#75E6DA").grid(row=2, column=1)
-            Button(form_frame, text="Bestellung freischalten", command=lambda: self.unlockTicketForFriend(), font=self._style_1, background="#75E6DA").grid(row=2, column=1)
+            Button(visitor_page, text="Bestellung aufnehmen", command=lambda: self._on_go_to_order_page(), font=self._style_1, background="#75E6DA").grid(row=2, column=1)
+            Button(form_frame, text="Bestellung freischalten", command=lambda: self._unlock_ticket_for_friend(), font=self._style_1, background="#75E6DA").grid(row=2, column=1)
 
             #input fields
             self._friend_ticket_val = StringVar()
@@ -80,7 +80,7 @@ class VisitorPage():
         qr_pil = qr_pil.resize((150, 150), Image.Resampling.LANCZOS)
         self._qr_img = ImageTk.PhotoImage(qr_pil)
     
-    def createOrderTable(self, visitor_page):
+    def _create_order_table(self, visitor_page):
         #frames
         form_frame = Frame(visitor_page)
         form_frame.grid(row=1, column=1, columnspan=7)
@@ -123,7 +123,7 @@ class VisitorPage():
         self._table.configure(yscrollcommand=vsb.set)
         vsb.grid(row=1, column=1, sticky="ns")
 
-        self._table.bind("<Double-1>", self.openPopup)
+        self._table.bind("<Double-1>", self._open_popup)
     
     def fill_order_table_rows(self, ticket):
         #clear existing rows
@@ -150,7 +150,7 @@ class VisitorPage():
         #update ticket
         self._ticket = ticket
 
-    def createNotificationTable(self, visitor_page):
+    def _create_notification_table(self, visitor_page):
         #define table columns
         column = "Benachrichtigungen:"
         self._table2 = ttk.Treeview(visitor_page, columns=column, show="headings", selectmode="browse", height=3)
@@ -177,16 +177,16 @@ class VisitorPage():
 
         self._table2.grid(row=5, column=1, columnspan=7)
 
-        self._table2.bind("<<TreeviewSelect>>", self.disable_selection)
+        self._table2.bind("<<TreeviewSelect>>", self._disable_selection)
 
-    def onGoToOrderPage(self):
+    def _on_go_to_order_page(self):
         self._order_page_management.setTicket(self._ticket)
         self._order_page_management.get_page().tkraise()
 
-    def disable_selection(self, event=None):
+    def _disable_selection(self, event=None):
         event.widget.selection_remove(event.widget.selection())
 
-    def setOrderPageManagement(self, order_page_management):
+    def set_order_page_management(self, order_page_management):
         self._order_page_management = order_page_management
 
     def _add_credit(self):
@@ -196,7 +196,7 @@ class VisitorPage():
         self._credit_label.config(text=credit_txt) 
     
     
-    def unlockTicketForFriend(self):
+    def _unlock_ticket_for_friend(self):
         selected = self._table.focus()
         if not selected:
             return
@@ -205,7 +205,7 @@ class VisitorPage():
 
         self._database.connect_order_to_ticket(values[3], friend_ticket)
 
-    def openPopup(self, event=None):
+    def _open_popup(self, event=None):
         #get selection
         selected = self._table.focus()
         if not selected:

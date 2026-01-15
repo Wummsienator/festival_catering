@@ -19,9 +19,9 @@ class SellerPage():
             self._create_columns(seller_page)
             self._create_rows(seller_page)
             self._load_images()
-            self.createOrderTable(seller_page)
-            self.createProductTable(seller_page)
-            self.createProductComboBox(seller_page)
+            self._create_order_table(seller_page)
+            self._create_product_table(seller_page)
+            self._create_product_combo_box(seller_page)
 
             #labels
             self._stand_label = Label(seller_page, text="Stand Nr.: 1", font=self._style_1)
@@ -30,7 +30,7 @@ class SellerPage():
             Label(seller_page, image=self._logo_img, font=self._style_1).grid(row=6, column=7)
 
             #buttons
-            Button(seller_page, text="Status weiterschalten", command=lambda: self.onChangeStatus(), font=self._style_1, background="#75E6DA").grid(row=2, column=1, columnspan=2)
+            Button(seller_page, text="Status weiterschalten", command=lambda: self._on_change_status(), font=self._style_1, background="#75E6DA").grid(row=2, column=1, columnspan=2)
 
             self._seller_page = seller_page
         return self._seller_page
@@ -60,7 +60,7 @@ class SellerPage():
         logo_pil = logo_pil.resize((50, 50), Image.Resampling.LANCZOS)
         self._logo_img = ImageTk.PhotoImage(logo_pil)
 
-    def createOrderTable(self, seller_page):
+    def _create_order_table(self, seller_page):
         #frames
         form_frame = Frame(seller_page)
         form_frame.grid(row=1, column=1, columnspan=7)
@@ -103,9 +103,9 @@ class SellerPage():
         self._table.configure(yscrollcommand=vsb.set)
         vsb.grid(row=1, column=1, sticky="ns")
 
-        self._table.bind("<Double-1>", self.openPopup)
+        self._table.bind("<Double-1>", self._open_popup)
 
-    def createProductTable(self, seller_page):
+    def _create_product_table(self, seller_page):
         #frames
         form_frame = Frame(seller_page)
         form_frame.grid(row=3, column=1, columnspan=7)
@@ -148,9 +148,9 @@ class SellerPage():
         self._table_2.configure(yscrollcommand=vsb.set)
         vsb.grid(row=1, column=1, sticky="ns")
 
-        self._table_2.bind("<<TreeviewSelect>>", self.disable_selection)
+        self._table_2.bind("<<TreeviewSelect>>", self._disable_selection)
 
-    def disable_selection(self, event=None):
+    def _disable_selection(self, event=None):
         event.widget.selection_remove(event.widget.selection())
 
     def fill_order_table_rows(self, stand):
@@ -169,7 +169,7 @@ class SellerPage():
         #update stand
         self._stand = stand
 
-    def fillProductTableRows(self, stand):
+    def fill_product_table_rows(self, stand):
         #clear existing rows
         self._table_2.delete(*self._table_2.get_children())
         #insert sample data
@@ -185,7 +185,7 @@ class SellerPage():
         for i, row in enumerate(data):
             self._table_2.insert("", END, values=row, tags=("row",))
 
-    def createProductComboBox(self, seller_page):
+    def _create_product_combo_box(self, seller_page):
         #get products
         products = self._database.get_products()
         options = {}
@@ -211,14 +211,14 @@ class SellerPage():
         quantity_ipt.grid(row=4, column=2)
 
         #button
-        Button(seller_page, text="Bestand hinzufügen", command=lambda: self.onAddProduct(), font=self._style_1, background="#75E6DA").grid(row=4, column=6)
+        Button(seller_page, text="Bestand hinzufügen", command=lambda: self._on_add_product(), font=self._style_1, background="#75E6DA").grid(row=4, column=6)
 
     def validate_int(self, new_value):
         if new_value == "" or new_value == "Menge":   # allow empty string and placeholder value
             return True
         return new_value.isdigit()
 
-    def onAddProduct(self, event=None):
+    def _on_add_product(self, event=None):
         display = self._product_combo.get()
         quantity = self._quantity_val.get()
         if not display or not quantity or quantity == "Menge":
@@ -228,13 +228,13 @@ class SellerPage():
 
         #update data
         self._database.add_product_for_stand(self._stand, key, int(quantity))
-        self.fillProductTableRows(self._stand)
+        self.fill_product_table_rows(self._stand)
 
         #clear fields
         self._product_combo.set("Produkt wählen")
         self._quantity_val.set("")
 
-    def openPopup(self, event=None):
+    def _open_popup(self, event=None):
         #get selection
         selected = self._table.focus()
         if not selected:
@@ -298,7 +298,7 @@ class SellerPage():
         Label(popup, text="Sonderwünsche:", font=self._style_1).grid(row=2, column=0)
         Label(popup, text=special_requests, font=self._style_1).grid(row=3, column=0)
 
-    def onChangeStatus(self, event=None):
+    def _on_change_status(self, event=None):
         selected = self._table.focus()
         if not selected:
             return

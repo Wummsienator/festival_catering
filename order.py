@@ -49,8 +49,8 @@ class OrderPage():
 
             #buttons
             Button(order_page, text="€▷", command=lambda: self._add_credit(), font=self._style_1, background="#75E6DA").grid(row=0, column=7)
-            Button(order_page, text="Abbrechen", command=lambda: self.onCancel(), font=self._style_1, background="#75E6DA").grid(row=8, column=2)
-            Button(order_page, text="Bestellen", command=lambda: self.onOrder(), font=self._style_1, background="#75E6DA").grid(row=8, column=5)
+            Button(order_page, text="Abbrechen", command=lambda: self._on_cancel(), font=self._style_1, background="#75E6DA").grid(row=8, column=2)
+            Button(order_page, text="Bestellen", command=lambda: self._on_order(), font=self._style_1, background="#75E6DA").grid(row=8, column=5)
 
             #input fields
             self._stand_val = StringVar()
@@ -415,7 +415,7 @@ class OrderPage():
 
         self._update_time_price_labels()
 
-    def onCancel(self):
+    def _on_cancel(self):
         self._clear_warenkorb()
 
         #clear tables
@@ -435,7 +435,7 @@ class OrderPage():
         self._visitor_page_management.fill_order_table_rows(self._ticket)
         self._visitor_page_management.get_page().tkraise()
 
-    def onOrder(self):
+    def _on_order(self):
         #not enough credit
         if self._current_price > self._database.get_credit_for_ticket(self._ticket):
             return
@@ -454,7 +454,7 @@ class OrderPage():
                 order_positions.append({"productID": int(item_id), "quantity": int(item[3])})
 
             self._database.place_order(self._selected_stand, self._ticket, order_positions, self._current_price, special_requests)
-        self.onCancel()
+        self._on_cancel()
 
     def set_visitor_pageManagement(self, visitor_page_management):
         self._visitor_page_management = visitor_page_management
