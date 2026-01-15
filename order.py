@@ -460,7 +460,7 @@ class OrderPage():
         self._visitor_page_management = visitor_page_management
 
     def addCredit(self):
-        self._database.addCreditForTicket(self._ticket, 10)
+        self._database.add_credit_for_ticket(self._ticket, 10)
 
         credit_txt = "Guthaben: " + str(self._database.get_credit_for_ticket(self._ticket)) + "€"
         self._credit_label.config(text=credit_txt) 

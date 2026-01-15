@@ -5,35 +5,35 @@ class Database:
     def __init__(self):
         return
     
-    def _readData(self):
+    def _read_data(self):
         #read from file and parse JSON
         with open("data.json", "r") as f:
             data = json.load(f)
         return data
     
-    def _writeData(self, data):
+    def _write_data(self, data):
         json_str = json.dumps(data, indent=4)
         with open("data.json", "w") as f:
             f.write(json_str)
     
-    def getproductsForStand(self, stand):
+    def get_products_for_stand(self, stand):
         products = []
-        data = self._readData()
+        data = self._read_data()
         for p in data["Stands"][stand]["products"]:
             products.append(data["Products"][p])
         return products
     
-    def adjustTimers(self):
-        data = self._readData()
+    def adjust_timers(self):
+        data = self._read_data()
         #adjust timers
         for o in data["Orders"]:
             if data["Orders"][o]["time"] > 0:
                 data["Orders"][o]["time"] = data["Orders"][o]["time"] - 1
-        self._writeData(data)
+        self._write_data(data)
 
     def get_orders_for_ticket(self, ticket):
         orders = []
-        data = self._readData()
+        data = self._read_data()
         for o2t in data["Order2Ticket"]:
             #get relation object
             o2t_obj = data["Order2Ticket"][o2t]
@@ -56,7 +56,7 @@ class Database:
     
     def get_orders_for_stand(self, stand):
         orders = []
-        data = self._readData()
+        data = self._read_data()
         for o2s in data["Order2Stand"]:
             #get relation object
             o2s_obj  = data["Order2Stand"][o2s]
@@ -74,7 +74,7 @@ class Database:
         return orders
     
     def place_order(self, stand, ticket, position_list, price, special_requests):
-        data = self._readData()
+        data = self._read_data()
         time = 0
         price = 0
         positions = {}
@@ -115,13 +115,13 @@ class Database:
         #update credit for ticket
         data["Tickets"][ticket]["credit"] = data["Tickets"][ticket]["credit"] - price
 
-        self._writeData(data)
+        self._write_data(data)
 
     def get_credit_for_ticket(self, ticket):
-        return self._readData()["Tickets"][ticket]["credit"]
+        return self._read_data()["Tickets"][ticket]["credit"]
     
-    def searchStand(self, standStr):
-        data = self._readData()
+    def search_stand(self, standStr):
+        data = self._read_data()
         rData = []
         for stand in data["Stands"]:
             if stand.startswith(standStr):
@@ -132,7 +132,7 @@ class Database:
         return rData
 
     def get_products_for_stand(self, stand):
-        data = self._readData()
+        data = self._read_data()
         products = []
 
         #check if stand exists
@@ -152,13 +152,13 @@ class Database:
 
         return products
     
-    def addCreditForTicket(self, ticket, amount):
-        data = self._readData()
+    def add_credit_for_ticket(self, ticket, amount):
+        data = self._read_data()
         #check if ticket exists
         for t in data["Tickets"]:
             if t == ticket:
                 data["Tickets"][t]["credit"] = data["Tickets"][t]["credit"] + amount
-                self._writeData(data)
+                self._write_data(data)
                 break
 
 
@@ -166,7 +166,7 @@ class Database:
         if self.check_order2ticket_exists(order, ticket):
             return
 
-        data = self._readData()
+        data = self._read_data()
 
         #check if ticket exists
         for t in data["Tickets"]:
@@ -175,18 +175,18 @@ class Database:
                 data["Order2Ticket"][data["GlobalIDs"]["Order2Ticket"]] = {"order": order, "ticket": ticket}
                 #update id
                 data["GlobalIDs"]["Order2Ticket"] = data["GlobalIDs"]["Order2Ticket"] + 1
-                self._writeData(data)
+                self._write_data(data)
                 break            
 
     def check_order2ticket_exists(self, order, ticket):
-        data = self._readData()
+        data = self._read_data()
         for o2t in data["Order2Ticket"]:
             if data["Order2Ticket"][o2t]["order"] == order and data["Order2Ticket"][o2t]["ticket"] == ticket:
                 return True
         return False
 
     def check_login(self, ticket, password):
-        data = self._readData()
+        data = self._read_data()
         #check if ticket exists
         for t in data["Tickets"]:
             if t == ticket:
@@ -202,7 +202,7 @@ class Database:
 
 
     def get_positions_for_order(self, order):
-        data = self._readData()
+        data = self._read_data()
         positions = []
         special_requests = ""
         #check if order exists
@@ -221,10 +221,10 @@ class Database:
         return positions, special_requests
 
     def check_vip(self, ticket):
-        return self._readData()["Tickets"][ticket]["vip"]
+        return self._read_data()["Tickets"][ticket]["vip"]
     
     def get_products(self):
-        data = self._readData()
+        data = self._read_data()
         products = []
         for p in data["Products"]:
             product_data = data["Products"][p]
@@ -236,7 +236,7 @@ class Database:
         return products
 
     def add_product_for_stand(self, stand, product, quantity):
-        data = self._readData()
+        data = self._read_data()
         #check if stand already has the product
         found = False
         for p in data["Stands"][stand]["products"]:   
@@ -248,10 +248,10 @@ class Database:
         if not found:
             data["Stands"][stand]["products"].append({"product": product, "quantity": quantity})
         
-        self._writeData(data)
+        self._write_data(data)
 
     def change_status_for_order(self, order):
-        data = self._readData()
+        data = self._read_data()
         #check if order exists
         for o in data["Orders"]:
             if o == order:
@@ -259,4 +259,4 @@ class Database:
                 #works as long as there is a linear order 
                 if current_status < 3:
                     data["Orders"][o]["status"] = str(current_status + 1)
-        self._writeData(data)
+        self._write_data(data)
