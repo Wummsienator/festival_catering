@@ -158,7 +158,7 @@ class SellerPage():
         self._table.delete(*self._table.get_children())
         #insert sample data
         data = []
-        orders = self._database.getOrdersForStand(stand)
+        orders = self._database.get_orders_for_stand(stand)
 
         for order in orders:
             data.append( (order["ID"], order["timestamp"], order["status_desc"]) )
@@ -174,7 +174,7 @@ class SellerPage():
         self._table_2.delete(*self._table_2.get_children())
         #insert sample data
         data = []
-        products = self._database.getProductsForStand(stand)
+        products = self._database.get_products_for_stand(stand)
 
         for product in products:
             warning = ""
@@ -187,7 +187,7 @@ class SellerPage():
 
     def createProductComboBox(self, seller_page):
         #get products
-        products = self._database.getProducts()
+        products = self._database.get_products()
         options = {}
         for product in products:
             options[product["ID"]] = product["name"]
@@ -227,7 +227,7 @@ class SellerPage():
         key = display.split("(", 1)[1].strip(")")   #extract key from display string
 
         #update data
-        self._database.addProductForStand(self._stand, key, int(quantity))
+        self._database.add_product_for_stand(self._stand, key, int(quantity))
         self.fillProductTableRows(self._stand)
 
         #clear fields
@@ -286,7 +286,7 @@ class SellerPage():
 
         #fill rows
         data = []
-        positions, special_requests = self._database.getPositionsForOrder(selected_order[0])
+        positions, special_requests = self._database.get_positions_for_order(selected_order[0])
 
         for position in positions:
             data.append( (position["name"], position["quantity"]) )
@@ -305,5 +305,5 @@ class SellerPage():
         selected_order = self._table.item(selected, "values")
 
         #update data
-        self._database.changeStatusForOrder(selected_order[0])
+        self._database.change_status_for_order(selected_order[0])
         self.fillOrderTableRows(self._stand)

@@ -14,7 +14,7 @@ class LoginPage():
 
         self._logo_img = ImageTk.PhotoImage(logo_pil)
 
-    def getPage(self):
+    def get_page(self):
         if not self._login_page:
             #page
             login_page = Frame(self._root)
@@ -51,17 +51,17 @@ class LoginPage():
             Entry(form_frame, font=self._style_1, bg="#D4F1F4", textvariable=self.password_val, show="*").grid(row=1, column=1)
 
             #button
-            Button(form_frame, text="Login", command=lambda: self.onLogin(), font=self._style_1, background="#75E6DA").grid(row=2, column=0, columnspan=2)
+            Button(form_frame, text="Login", command=lambda: self.on_login(), font=self._style_1, background="#75E6DA").grid(row=2, column=0, columnspan=2)
 
             self._login_page = login_page
         return self._login_page
 
-    def onLogin(self):
+    def on_login(self):
         ticket = self.ticket_val.get()
         password = self.password_val.get()
 
         #check login validity and dependently get corresponding stand
-        check_login, stand = self._database.checkLogin(ticket, password)
+        check_login, stand = self._database.check_login(ticket, password)
 
         if check_login:
             if not stand:
@@ -77,8 +77,8 @@ class LoginPage():
                 self._seller_page_management.getPage().tkraise()
 
 
-    def setVisitorPageManagement(self, visitor_page_management):
+    def set_visitor_pageManagement(self, visitor_page_management):
         self._visitor_page_management = visitor_page_management
 
-    def setSellerPageManagement(self, seller_page_management):
+    def set_seller_page_management(self, seller_page_management):
         self._seller_page_management = seller_page_management

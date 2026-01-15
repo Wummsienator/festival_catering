@@ -31,7 +31,7 @@ class Database:
                 data["Orders"][o]["time"] = data["Orders"][o]["time"] - 1
         self._writeData(data)
 
-    def getOrdersForTicket(self, ticket):
+    def get_orders_for_ticket(self, ticket):
         orders = []
         data = self._readData()
         for o2t in data["Order2Ticket"]:
@@ -54,7 +54,7 @@ class Database:
 
         return orders
     
-    def getOrdersForStand(self, stand):
+    def get_orders_for_stand(self, stand):
         orders = []
         data = self._readData()
         for o2s in data["Order2Stand"]:
@@ -73,7 +73,7 @@ class Database:
 
         return orders
     
-    def placeOrder(self, stand, ticket, position_list, price, special_requests):
+    def place_order(self, stand, ticket, position_list, price, special_requests):
         data = self._readData()
         time = 0
         price = 0
@@ -117,7 +117,7 @@ class Database:
 
         self._writeData(data)
 
-    def getCreditForTicket(self, ticket):
+    def get_credit_for_ticket(self, ticket):
         return self._readData()["Tickets"][ticket]["credit"]
     
     def searchStand(self, standStr):
@@ -131,7 +131,7 @@ class Database:
                 rData.append(standData)
         return rData
 
-    def getProductsForStand(self, stand):
+    def get_products_for_stand(self, stand):
         data = self._readData()
         products = []
 
@@ -162,8 +162,8 @@ class Database:
                 break
 
 
-    def connectOrderToTicket(self, order, ticket):
-        if self.checkOrder2TicketExists(order, ticket):
+    def connect_order_to_ticket(self, order, ticket):
+        if self.check_order2ticket_exists(order, ticket):
             return
 
         data = self._readData()
@@ -178,14 +178,14 @@ class Database:
                 self._writeData(data)
                 break            
 
-    def checkOrder2TicketExists(self, order, ticket):
+    def check_order2ticket_exists(self, order, ticket):
         data = self._readData()
         for o2t in data["Order2Ticket"]:
             if data["Order2Ticket"][o2t]["order"] == order and data["Order2Ticket"][o2t]["ticket"] == ticket:
                 return True
         return False
 
-    def checkLogin(self, ticket, password):
+    def check_login(self, ticket, password):
         data = self._readData()
         #check if ticket exists
         for t in data["Tickets"]:
@@ -201,7 +201,7 @@ class Database:
         return False, None
 
 
-    def getPositionsForOrder(self, order):
+    def get_positions_for_order(self, order):
         data = self._readData()
         positions = []
         special_requests = ""
@@ -220,10 +220,10 @@ class Database:
 
         return positions, special_requests
 
-    def checkVip(self, ticket):
+    def check_vip(self, ticket):
         return self._readData()["Tickets"][ticket]["vip"]
     
-    def getProducts(self):
+    def get_products(self):
         data = self._readData()
         products = []
         for p in data["Products"]:
@@ -235,7 +235,7 @@ class Database:
 
         return products
 
-    def addProductForStand(self, stand, product, quantity):
+    def add_product_for_stand(self, stand, product, quantity):
         data = self._readData()
         #check if stand already has the product
         found = False
@@ -250,7 +250,7 @@ class Database:
         
         self._writeData(data)
 
-    def changeStatusForOrder(self, order):
+    def change_status_for_order(self, order):
         data = self._readData()
         #check if order exists
         for o in data["Orders"]:

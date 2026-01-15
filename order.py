@@ -255,7 +255,7 @@ class OrderPage():
 
     def setTicket(self, ticket):
         #check vip
-        isVip = self._database.checkVip(ticket)
+        isVip = self._database.check_vip(ticket)
 
         ticketTxt = "Ticket: " + ticket
         if isVip:
@@ -264,7 +264,7 @@ class OrderPage():
         else:
             self._priority_switch.config(state="disabled") 
         self._ticket_label.config(text=ticketTxt) 
-        credit_txt = "Guthaben: " + str(self._database.getCreditForTicket(ticket)) + "€"
+        credit_txt = "Guthaben: " + str(self._database.get_credit_for_ticket(ticket)) + "€"
         self._credit_label.config(text=credit_txt) 
         self._ticket = ticket
 
@@ -294,7 +294,7 @@ class OrderPage():
         #insert sample data
         data = []
         ids = []
-        products = self._database.getProductsForStand(selected_stand)
+        products = self._database.get_products_for_stand(selected_stand)
 
         for product in products:
             data.append( (product["name"], product["time"], product["price"], product["quantity"]) )
@@ -354,7 +354,7 @@ class OrderPage():
 
         
         if not found:
-            products = self._database.getProductsForStand(self._selected_stand)
+            products = self._database.get_products_for_stand(self._selected_stand)
             for product in products:
                 if int(selected) == product["ID"]:
                     newRow = (product["name"], product["time"], product["price"], 1)
@@ -437,7 +437,7 @@ class OrderPage():
 
     def onOrder(self):
         #not enough credit
-        if self._current_price > self._database.getCreditForTicket(self._ticket):
+        if self._current_price > self._database.get_credit_for_ticket(self._ticket):
             return
 
         order_positions = []
@@ -453,15 +453,15 @@ class OrderPage():
                 item = self._table_3.item(item_id, "values")
                 order_positions.append({"productID": int(item_id), "quantity": int(item[3])})
 
-            self._database.placeOrder(self._selected_stand, self._ticket, order_positions, self._current_price, special_requests)
+            self._database.place_order(self._selected_stand, self._ticket, order_positions, self._current_price, special_requests)
         self.onCancel()
 
-    def setVisitorPageManagement(self, visitor_page_management):
+    def set_visitor_pageManagement(self, visitor_page_management):
         self._visitor_page_management = visitor_page_management
 
     def addCredit(self):
         self._database.addCreditForTicket(self._ticket, 10)
 
-        credit_txt = "Guthaben: " + str(self._database.getCreditForTicket(self._ticket)) + "€"
+        credit_txt = "Guthaben: " + str(self._database.get_credit_for_ticket(self._ticket)) + "€"
         self._credit_label.config(text=credit_txt) 
 

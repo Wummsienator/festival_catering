@@ -20,7 +20,7 @@ root.grid_rowconfigure(0, weight=1)
 
 #pages
 login_page_management = LoginPage(root, database, style_1)
-login_page = login_page_management.getPage()
+login_page = login_page_management.get_page()
 login_page.grid(row=0, column=1, sticky="nsew")
 
 visitor_page_management = VisitorPage(root, database, style_1)
@@ -35,10 +35,10 @@ seller_page_management = SellerPage(root, database, style_1)
 seller_page = seller_page_management.getPage()
 seller_page.grid(row=0, column=1, sticky="nsew")
 
-login_page_management.setVisitorPageManagement(visitor_page_management)
-login_page_management.setSellerPageManagement(seller_page_management)
+login_page_management.set_visitor_pageManagement(visitor_page_management)
+login_page_management.set_seller_page_management(seller_page_management)
 visitor_page_management.setOrderPageManagement(order_page_management)
-order_page_management.setVisitorPageManagement(visitor_page_management)
+order_page_management.set_visitor_pageManagement(visitor_page_management)
 
 #settings
 login_page.tkraise()

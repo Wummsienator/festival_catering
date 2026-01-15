@@ -130,7 +130,7 @@ class VisitorPage():
         self._table.delete(*self._table.get_children())
         #insert sample data
         data = []
-        orders = self._database.getOrdersForTicket(ticket)
+        orders = self._database.get_orders_for_ticket(ticket)
         for order in orders:
             data.append( (order["stand"], order["time"], order["status_desc"], order["ID"]) )
 
@@ -138,13 +138,13 @@ class VisitorPage():
             self._table.insert("", END, values=row, tags=("row",))
 
         #check vip
-        is_vip = self._database.checkVip(ticket)
+        is_vip = self._database.check_vip(ticket)
 
         ticket_txt = "Ticket: " + ticket
         if is_vip:
             ticket_txt = ticket_txt + " ☆"
         self._ticket_label.config(text=ticket_txt) 
-        credit_txt = "Guthaben: " + str(self._database.getCreditForTicket(ticket)) + "€"
+        credit_txt = "Guthaben: " + str(self._database.get_credit_for_ticket(ticket)) + "€"
         self._credit_label.config(text=credit_txt) 
 
         #update ticket
@@ -192,7 +192,7 @@ class VisitorPage():
     def addCredit(self):
         self._database.addCreditForTicket(self._ticket, 10)
 
-        credit_txt = "Guthaben: " + str(self._database.getCreditForTicket(self._ticket)) + "€"
+        credit_txt = "Guthaben: " + str(self._database.get_credit_for_ticket(self._ticket)) + "€"
         self._credit_label.config(text=credit_txt) 
     
     
@@ -203,7 +203,7 @@ class VisitorPage():
         values = self._table.item(selected, "values")
         friend_ticket = self._friend_ticket_val.get()
 
-        self._database.connectOrderToTicket(values[3], friend_ticket)
+        self._database.connect_order_to_ticket(values[3], friend_ticket)
 
     def openPopup(self, event=None):
         #get selection
@@ -257,7 +257,7 @@ class VisitorPage():
 
         #fill rows
         data = []
-        positions = self._database.getPositionsForOrder(selected_order[3])
+        positions = self._database.get_positions_for_order(selected_order[3])
         special_requests = self._database.get_special_requests_for_order(selected_order[3])
 
         for position in positions:

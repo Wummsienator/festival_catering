@@ -13,7 +13,7 @@ class Database:
 
         self._cursor = cnxn.cursor()
 
-    def getProductsForStand(self, stand):
+    def get_products_for_stand(self, stand):
         products = []
         select = f"""
                     SELECT p.*, s2p.Quantity FROM Products AS p 
@@ -24,7 +24,7 @@ class Database:
             products.append({"ID": row[0], "name": row[1], "price": round(row[2], 2), "time": row[3], "quantity": row[4]})
         return products
     
-    def getOrdersForTicket(self, ticket):
+    def get_orders_for_ticket(self, ticket):
         orders = []
         select = f"""
                     SELECT o.*, s.StatusText FROM Orders AS o 
@@ -36,7 +36,7 @@ class Database:
             orders.append({"ID": row[0], "time": row[1], "timestamp": row[2], "price": round(row[3], 2), "status": row[4], "status_desc": row[7], "special_request": row[5], "stand": row[6]})
         return orders
     
-    def getOrdersForStand(self, stand):
+    def get_orders_for_stand(self, stand):
         orders = []
         select = f"""
                     SELECT o.*, s.StatusText FROM Orders AS o 
@@ -47,7 +47,7 @@ class Database:
             orders.append({"ID": row[0], "time": row[1], "timestamp": row[2], "price": round(row[3], 2), "status": row[4], "status_desc": row[7], "special_request": row[5], "stand": row[6]})
         return orders
     
-    def getPositionsForOrder(self, order):
+    def get_positions_for_order(self, order):
         positions = []
         select = f"""
                     SELECT op.*, p.Name FROM OrderPositions AS op
@@ -67,7 +67,7 @@ class Database:
         return self._cursor.execute(select).fetchone()[0]
 
         
-    def getProducts(self):
+    def get_products(self):
         products = []
         select = f"""
                     SELECT * FROM Products
@@ -76,7 +76,7 @@ class Database:
             products.append({"ID": row[0], "name": row[1], "price": round(row[2], 2), "time": row[3]})
         return products
     
-    def checkVip(self, ticket):
+    def check_vip(self, ticket):
         select = f"""
                  SELECT VIP FROM Tickets
                  WHERE TicketNR = {ticket}
@@ -84,9 +84,9 @@ class Database:
         for row in self._cursor.execute(select):
             return row[0]
         
-    def placeOrder(self, stand, ticket, position_list, price, special_requests):    #returns boolean if order could be placed
+    def place_order(self, stand, ticket, position_list, price, special_requests):    #returns boolean if order could be placed
         #check if ticket has enough credits
-        if self.getCreditForTicket(ticket) < price:
+        if self.get_credit_for_ticket(ticket) < price:
             return False
 
         #get new IDs
@@ -166,7 +166,7 @@ class Database:
         #success
         return True   
 
-    def getCreditForTicket(self, ticket):
+    def get_credit_for_ticket(self, ticket):
         select = f"""
                  SELECT Credit FROM Tickets
                  WHERE TicketNR = {ticket}
@@ -175,7 +175,7 @@ class Database:
         row = self._cursor.execute(select).fetchone()
         return round(row[0],2)
         
-    def checkLogin(self, ticket, password):
+    def check_login(self, ticket, password):
         select = f"""
                  SELECT * FROM Tickets
                  WHERE TicketNR = {ticket}
@@ -197,8 +197,8 @@ class Database:
             #ticket doesnt exist
             return False, None
     
-    def connectOrderToTicket(self, order, ticket):
-        if self.checkOrder2TicketExists(order, ticket):
+    def connect_order_to_ticket(self, order, ticket):
+        if self.check_order2ticket_exists(order, ticket):
             return
         
         #get new id
@@ -221,7 +221,7 @@ class Database:
         self._cursor.execute(insert)
         self._cursor.commit()
     
-    def checkOrder2TicketExists(self, order, ticket):
+    def check_order2ticket_exists(self, order, ticket):
         select = f"""
                  SELECT ID FROM Order2Ticket
                  WHERE OrderID = {order} AND TicketNR = {ticket}
@@ -232,7 +232,7 @@ class Database:
         else:
             return False
 
-    def addProductForStand(self, stand, product, quantity):
+    def add_product_for_stand(self, stand, product, quantity):
         select = f"""
                  SELECT * FROM Stand2Product
                  WHERE StandID = {stand} AND ProductID = {product}
@@ -253,7 +253,7 @@ class Database:
         self._cursor.execute(insert)
         self._cursor.commit()
 
-    def changeStatusForOrder(self, order):
+    def change_status_for_order(self, order):
         select = f"""
                  SELECT StatusID FROM Orders
                  WHERE OrderID = {order}
