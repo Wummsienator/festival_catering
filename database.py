@@ -42,7 +42,7 @@ class Database:
                     SELECT o.*, s.StatusText FROM Orders AS o 
                     INNER JOIN Status AS s ON s.StatusID = o.StatusID 
                     WHERE o.StandID = {stand} AND o.StatusID < 4
-                    ORDER BY Prioritized DESC, timestamp ASC
+                    ORDER BY StatusID DESC, Prioritized DESC, timestamp ASC
                  """
         for row in self._cursor.execute(select):
             priorisiert = "Nein"
