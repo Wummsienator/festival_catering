@@ -72,12 +72,12 @@ class SellerPage():
             font=("Arial", 14, "bold"),
             bg="#05445E",
             fg="white",
-            width=45
+            width=60
         )
         title.grid(row=0, column=0)
 
         #define table columns
-        columns = ("Bestellung Nr.", "Zeitstempel", "Status",)
+        columns = ("Bestellung Nr.", "Zeitstempel", "Status", "Priorisiert")
         self._table = ttk.Treeview(form_frame, columns=columns, show="headings", selectmode="browse", height=3)
 
         #define headings
@@ -161,7 +161,7 @@ class SellerPage():
         orders = self._database.get_orders_for_stand(stand)
 
         for order in orders:
-            data.append( (order["ID"], order["timestamp"], order["status_desc"]) )
+            data.append( (order["ID"], order["timestamp"], order["status_desc"],  order["prioritized"]) )
 
         for i, row in enumerate(data):
             self._table.insert("", END, values=row, tags=("row",))
