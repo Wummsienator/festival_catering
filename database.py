@@ -272,7 +272,7 @@ class Database:
         stands = []
         select = f"""
                  SELECT * FROM Stands
-                 WHERE Name LIKE '%{standStr}%'
+                 WHERE StandID LIKE '%{standStr}%' OR Name LIKE '%{standStr}%'
                  """
         
         for row in self._cursor.execute(select):

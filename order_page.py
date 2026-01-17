@@ -453,7 +453,10 @@ class OrderPage():
                 item = self._table_3.item(item_id, "values")
                 order_positions.append({"productID": int(item_id), "quantity": int(item[3])})
 
-            self._database.place_order(self._selected_stand, self._ticket, order_positions, self._current_price, special_requests)
+            if self._database.place_order(self._selected_stand, self._ticket, order_positions, self._current_price, special_requests):
+                #if successfull
+                self._database.create_message_for_ticket(self._ticket, f"Bestellung an Stand {self._selected_stand} erfolgreich aufgegeben.")
+
         self._on_cancel()
 
     def set_visitor_pageManagement(self, visitor_page_management):
