@@ -159,10 +159,10 @@ class VisitorPage():
         self._table2.heading(column, text=column)
         self._table2.column(column, anchor="center", width=600)
 
-        #insert sample data
-        data = [("Deine Bestellung kann in 20 Minuten an Stand 1 abgeholt werden.", ), ("Deine Bestellung an Stand 3 ist abholbereit", )]
-        for i, row in enumerate(data):
-            self._table2.insert("", END, values=row, tags=("row",))
+        #insert initial data
+        data = self._database.get_messages_for_ticket(1234567)
+        for msg in reversed(data):
+            self._table2.insert("", END, values=(msg, ), tags=("row",))
 
         #style rows
         style = ttk.Style(visitor_page)

@@ -202,7 +202,6 @@ class Database:
             return
         
         #get new id
-        new_order2ticket_id = ''
         select = """
                  SELECT NextID FROM GlobalIDs
                  WHERE Name = 'Order2Ticket'
@@ -277,6 +276,33 @@ class Database:
         for row in self._cursor.execute(select):
             stands.append({"ID": row[0], "name": row[1]})
         return stands
+    
+    def get_messages_for_ticket(self, ticket):
+        messages = []
+        select = f"""
+                 SELECT * FROM [Messages]
+                 WHERE TicketNR = {ticket}
+                 """
+        
+        for row in self._cursor.execute(select):
+            messages.append(row[2])
+        return messages
+    
+    def create_message_for_ticket(self, ticket, msg):
+        #get new id
+        select = """
+                 SELECT NextID FROM GlobalIDs
+                 WHERE Name = 'Messages'
+                 """
+        
+        new_message_id = self._cursor.execute(select).fetchone()[0]
+        self._cursor.execute(f"UPDATE GlobalIDs SET NextID = NextID + 1 WHERE Name = 'Messages'")
 
-
-
+        #create new message
+        insert = f"""
+                 INSERT INTO Messages
+                 VALUES ({new_message_id},{ticket},{msg})
+                 """
+        
+        self._cursor.execute(insert)
+        self._cursor.commit()
