@@ -42,7 +42,7 @@ class Database:
                     SELECT o.*, s.StatusText FROM Orders AS o 
                     INNER JOIN Status AS s ON s.StatusID = o.StatusID 
                     WHERE o.StandID = {stand} AND o.StatusID < 4
-                    ORDER BY Prioritized DESC
+                    ORDER BY Prioritized DESC, timestamp ASC
                  """
         for row in self._cursor.execute(select):
             priorisiert = "Nein"
@@ -88,7 +88,7 @@ class Database:
         for row in self._cursor.execute(select):
             return row[0]
         
-    def place_order(self, stand, ticket, position_list, price, special_requests):    #returns boolean if order could be placed
+    def place_order(self, stand, ticket, position_list, price, special_requests, prioritized):    #returns boolean if order could be placed
         #check if ticket has enough credits
         if self.get_credit_for_ticket(ticket) < price:
             return False
@@ -139,7 +139,7 @@ class Database:
         #new order
         insert = """
                  INSERT INTO Orders
-                 VALUES (?, ?, ?, ?, ?, ?, ?)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                  """
         
         params = (
@@ -149,7 +149,8 @@ class Database:
             price,
             1,
             special_requests,
-            stand
+            stand,
+            prioritized
         )
         
         self._cursor.execute(insert, params)
