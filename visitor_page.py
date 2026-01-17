@@ -213,8 +213,10 @@ class VisitorPage():
             return
         values = self._table.item(selected, "values")
         friend_ticket = self._friend_ticket_val.get()
-
-        self._database.connect_order_to_ticket(values[3], friend_ticket)
+        
+        if self._database.connect_order_to_ticket(values[3], friend_ticket):
+            #if successfull
+            self._database.create_message_for_ticket(friend_ticket, f"Für sie wurde eine Bestellung an Stand {values[3]} freigeschaltet.")
 
     def _open_popup(self, event=None):
         #get selection

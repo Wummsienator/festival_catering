@@ -199,7 +199,7 @@ class Database:
     
     def connect_order_to_ticket(self, order, ticket):
         if self._check_order2ticket_exists(order, ticket):
-            return
+            return False
         
         #get new id
         select = """
@@ -219,6 +219,8 @@ class Database:
         
         self._cursor.execute(insert)
         self._cursor.commit()
+
+        return True
     
     def _check_order2ticket_exists(self, order, ticket):
         select = f"""
@@ -301,7 +303,7 @@ class Database:
         #create new message
         insert = f"""
                  INSERT INTO Messages
-                 VALUES ({new_message_id},{ticket},{msg})
+                 VALUES ({new_message_id},{ticket},'{msg}')
                  """
         
         self._cursor.execute(insert)
