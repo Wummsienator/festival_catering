@@ -284,13 +284,13 @@ class VisitorPage():
         Label(popup, text=special_requests, font=self._style_1).grid(row=3, column=0)
 
 class MessageUpdater(threading.Thread):
-    def __init__(self, stop_event, visitor_page, poll_interval=2.5):
+    def __init__(self, stop_event, visitor_page_management, poll_interval=2.5):
         super().__init__(daemon=True)
         self._stop_event = stop_event
-        self._visitor_page = visitor_page
+        self._visitor_page_management = visitor_page_management
         self.poll_interval = poll_interval
 
     def run(self):
         while not self._stop_event.is_set():
-            self._visitor_page.update_notification_table()
+            self._visitor_page_management.update_notification_table()
             time.sleep(self.poll_interval)
