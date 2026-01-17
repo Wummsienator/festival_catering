@@ -1,10 +1,10 @@
 from tkinter import *
 from tkinter import font
 from database import Database
-from login import LoginPage
-from visitor import VisitorPage
-from order import OrderPage
-from seller import SellerPage
+from login_page import LoginPage
+from visitor_page import VisitorPage
+from order_page import OrderPage
+from seller_page import SellerPage
 
 root = Tk()
 database = Database()
