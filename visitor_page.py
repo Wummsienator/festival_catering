@@ -1,6 +1,8 @@
 from tkinter import *
 from tkinter import ttk
 from PIL import Image, ImageTk
+import threading
+import time
 
 class VisitorPage():
     def __init__(self, root, database, style_1):
@@ -47,6 +49,11 @@ class VisitorPage():
             #input fields
             self._friend_ticket_val = StringVar()
             Entry(form_frame, font=self._style_1, bg="#D4F1F4", textvariable=self._friend_ticket_val).grid(row=0, column=1)
+
+            #start notification table update
+            self._msg_stop_event = threading.Event()
+            self._message_updater = MessageUpdater(self._msg_stop_event, self)
+            self._message_updater.start()
 
             self._visitor_page  = visitor_page
         return self._visitor_page
@@ -150,6 +157,9 @@ class VisitorPage():
         #update ticket
         self._ticket = ticket
 
+        #initially fill notification table
+        self.update_notification_table()
+
     def _create_notification_table(self, visitor_page):
         #define table columns
         column = "Benachrichtigungen:"
@@ -158,11 +168,6 @@ class VisitorPage():
         #define headings
         self._table2.heading(column, text=column)
         self._table2.column(column, anchor="center", width=600)
-
-        #insert initial data
-        data = self._database.get_messages_for_ticket(1234567)
-        for msg in reversed(data):
-            self._table2.insert("", END, values=(msg, ), tags=("row",))
 
         #style rows
         style = ttk.Style(visitor_page)
@@ -179,6 +184,13 @@ class VisitorPage():
 
         self._table2.bind("<<TreeviewSelect>>", self._disable_selection)
 
+    def update_notification_table(self):
+        if (self._ticket):
+            data = self._database.get_messages_for_ticket(self._ticket)
+            self._table2.delete(*self._table2.get_children())
+            for msg in reversed(data):
+                self._table2.insert("", END, values=(msg, ), tags=("row",))
+
     def _on_go_to_order_page(self):
         self._order_page_management.set_ticket(self._ticket)
         self._order_page_management.get_page().tkraise()
@@ -194,7 +206,6 @@ class VisitorPage():
 
         credit_txt = "Guthaben: " + str(self._database.get_credit_for_ticket(self._ticket)) + "€"
         self._credit_label.config(text=credit_txt) 
-    
     
     def _unlock_ticket_for_friend(self):
         selected = self._table.focus()
@@ -269,3 +280,15 @@ class VisitorPage():
         #special requests label
         Label(popup, text="Sonderwünsche:", font=self._style_1).grid(row=2, column=0)
         Label(popup, text=special_requests, font=self._style_1).grid(row=3, column=0)
+
+class MessageUpdater(threading.Thread):
+    def __init__(self, stop_event, visitor_page, poll_interval=2.5):
+        super().__init__(daemon=True)
+        self._stop_event = stop_event
+        self._visitor_page = visitor_page
+        self.poll_interval = poll_interval
+
+    def run(self):
+        while not self._stop_event.is_set():
+            self._visitor_page.update_notification_table()
+            time.sleep(self.poll_interval)
