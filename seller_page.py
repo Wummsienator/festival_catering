@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import ttk
 from PIL import Image, ImageTk
 from elements import PlaceholderEntry
+import datetime
 
 class SellerPage():
     def __init__(self, root, database, style_1):
@@ -161,7 +162,7 @@ class SellerPage():
         orders = self._database.get_orders_for_stand(stand)
 
         for order in orders:
-            data.append( (order["ID"], order["timestamp"], order["status_desc"],  order["prioritized"]) )
+            data.append( (order["ID"], order["timestamp"].strftime("%d.%m.%y %X"), order["status_desc"],  order["prioritized"]) )
 
         for i, row in enumerate(data):
             self._table.insert("", END, values=row, tags=("row",))
