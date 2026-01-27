@@ -4,14 +4,14 @@ https://www.youtube.com/watch?v=__rqszvU0zI&list=PL_pqkvxZ6ho1wCmAHzO2oiXiEueqo4
 #Create Backup
 
 BACKUP DATABASE FestivalCateringAPP
-TO DISK = 'E:\Documents\Berufsschule\LF10\LF10_Projekt_Festival_Catering\Database Backup\FestivalCateringAPP_Initial.bak'
+TO DISK = 'C:\SQLBackups\FestivalCateringAPP_Initial.bak'
 WITH INIT;
 
 #Load Backup
 ALTER DATABASE FestivalCateringAPP SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
 
 RESTORE DATABASE FestivalCateringAPP
-FROM DISK = 'E:\Documents\Berufsschule\LF10\LF10_Projekt_Festival_Catering\Database Backup\FestivalCateringAPP_Initial.bak'
+FROM DISK = 'C:\Users\hendrik.wolf\Documents\Berufsschule\LF10\Blockwoche 1\Projekt\App\festival_catering\Database Backup\FestivalCateringAPP_Initial.bak'
 WITH REPLACE;
 
 ALTER DATABASE FestivalCateringAPP SET MULTI_USER;
