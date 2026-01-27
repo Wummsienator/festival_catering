@@ -184,6 +184,9 @@ class Database:
         return round(row[0],2)
         
     def check_login(self, ticket, password):
+        if not ticket.isdigit():
+            return False, None
+
         select = f"""
                  SELECT * FROM Tickets
                  WHERE TicketNR = {ticket}

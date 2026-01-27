@@ -11,7 +11,7 @@ WITH INIT;
 ALTER DATABASE FestivalCateringAPP SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
 
 RESTORE DATABASE FestivalCateringAPP
-FROM DISK = 'C:\Users\hendrik.wolf\Documents\Berufsschule\LF10\Blockwoche 1\Projekt\App\festival_catering\Database Backup\FestivalCateringAPP_Initial.bak'
+FROM DISK = 'C:\SQLBackups\FestivalCateringAPP_Initial.bak'
 WITH REPLACE;
 
 ALTER DATABASE FestivalCateringAPP SET MULTI_USER;
