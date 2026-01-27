@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import ttk
+from tkinter import messagebox
 from PIL import Image, ImageTk
 from elements import PlaceholderEntry
 from decimal import *
@@ -438,6 +439,7 @@ class OrderPage():
     def _on_order(self):
         #not enough credit
         if self._current_price > self._database.get_credit_for_ticket(self._ticket):
+            messagebox.showerror("Fehler", "Zu wenig Guthaben!") 
             return
 
         order_positions = []
@@ -456,8 +458,9 @@ class OrderPage():
             if self._database.place_order(self._selected_stand, self._ticket, order_positions, self._current_price, special_requests, self._priority):
                 #if successfull
                 self._database.create_message_for_ticket(self._ticket, f"Bestellung an Stand {self._selected_stand} erfolgreich aufgegeben.")
-
-        self._on_cancel()
+                self._on_cancel()
+        else:
+            messagebox.showerror("Fehler", "Leerer Warenkorb!") 
 
     def set_visitor_pageManagement(self, visitor_page_management):
         self._visitor_page_management = visitor_page_management
