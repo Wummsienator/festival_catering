@@ -204,6 +204,21 @@ class Database:
         else:
             #ticket doesnt exist
             return False, None
+        
+    def check_ticket_exists(self, ticket):
+        if not ticket.isdigit():
+            return False
+
+        select = f"""
+        SELECT * FROM Tickets
+        WHERE TicketNR = {ticket}
+        """
+    
+        row = self._cursor.execute(select).fetchone()
+        if row:
+            return True
+        else:
+            return False
     
     def connect_order_to_ticket(self, order, ticket):
         if self._check_order2ticket_exists(order, ticket):

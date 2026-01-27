@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import ttk
+from tkinter import messagebox 
 from PIL import Image, ImageTk
 import threading
 import time
@@ -209,14 +210,20 @@ class VisitorPage():
     
     def _unlock_ticket_for_friend(self):
         selected = self._table.focus()
-        if not selected:
+        friend_ticket = self._friend_ticket_val.get()
+        if not selected or not friend_ticket:
+            return
+        if not self._database.check_ticket_exists(friend_ticket):
+            messagebox.showerror("Fehler", "Ungültige Ticketnummer!") 
             return
         values = self._table.item(selected, "values")
-        friend_ticket = self._friend_ticket_val.get()
         
         if self._database.connect_order_to_ticket(values[3], friend_ticket):
             #if successfull
             self._database.create_message_for_ticket(friend_ticket, f"Für sie wurde eine Bestellung an Stand {values[3]} freigeschaltet.")
+            messagebox.showinfo("Erfolg", "Bestellung erfolgreich freigeschaltet.") 
+        else:
+            messagebox.showinfo("Hinweis", f"Bestellung bereits für Ticket {friend_ticket} freigeschaltet.") 
 
     def _open_popup(self, event=None):
         #get selection
