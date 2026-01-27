@@ -6,13 +6,13 @@ import threading
 import time
 
 class VisitorPage():
-    def __init__(self, root, database, style_1):
+    def __init__(self, root, database, style_1, scaling):
         self._root = root
         self._database = database
         self._style_1 = style_1
+        self._scaling = scaling
         self._visitor_page = None
         self._ticket = None
-
         self._order_page = None
 
     def get_page(self):
@@ -81,7 +81,8 @@ class VisitorPage():
     
     def _load_images(self):
         logo_pil = Image.open("img/logo.png")
-        logo_pil = logo_pil.resize((50, 50), Image.Resampling.LANCZOS)
+        s_size = round(50 * self._scaling)
+        logo_pil = logo_pil.resize((s_size, s_size), Image.Resampling.LANCZOS)
         self._logo_img = ImageTk.PhotoImage(logo_pil)
 
         qr_pil = Image.open("img/QR_Code.png")

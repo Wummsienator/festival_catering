@@ -7,8 +7,9 @@ from order_page import OrderPage
 from seller_page import SellerPage
 
 root = Tk()
+scaling = root.winfo_screenheight() / 1200     #pretty rough scaling 
 database = Database()
-style_1 = font.Font(size=15)
+style_1 = font.Font(size=round(15 * scaling))
 
 #columns
 root.grid_columnconfigure(0, weight=1)
@@ -19,19 +20,19 @@ root.grid_columnconfigure(2, weight=1)
 root.grid_rowconfigure(0, weight=1)
 
 #pages
-login_page_management = LoginPage(root, database, style_1)
+login_page_management = LoginPage(root, database, style_1, scaling)
 login_page = login_page_management.get_page()
 login_page.grid(row=0, column=1, sticky="nsew")
 
-visitor_page_management = VisitorPage(root, database, style_1)
+visitor_page_management = VisitorPage(root, database, style_1, scaling)
 visitor_page = visitor_page_management.get_page()
 visitor_page.grid(row=0, column=1, sticky="nsew")
 
-order_page_management = OrderPage(root, database, style_1)
+order_page_management = OrderPage(root, database, style_1, scaling)
 order_page = order_page_management.get_page()
 order_page.grid(row=0, column=1, sticky="nsew")
 
-seller_page_management = SellerPage(root, database, style_1)
+seller_page_management = SellerPage(root, database, style_1, scaling)
 seller_page = seller_page_management.get_page()
 seller_page.grid(row=0, column=1, sticky="nsew")
 
@@ -42,7 +43,8 @@ order_page_management.set_visitor_pageManagement(visitor_page_management)
 
 #settings
 login_page.tkraise()
-root.geometry("750x750")
+s_size = round(750 * scaling)
+root.geometry(f"{s_size}x{s_size}")   
 root.title("Festival Catering")
 root.resizable(False, False)
 root.mainloop()

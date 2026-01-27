@@ -6,10 +6,11 @@ from elements import PlaceholderEntry
 from decimal import *
 
 class OrderPage():
-    def __init__(self, root, database, style_1):
+    def __init__(self, root, database, style_1, scaling):
         self._root = root
         self._database = database
         self._style_1 = style_1
+        self._scaling = scaling
         self._order_page = None
         self._ticket = None
         self._selected_stand = None
@@ -91,15 +92,17 @@ class OrderPage():
 
     def _load_images(self):
         logo_pil = Image.open("img/logo.png")
-        logo_pil = logo_pil.resize((50, 50), Image.Resampling.LANCZOS)
+        s_size = round(50 * self._scaling)
+        s_size_2 = round(25 * self._scaling)
+        logo_pil = logo_pil.resize((s_size, s_size), Image.Resampling.LANCZOS)
         self._logo_img = ImageTk.PhotoImage(logo_pil)
 
         on_pil = Image.open("img/on.png")
-        on_pil = on_pil.resize((50, 25), Image.Resampling.LANCZOS)
+        on_pil = on_pil.resize((s_size, s_size_2), Image.Resampling.LANCZOS)
         self._on_img = ImageTk.PhotoImage(on_pil)
 
         off_pil = Image.open("img/off.png")
-        off_pil = off_pil.resize((50, 25), Image.Resampling.LANCZOS)
+        off_pil = off_pil.resize((s_size, s_size_2), Image.Resampling.LANCZOS)
         self._off_img = ImageTk.PhotoImage(off_pil)
 
     def _create_priority_switch(self, order_page):
