@@ -5,12 +5,13 @@ from elements import PlaceholderEntry
 import datetime
 
 class SellerPage():
-    def __init__(self, root, database, style_1):
+    def __init__(self, root, database, style_1, scaling):
         self._root = root
         self._database = database
         self._style_1 = style_1
         self._seller_page = None
         self._stand = None
+        self._scaling = scaling
 
     def get_page(self):
         if not self._seller_page:
@@ -58,7 +59,8 @@ class SellerPage():
 
     def _load_images(self):
         logo_pil = Image.open("img/logo.png")
-        logo_pil = logo_pil.resize((50, 50), Image.Resampling.LANCZOS)
+        s_size = round(50 * self._scaling)
+        logo_pil = logo_pil.resize((s_size, s_size), Image.Resampling.LANCZOS)
         self._logo_img = ImageTk.PhotoImage(logo_pil)
 
     def _create_order_table(self, seller_page):

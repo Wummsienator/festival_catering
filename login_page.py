@@ -3,15 +3,17 @@ from tkinter import messagebox
 from PIL import Image, ImageTk
 
 class LoginPage():
-    def __init__(self, root, database, style_1):
+    def __init__(self, root, database, style_1, scaling):
         self._root = root
         self._database = database
         self._style_1 = style_1
         self._login_page = None
+        self._scaling = scaling
 
         #logo
         logo_pil = Image.open("img/logo.png")
-        logo_pil = logo_pil.resize((300, 300), Image.Resampling.LANCZOS)
+        s_size = round(300 * self._scaling)
+        logo_pil = logo_pil.resize((s_size, s_size), Image.Resampling.LANCZOS)
 
         self._logo_img = ImageTk.PhotoImage(logo_pil)
 
