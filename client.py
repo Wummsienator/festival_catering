@@ -5,11 +5,12 @@ from login_page import LoginPage
 from visitor_page import VisitorPage
 from order_page import OrderPage
 from seller_page import SellerPage
+import math
 
 root = Tk()
 scaling = root.winfo_screenheight() / 1200     #pretty rough scaling 
 database = Database()
-style_1 = font.Font(size=round(15 * scaling))
+style_1 = font.Font(size=math.floor(15 * scaling))
 
 #columns
 root.grid_columnconfigure(0, weight=1)
@@ -43,7 +44,7 @@ order_page_management.set_visitor_pageManagement(visitor_page_management)
 
 #settings
 login_page.tkraise()
-s_size = round(750 * scaling)
+s_size = math.floor(750 * scaling)
 root.geometry(f"{s_size}x{s_size}")   
 root.title("Festival Catering")
 root.resizable(False, False)

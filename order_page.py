@@ -4,6 +4,7 @@ from tkinter import messagebox
 from PIL import Image, ImageTk
 from elements import PlaceholderEntry
 from decimal import *
+import math
 
 class OrderPage():
     def __init__(self, root, database, style_1, scaling):
@@ -131,7 +132,7 @@ class OrderPage():
         title = Label(
             form_frame,
             text="Stand Auswahl:",
-            font=("Arial", 14, "bold"),
+            font=("Arial", math.floor(self._scaling * 14), "bold"),
             bg="#05445E",
             fg="white",
             width=30
@@ -145,17 +146,17 @@ class OrderPage():
         #define headings
         for col in columns:
             self._table.heading(col, text=col)
-            self._table.column(col, anchor="center", width=180)
+            self._table.column(col, anchor="center", width=math.floor(self._scaling * 180))
 
         #style rows
         style = ttk.Style(order_page)
         style.theme_use("default")
 
         #header style
-        style.configure("Treeview.Heading", font=("Arial", 11, "bold"), background="#05445E", foreground="white")
+        style.configure("Treeview.Heading", font=("Arial", math.floor(self._scaling * 11), "bold"), background="#05445E", foreground="white")
 
         #row styles
-        style.configure("Treeview", font=("Arial", 11), rowheight=25)
+        style.configure("Treeview", font=("Arial", math.floor(self._scaling * 11)), rowheight=math.floor(self._scaling * 25))
         self._table.tag_configure("row", background="#D4F1F4")   # baby blue
 
         self._table.grid(row=1, column=0)
@@ -176,7 +177,7 @@ class OrderPage():
         title = Label(
             form_frame,
             text="Bestellkarte:",
-            font=("Arial", 14, "bold"),
+            font=("Arial", math.floor(self._scaling * 14), "bold"),
             bg="#05445E",
             fg="white",
             width=60
@@ -190,7 +191,7 @@ class OrderPage():
         #define headings
         for col in columns:
             self._table_2.heading(col, text=col)
-            self._table_2.column(col, anchor="center", width=180)
+            self._table_2.column(col, anchor="center", width=math.floor(self._scaling * 180))
 
         #style rows
         style = ttk.Style(order_page)
@@ -221,7 +222,7 @@ class OrderPage():
         title = Label(
             form_frame,
             text="Warenkorb:",
-            font=("Arial", 14, "bold"),
+            font=("Arial", math.floor(self._scaling * 14), "bold"),
             bg="#05445E",
             fg="white",
             width=60
@@ -235,7 +236,7 @@ class OrderPage():
         #define headings
         for col in columns:
             self._table_3.heading(col, text=col)
-            self._table_3.column(col, anchor="center", width=180)
+            self._table_3.column(col, anchor="center", width=math.floor(self._scaling * 180))
 
         #style rows
         style = ttk.Style(order_page)
@@ -245,7 +246,7 @@ class OrderPage():
         style.configure("Treeview.Heading", font=("Arial", 11, "bold"), background="#05445E", foreground="white")
 
         #row styles
-        style.configure("Treeview", font=("Arial", 11), rowheight=25)
+        style.configure("Treeview", font=("Arial", math.floor(self._scaling * 11)), rowheight=math.floor(self._scaling * 25))
         self._table_3.tag_configure("row", background="#D4F1F4")   # baby blue
 
         self._table_3.grid(row=1, column=0)

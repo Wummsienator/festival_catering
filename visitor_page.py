@@ -4,6 +4,7 @@ from tkinter import messagebox
 from PIL import Image, ImageTk
 import threading
 import time
+import math
 
 class VisitorPage():
     def __init__(self, root, database, style_1, scaling):
@@ -81,7 +82,7 @@ class VisitorPage():
     
     def _load_images(self):
         logo_pil = Image.open("img/logo.png")
-        s_size = round(50 * self._scaling)
+        s_size = math.floor(50 * self._scaling)
         logo_pil = logo_pil.resize((s_size, s_size), Image.Resampling.LANCZOS)
         self._logo_img = ImageTk.PhotoImage(logo_pil)
 
@@ -98,7 +99,7 @@ class VisitorPage():
         title = Label(
             form_frame,
             text="Offene Bestellungen:",
-            font=("Arial", 14, "bold"),
+            font=("Arial", math.floor(self._scaling * 14), "bold"),
             bg="#05445E",
             fg="white",
             width=60
@@ -112,17 +113,17 @@ class VisitorPage():
         #define headings
         for col in columns:
             self._table.heading(col, text=col)
-            self._table.column(col, anchor="center", width=180)
+            self._table.column(col, anchor="center", width=math.floor(self._scaling * 180))
 
         #style rows
         style = ttk.Style(visitor_page)
         style.theme_use("default")
 
         #header style
-        style.configure("Treeview.Heading", font=("Arial", 11, "bold"), background="#05445E", foreground="white")
+        style.configure("Treeview.Heading", font=("Arial", math.floor(self._scaling * 11), "bold"), background="#05445E", foreground="white")
 
         #row styles
-        style.configure("Treeview", font=("Arial", 11), rowheight=25)
+        style.configure("Treeview", font=("Arial", math.floor(self._scaling * 11)), rowheight=math.floor(self._scaling * 25))
         self._table.tag_configure("row", background="#D4F1F4")   # baby blue
 
         self._table.grid(row=1, column=0, sticky="nsew")
@@ -169,17 +170,17 @@ class VisitorPage():
 
         #define headings
         self._table2.heading(column, text=column)
-        self._table2.column(column, anchor="center", width=600)
+        self._table2.column(column, anchor="center", width=math.floor(self._scaling * 600))
 
         #style rows
         style = ttk.Style(visitor_page)
         style.theme_use("default")
 
         #header style
-        style.configure("Treeview.Heading", font=("Arial", 11, "bold"), background="#05445E", foreground="white")
+        style.configure("Treeview.Heading", font=("Arial", math.floor(self._scaling * 11), "bold"), background="#05445E", foreground="white")
 
         #row styles
-        style.configure("Treeview", font=("Arial", 11), rowheight=25)
+        style.configure("Treeview", font=("Arial", math.floor(self._scaling * 11)), rowheight=25)
         self._table2.tag_configure("row", background="#D4F1F4")   # baby blue
 
         self._table2.grid(row=5, column=1, columnspan=7)
@@ -236,13 +237,13 @@ class VisitorPage():
         #create a popup window
         popup = Toplevel(self._visitor_page)
         popup.title("Bestellung: " + selected_order[0])
-        popup.geometry("400x300")
+        popup.geometry(f"{math.floor(400 * self._scaling)}x{math.floor(300 * self._scaling)}")
 
         #title label
         title = Label(
             popup,
             text="Positionen:",
-            font=("Arial", 14, "bold"),
+            font=("Arial", math.floor(self._scaling * 14), "bold"),
             bg="#05445E",
             fg="white",
             width=30
@@ -256,17 +257,17 @@ class VisitorPage():
         #define headings
         for col in columns:
             table.heading(col, text=col)
-            table.column(col, anchor="center", width=120)
+            table.column(col, anchor="center", width=math.floor(self._scaling * 120))
 
         #style rows
         style = ttk.Style(popup)
         style.theme_use("default")
 
         #header style
-        style.configure("Treeview.Heading", font=("Arial", 11, "bold"), background="#05445E", foreground="white")
+        style.configure("Treeview.Heading", font=("Arial", math.floor(self._scaling * 11), "bold"), background="#05445E", foreground="white")
 
         #row styles
-        style.configure("Treeview", font=("Arial", 11), rowheight=25)
+        style.configure("Treeview", font=("Arial", math.floor(self._scaling * 11)), rowheight=math.floor(self._scaling * 25))
         table.tag_configure("row", background="#D4F1F4")   # baby blue
 
         table.grid(row=1, column=0, sticky="nsew")
