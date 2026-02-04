@@ -3,223 +3,292 @@ from tkinter import ttk
 from PIL import Image, ImageTk
 from elements import PlaceholderEntry
 import datetime
+import math
 
-class SellerPage():
+
+class SellerPage:
     def __init__(self, root, database, style_1, scaling):
         self._root = root
         self._database = database
         self._style_1 = style_1
-        self._seller_page = None
-        self._stand = None
         self._scaling = scaling
 
+        self._seller_page = None
+        self._stand = None
+
+        # widgets
+        self._stand_label = None
+        self._logo_img = None
+
+        self._table = None    # orders
+        self._table_2 = None  # inventory
+
+        self._product_combo = None
+        self._quantity_val = StringVar()
+
+        # style
+        self._style = ttk.Style(self._root)
+        self._style.theme_use("default")
+
+    # ---------------- public ----------------
+
     def get_page(self):
-        if not self._seller_page:
-            #page
-            seller_page = Frame(self._root)
+        if self._seller_page:
+            return self._seller_page
 
-            self._create_columns(seller_page)
-            self._create_rows(seller_page)
-            self._load_images()
-            self._create_order_table(seller_page)
-            self._create_product_table(seller_page)
-            self._create_product_combo_box(seller_page)
+        pad = int(18 * self._scaling)
+        gap = int(10 * self._scaling)
 
-            #labels
-            self._stand_label = Label(seller_page, text="Stand Nr.: 1", font=self._style_1)
-            self._stand_label.grid(row=0, column=1)
+        page = Frame(self._root)
+        page.grid_rowconfigure(0, weight=1)
+        page.grid_columnconfigure(0, weight=1)
 
-            Label(seller_page, image=self._logo_img, font=self._style_1).grid(row=6, column=7)
+        content = Frame(page)
+        content.grid(row=0, column=0, sticky="nsew")
+        content.grid_columnconfigure(0, weight=1)
 
-            #buttons
-            Button(seller_page, text="Status weiterschalten", command=lambda: self._on_change_status(), font=self._style_1, background="#75E6DA").grid(row=2, column=1, columnspan=2)
+        # Layout rows:
+        # 0 top bar
+        # 1 orders table
+        # 2 status button row
+        # 3 inventory table
+        # 4 add stock row
+        # 5 footer (logo)
+        content.grid_rowconfigure(0, weight=0)
+        content.grid_rowconfigure(1, weight=0)
+        content.grid_rowconfigure(2, weight=0)
+        content.grid_rowconfigure(3, weight=0)
+        content.grid_rowconfigure(4, weight=0)
+        content.grid_rowconfigure(5, weight=1)  # spacer/footer
 
-            self._seller_page = seller_page
+        self._load_images()
+
+        # ---------- TOP BAR ----------
+        top = Frame(content)
+        top.grid(row=0, column=0, sticky="ew", padx=pad, pady=(pad, gap))
+        top.grid_columnconfigure(0, weight=1)
+        top.grid_columnconfigure(1, weight=0)
+
+        self._stand_label = Label(top, text="Stand Nr.: -", font=self._style_1)
+        self._stand_label.grid(row=0, column=0, sticky="w")
+
+        # ---------- ORDERS TABLE ----------
+        self._create_order_table(content, row=1, padx=pad, pady=(0, gap))
+
+        # ---------- STATUS BUTTON ROW ----------
+        btn_row = Frame(content)
+        btn_row.grid(row=2, column=0, sticky="ew", padx=pad, pady=(0, gap))
+        btn_row.grid_columnconfigure(0, weight=1)
+
+        Button(
+            btn_row,
+            text="Status weiterschalten",
+            command=self._on_change_status,
+            font=self._style_1,
+            background="#75E6DA"
+        ).grid(row=0, column=0, sticky="w")
+
+        # ---------- INVENTORY TABLE ----------
+        self._create_product_table(content, row=3, padx=pad, pady=(0, gap))
+
+        # ---------- ADD STOCK ROW ----------
+        self._create_product_combo_box(content, row=4, padx=pad, pady=(0, gap))
+
+        # ---------- FOOTER / LOGO bottom-right ----------
+        footer = Frame(content)
+        footer.grid(row=5, column=0, sticky="nsew", padx=pad, pady=(0, pad))
+        footer.grid_columnconfigure(0, weight=1)
+        footer.grid_rowconfigure(0, weight=1)
+
+        Label(footer, image=self._logo_img).grid(row=0, column=0, sticky="se")
+
+        self._seller_page = page
         return self._seller_page
-    
-    def _create_columns(self, seller_page):
-        seller_page.grid_columnconfigure(0, weight=1)
-        seller_page.grid_columnconfigure(1, weight=1)
-        seller_page.grid_columnconfigure(2, weight=1)
-        seller_page.grid_columnconfigure(3, weight=1)
-        seller_page.grid_columnconfigure(4, weight=1)
-        seller_page.grid_columnconfigure(5, weight=1)
-        seller_page.grid_columnconfigure(6, weight=1)
-        seller_page.grid_columnconfigure(7, weight=1)
-        seller_page.grid_columnconfigure(8, weight=1)
 
-    def _create_rows(self, seller_page):
-        seller_page.grid_rowconfigure(0, weight=1)
-        seller_page.grid_rowconfigure(1, weight=1)
-        seller_page.grid_rowconfigure(2, weight=1)
-        seller_page.grid_rowconfigure(3, weight=1)
-        seller_page.grid_rowconfigure(4, weight=1)
-        seller_page.grid_rowconfigure(5, weight=1)
-        seller_page.grid_rowconfigure(6, weight=1)
+    # ---------------- helpers ----------------
 
     def _load_images(self):
         logo_pil = Image.open("img/logo.png")
-        s_size = round(50 * self._scaling)
+        s_size = max(30, round(50 * self._scaling))
         logo_pil = logo_pil.resize((s_size, s_size), Image.Resampling.LANCZOS)
         self._logo_img = ImageTk.PhotoImage(logo_pil)
 
-    def _create_order_table(self, seller_page):
-        #frames
-        form_frame = Frame(seller_page)
-        form_frame.grid(row=1, column=1, columnspan=7)
+    def _apply_treeview_style(self, prefix: str):
+        """Unique style per table so they don't overwrite each other."""
+        base = max(9, int(11 * self._scaling))
+        rowh = max(18, int(28 * self._scaling))
+        tv_style = f"{prefix}.Treeview"
+        head_style = f"{prefix}.Treeview.Heading"
 
-        #title label
+        self._style.configure(tv_style, font=("Arial", base), rowheight=rowh)
+        self._style.configure(head_style, font=("Arial", base, "bold"), padding=(0, int(5 * self._scaling)))
+        return tv_style
+
+    def _create_table_block(self, parent, title_text, columns, prefix, row, padx, pady, height=4, col_width=180):
+        wrap = Frame(parent)
+        wrap.grid(row=row, column=0, sticky="ew", padx=padx, pady=pady)
+        wrap.grid_columnconfigure(0, weight=1)
+
         title = Label(
-            form_frame,
-            text="Offene Bestellungen:",
-            font=("Arial", 14, "bold"),
+            wrap,
+            text=title_text,
+            font=("Arial", int(self._scaling * 14), "bold"),
             bg="#05445E",
             fg="white",
-            width=60
+            anchor="w",
+            padx=int(12 * self._scaling),
+            pady=int(6 * self._scaling),
         )
-        title.grid(row=0, column=0)
+        title.grid(row=0, column=0, sticky="ew")
 
-        #define table columns
+        area = Frame(wrap)
+        area.grid(row=1, column=0, sticky="ew", pady=(int(8 * self._scaling), 0))
+        area.grid_columnconfigure(0, weight=1)
+        area.grid_columnconfigure(1, weight=0)
+        area.grid_rowconfigure(0, weight=0)
+
+        tv_style = self._apply_treeview_style(prefix)
+
+        tv = ttk.Treeview(
+            area,
+            columns=columns,
+            show="headings",
+            selectmode="browse",
+            height=height,
+            style=tv_style
+        )
+
+        for c in columns:
+            tv.heading(c, text=c, anchor="center")
+            tv.column(
+                c,
+                anchor="center",
+                width=int(col_width * self._scaling),
+                stretch=True   # <-- ALL columns stretch equally
+            )
+
+        tv.tag_configure("row", background="#D4F1F4")
+
+        tv.grid(row=0, column=0, sticky="nsew",
+                padx=(int(6 * self._scaling), int(6 * self._scaling)))
+
+        vsb = ttk.Scrollbar(area, orient="vertical", command=tv.yview)
+        tv.configure(yscrollcommand=vsb.set)
+        vsb.grid(row=0, column=1, sticky="ns")
+
+        # optional horizontal scrollbar (useful if you later change widths)
+        hsb = ttk.Scrollbar(area, orient="horizontal", command=tv.xview)
+        tv.configure(xscrollcommand=hsb.set)
+        hsb.grid(row=1, column=0, sticky="ew",
+                 padx=(int(6 * self._scaling), int(6 * self._scaling)))
+
+        return tv
+
+    # ---------------- tables ----------------
+
+    def _create_order_table(self, seller_page, row, padx, pady):
         columns = ("Bestellung Nr.", "Zeitstempel", "Status", "Priorisiert")
-        self._table = ttk.Treeview(form_frame, columns=columns, show="headings", selectmode="browse", height=3)
-
-        #define headings
-        for col in columns:
-            self._table.heading(col, text=col)
-            self._table.column(col, anchor="center", width=180)
-
-        #style rows
-        style = ttk.Style(seller_page)
-        style.theme_use("default")
-
-        #header style
-        style.configure("Treeview.Heading", font=("Arial", 11, "bold"), background="#05445E", foreground="white")
-
-        #row styles
-        style.configure("Treeview", font=("Arial", 11), rowheight=25)
-        self._table.tag_configure("row", background="#D4F1F4")   # baby blue
-
-        self._table.grid(row=1, column=0, sticky="nsew")
-
-        #vertical scrollbar
-        vsb = ttk.Scrollbar(form_frame, orient="vertical", command=self._table.yview)
-        self._table.configure(yscrollcommand=vsb.set)
-        vsb.grid(row=1, column=1, sticky="ns")
-
+        self._table = self._create_table_block(
+            parent=seller_page,
+            title_text="Offene Bestellungen:",
+            columns=columns,
+            prefix="Orders",
+            row=row,
+            padx=padx,
+            pady=pady,
+            height=4,     # change to 3 if you want
+            col_width=170
+        )
         self._table.bind("<Double-1>", self._open_popup)
 
-    def _create_product_table(self, seller_page):
-        #frames
-        form_frame = Frame(seller_page)
-        form_frame.grid(row=3, column=1, columnspan=7)
-
-        #title label
-        title = Label(
-            form_frame,
-            text="Bestandsanzeige:",
-            font=("Arial", 14, "bold"),
-            bg="#05445E",
-            fg="white",
-            width=45
+    def _create_product_table(self, seller_page, row, padx, pady):
+        columns = ("Name", "Menge", "Warnung")
+        self._table_2 = self._create_table_block(
+            parent=seller_page,
+            title_text="Bestandsanzeige:",
+            columns=columns,
+            prefix="Stock",
+            row=row,
+            padx=padx,
+            pady=pady,
+            height=4,     # change to 3 if you want
+            col_width=170
         )
-        title.grid(row=0, column=0)
-
-        #define table columns
-        columns = ("Name", "Menge", "Warnung",)
-        self._table_2 = ttk.Treeview(form_frame, columns=columns, show="headings", selectmode="browse", height=3)
-
-        #define headings
-        for col in columns:
-            self._table_2.heading(col, text=col)
-            self._table_2.column(col, anchor="center", width=180)
-
-        #style rows
-        style = ttk.Style(seller_page)
-        style.theme_use("default")
-
-        #header style
-        style.configure("Treeview.Heading", font=("Arial", 11, "bold"), background="#05445E", foreground="white")
-
-        #row styles
-        style.configure("Treeview", font=("Arial", 11), rowheight=25)
-        self._table_2.tag_configure("row", background="#D4F1F4")   # baby blue
-
-        self._table_2.grid(row=1, column=0, sticky="nsew")
-
-        #vertical scrollbar
-        vsb = ttk.Scrollbar(form_frame, orient="vertical", command=self._table_2.yview)
-        self._table_2.configure(yscrollcommand=vsb.set)
-        vsb.grid(row=1, column=1, sticky="ns")
-
         self._table_2.bind("<<TreeviewSelect>>", self._disable_selection)
+
+    # ---------------- controls ----------------
+
+    def _create_product_combo_box(self, seller_page, row, padx, pady):
+        wrap = Frame(seller_page)
+        wrap.grid(row=row, column=0, sticky="ew", padx=padx, pady=pady)
+        wrap.grid_columnconfigure(0, weight=1)
+        wrap.grid_columnconfigure(1, weight=0)
+        wrap.grid_columnconfigure(2, weight=0)
+        wrap.grid_columnconfigure(3, weight=0)
+
+        # products list
+        products = self._database.get_products()
+        options = {p["ID"]: p["name"] for p in products}
+        display_values = [f"{v} ({k})" for k, v in options.items()]
+
+        # combobox
+        self._product_combo = ttk.Combobox(wrap, values=display_values, state="readonly", font=self._style_1)
+        self._product_combo.grid(row=0, column=0, sticky="w")
+        self._product_combo.set("Produkt wählen")
+
+        # quantity input
+        _validate_int = (seller_page.register(self._validate_int), "%P")
+        self._quantity_val = StringVar()
+        quantity_ipt = PlaceholderEntry(
+            wrap, "Menge", "grey",
+            font=self._style_1, bg="#D4F1F4",
+            textvariable=self._quantity_val,
+            validate="key", validatecommand=_validate_int
+        )
+        quantity_ipt.grid(row=0, column=1, sticky="w", padx=(int(10 * self._scaling), 0))
+
+        # add button (right)
+        Button(
+            wrap, text="Bestand hinzufügen",
+            command=self._on_add_product,
+            font=self._style_1, background="#75E6DA"
+        ).grid(row=0, column=3, sticky="e")
+
+    def _validate_int(self, new_value):
+        if new_value == "" or new_value == "Menge":
+            return True
+        return new_value.isdigit()
 
     def _disable_selection(self, event=None):
         event.widget.selection_remove(event.widget.selection())
 
+    # ---------------- data fill ----------------
+
     def fill_order_table_rows(self, stand):
-        #clear existing rows
         self._table.delete(*self._table.get_children())
-        #insert sample data
-        data = []
+
         orders = self._database.get_orders_for_stand(stand)
-
         for order in orders:
-            data.append( (order["ID"], order["timestamp"].strftime("%d.%m.%y %X"), order["status_desc"],  order["prioritized"]) )
-
-        for i, row in enumerate(data):
+            row = (
+                order["ID"],
+                order["timestamp"].strftime("%d.%m.%y %X"),
+                order["status_desc"],
+                order["prioritized"]
+            )
             self._table.insert("", END, values=row, tags=("row",))
 
-        #update stand
         self._stand = stand
+        self._stand_label.config(text=f"Stand Nr.: {stand}")
 
     def fill_product_table_rows(self, stand):
-        #clear existing rows
         self._table_2.delete(*self._table_2.get_children())
-        #insert sample data
-        data = []
+
         products = self._database.get_products_for_stand(stand)
-
         for product in products:
-            warning = ""
-            if int(product["quantity"]) < 10:
-                warning = "!!!"
-            data.append( (product["name"], product["quantity"], warning) )
+            warning = "!!!" if int(product["quantity"]) < 10 else ""
+            self._table_2.insert("", END, values=(product["name"], product["quantity"], warning), tags=("row",))
 
-        for i, row in enumerate(data):
-            self._table_2.insert("", END, values=row, tags=("row",))
-
-    def _create_product_combo_box(self, seller_page):
-        #get products
-        products = self._database.get_products()
-        options = {}
-        for product in products:
-            options[product["ID"]] = product["name"]
-
-        #create combobox values
-        display_values = [f"{v} ({k})" for k, v in options.items()]
-
-        #style
-        style = ttk.Style(seller_page)
-        style.theme_use("default")
-
-        #create combobox
-        self._product_combo = ttk.Combobox(seller_page, values=display_values, state="readonly", font=self._style_1) 
-        self._product_combo.grid(row=4, column=1)
-        self._product_combo.set("Produkt wählen")
-
-        #quantity input
-        _validate_int = (seller_page.register(self._validate_int), "%P")  
-        self._quantity_val = StringVar()
-        quantity_ipt = PlaceholderEntry(seller_page, "Menge", "grey", font=self._style_1, bg="#D4F1F4", textvariable=self._quantity_val, validate="key", validatecommand=_validate_int)
-        quantity_ipt.grid(row=4, column=2)
-
-        #button
-        Button(seller_page, text="Bestand hinzufügen", command=lambda: self._on_add_product(), font=self._style_1, background="#75E6DA").grid(row=4, column=6)
-
-    def _validate_int(self, new_value):
-        if new_value == "" or new_value == "Menge":   # allow empty string and placeholder value
-            return True
-        return new_value.isdigit()
+    # ---------------- actions ----------------
 
     def _on_add_product(self, event=None):
         display = self._product_combo.get()
@@ -227,86 +296,69 @@ class SellerPage():
         if not display or not quantity or quantity == "Menge":
             return
 
-        key = display.split("(", 1)[1].strip(")")   #extract key from display string
-
-        #update data
+        key = display.split("(", 1)[1].strip(")")
         self._database.add_product_for_stand(self._stand, key, int(quantity))
         self.fill_product_table_rows(self._stand)
 
-        #clear fields
         self._product_combo.set("Produkt wählen")
         self._quantity_val.set("")
 
     def _open_popup(self, event=None):
-        #get selection
         selected = self._table.focus()
         if not selected:
             return
         selected_order = self._table.item(selected, "values")
 
-        #create a popup window
         popup = Toplevel(self._seller_page)
-        popup.title("Bestellung: " + selected_order[0])
-        popup.geometry("400x300")
+        popup.title("Bestellung: " + str(selected_order[0]))
+        popup.geometry(f"{int(420 * self._scaling)}x{int(320 * self._scaling)}")
 
-        #title label
+        popup.grid_columnconfigure(0, weight=1)
+        popup.grid_rowconfigure(1, weight=1)
+
         title = Label(
             popup,
             text="Positionen:",
-            font=("Arial", 14, "bold"),
+            font=("Arial", int(self._scaling * 14), "bold"),
             bg="#05445E",
             fg="white",
-            width=30
+            anchor="w",
+            padx=int(12 * self._scaling),
+            pady=int(6 * self._scaling),
         )
-        title.grid(row=0, column=0)
+        title.grid(row=0, column=0, sticky="ew")
 
-        #define table columns
+        area = Frame(popup)
+        area.grid(row=1, column=0, sticky="nsew")
+        area.grid_columnconfigure(0, weight=1)
+        area.grid_columnconfigure(1, weight=0)
+
         columns = ("Name", "Menge")
-        table = ttk.Treeview(popup, columns=columns, show="headings", selectmode="browse", height=4)
+        style = self._apply_treeview_style("Popup")
 
-        #define headings
-        for col in columns:
-            table.heading(col, text=col)
-            table.column(col, anchor="center", width=120)
+        table = ttk.Treeview(area, columns=columns, show="headings", selectmode="browse", height=6, style=style)
+        for c in columns:
+            table.heading(c, text=c, anchor="center")
+            table.column(c, anchor="center", width=int(180 * self._scaling), stretch=False)
 
-        #style rows
-        style = ttk.Style(popup)
-        style.theme_use("default")
+        table.grid(row=0, column=0, sticky="nsew", padx=(int(6 * self._scaling), int(6 * self._scaling)))
 
-        #header style
-        style.configure("Treeview.Heading", font=("Arial", 11, "bold"), background="#05445E", foreground="white")
-
-        #row styles
-        style.configure("Treeview", font=("Arial", 11), rowheight=25)
-        table.tag_configure("row", background="#D4F1F4")   # baby blue
-
-        table.grid(row=1, column=0, sticky="nsew")
-
-        #vertical scrollbar
-        vsb = ttk.Scrollbar(popup, orient="vertical", command=table.yview)
+        vsb = ttk.Scrollbar(area, orient="vertical", command=table.yview)
         table.configure(yscrollcommand=vsb.set)
-        vsb.grid(row=1, column=1, sticky="ns")
+        vsb.grid(row=0, column=1, sticky="ns")
 
-        #fill rows
-        data = []
         positions, special_requests = self._database.get_positions_for_order(selected_order[0])
+        for p in positions:
+            table.insert("", END, values=(p["name"], p["quantity"]), tags=("row",))
 
-        for position in positions:
-            data.append( (position["name"], position["quantity"]) )
-
-        for i, row in enumerate(data):
-            table.insert("", END, values=row, tags=("row",))
-
-        #special requests label
-        Label(popup, text="Sonderwünsche:", font=self._style_1).grid(row=2, column=0)
-        Label(popup, text=special_requests, font=self._style_1).grid(row=3, column=0)
+        Label(popup, text="Sonderwünsche:", font=self._style_1).grid(row=2, column=0, sticky="w", padx=int(10 * self._scaling), pady=(int(6 * self._scaling), 0))
+        Label(popup, text=special_requests, font=self._style_1, wraplength=int(380 * self._scaling), justify="left") \
+            .grid(row=3, column=0, sticky="w", padx=int(10 * self._scaling))
 
     def _on_change_status(self, event=None):
         selected = self._table.focus()
         if not selected:
             return
         selected_order = self._table.item(selected, "values")
-
-        #update data
         self._database.change_status_for_order(selected_order[0])
         self.fill_order_table_rows(self._stand)
