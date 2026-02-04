@@ -1,305 +1,442 @@
 from tkinter import *
-from tkinter import ttk
-from tkinter import messagebox 
+from tkinter import ttk, messagebox
 from PIL import Image, ImageTk
-import threading
-import time
 import math
 
-class VisitorPage():
+
+class VisitorPage:
     def __init__(self, root, database, style_1, scaling):
         self._root = root
         self._database = database
         self._style_1 = style_1
         self._scaling = scaling
+
         self._visitor_page = None
         self._ticket = None
-        self._order_page = None
+
+        self._order_page_management = None
+
+        # vars
+        self._friend_ticket_val = StringVar()
+
+        # images
+        self._logo_img = None
+        self._qr_img = None
+        self._logo_pil_original = Image.open("img/logo.png")
+        self._qr_pil_original = Image.open("img/QR_Code.png")
+
+        # ttk styles (created once)
+        self._style = ttk.Style(self._root)
+        self._style.theme_use("default")
+
+        # tables
+        self._table = None
+        self._table2 = None
+
+        # labels
+        self._ticket_label = None
+        self._credit_label = None
+
+        # periodic update
+        self._notify_job = None
+
+    # ---------- public ----------
 
     def get_page(self):
-        if not self._visitor_page:
-            #page
-            visitor_page = Frame(self._root)
+        if self._visitor_page:
+            return self._visitor_page
 
-            self._create_columns(visitor_page)
-            self._create_rows(visitor_page)
-            self._load_images()
-            self._create_order_table(visitor_page)
-            self._create_notification_table(visitor_page)
+        page = Frame(self._root)
+        page.grid_rowconfigure(0, weight=1)
+        page.grid_columnconfigure(0, weight=1)
 
-            #frames
-            form_frame = Frame(visitor_page)
-            form_frame.grid(row=2, column=6, columnspan=2)
+        pad = int(18 * self._scaling)      # page padding
+        gap = int(10 * self._scaling)      # internal gaps
 
-            #labels
-            self._ticket_label = Label(visitor_page, text="Ticket: 1234567", font=self._style_1)
-            self._ticket_label.grid(row=0, column=1)
-            self._credit_label = Label(visitor_page, text="Guthaben: 222€", font=self._style_1)
-            self._credit_label.grid(row=0, column=6)
+        # main content
+        content = Frame(page)
+        content.grid(row=0, column=0, sticky="nsew")
 
-            Label(form_frame, text="Ticket Freund:", font=self._style_1).grid(row=0, column=0)
+        # Row plan:
+        # 0 top bar (ticket/credit)
+        # 1 order table (fixed height, not expanding)
+        # 2 actions (order + unlock)
+        # 3 QR (between unlock and message table)
+        # 4 notifications (with scrollbar)
+        # 5 bottom logo
+        content.grid_columnconfigure(0, weight=1)
+        content.grid_rowconfigure(0, weight=0)
+        content.grid_rowconfigure(1, weight=0)  # orders: DO NOT EXPAND
+        content.grid_rowconfigure(2, weight=0)
+        content.grid_rowconfigure(3, weight=0)
+        content.grid_rowconfigure(4, weight=1)  # notifications can take leftover space
+        content.grid_rowconfigure(5, weight=0)
 
-            Label(visitor_page, image=self._qr_img, font=self._style_1).grid(row=3, column=1)
+        # render images once (scaled)
+        self._load_images()
 
-            Label(visitor_page, image=self._logo_img, font=self._style_1).grid(row=6, column=7)
+        # TOP BAR
+        top = Frame(content)
+        top.grid(row=0, column=0, sticky="ew", padx=pad, pady=(pad, gap))
+        top.grid_columnconfigure(0, weight=1)
+        top.grid_columnconfigure(1, weight=0)
+        top.grid_columnconfigure(2, weight=0)
 
-            #buttons
-            Button(visitor_page, text="€▷", command=lambda: self._add_credit(), font=self._style_1, background="#75E6DA").grid(row=0, column=7)
-            Button(visitor_page, text="Bestellung aufnehmen", command=lambda: self._on_go_to_order_page(), font=self._style_1, background="#75E6DA").grid(row=2, column=1)
-            Button(form_frame, text="Bestellung freischalten", command=lambda: self._unlock_ticket_for_friend(), font=self._style_1, background="#75E6DA").grid(row=2, column=1)
+        self._ticket_label = Label(top, text="Ticket: -", font=self._style_1)
+        self._ticket_label.grid(row=0, column=0, sticky="w")
 
-            #input fields
-            self._friend_ticket_val = StringVar()
-            Entry(form_frame, font=self._style_1, bg="#D4F1F4", textvariable=self._friend_ticket_val).grid(row=0, column=1)
+        self._credit_label = Label(top, text="Guthaben: -", font=self._style_1)
+        self._credit_label.grid(row=0, column=1, sticky="e", padx=(gap, gap))
 
-            #start notification table update
-            self._msg_stop_event = threading.Event()
-            self._message_updater = MessageUpdater(self._msg_stop_event, self)
-            self._message_updater.start()
+        Button(
+            top,
+            text="€▷",
+            command=self._add_credit,
+            font=self._style_1,
+            background="#75E6DA"
+        ).grid(row=0, column=2, sticky="e")
 
-            self._visitor_page  = visitor_page
+        # ORDERS (fixed height)
+        orders = Frame(content)
+        orders.grid(row=1, column=0, sticky="ew", padx=pad)
+        orders.grid_columnconfigure(0, weight=1)
+        self._create_order_table(orders, scaling=self._scaling, gap=gap, rows_visible=4)
+
+        # ACTIONS (order + unlock)
+        actions = Frame(content)
+        actions.grid(row=2, column=0, sticky="ew", padx=pad, pady=(gap, gap))
+        actions.grid_columnconfigure(0, weight=1)
+        actions.grid_columnconfigure(1, weight=0)
+
+        Button(
+            actions,
+            text="Bestellung aufnehmen",
+            command=self._on_go_to_order_page,
+            font=self._style_1,
+            background="#75E6DA"
+        ).grid(row=0, column=0, sticky="w")
+
+        unlock = Frame(actions)
+        unlock.grid(row=0, column=1, sticky="e")
+        unlock.grid_columnconfigure(0, weight=0)
+        unlock.grid_columnconfigure(1, weight=1)
+
+        Label(unlock, text="Ticket Freund:", font=self._style_1).grid(row=0, column=0, sticky="e", padx=(0, gap))
+        Entry(unlock, font=self._style_1, bg="#D4F1F4", textvariable=self._friend_ticket_val, width=14)\
+            .grid(row=0, column=1, sticky="ew", padx=(0, gap))
+
+        Button(
+            unlock,
+            text="Bestellung freischalten",
+            command=self._unlock_ticket_for_friend,
+            font=self._style_1,
+            background="#75E6DA"
+        ).grid(row=0, column=2, sticky="e")
+
+        # QR ROW (between unlock and message table)
+        qr_row = Frame(content)
+        qr_row.grid(row=3, column=0, sticky="ew", padx=pad, pady=(0, gap))
+        qr_row.grid_columnconfigure(0, weight=1)
+
+        Label(qr_row, image=self._qr_img).grid(row=0, column=0)  # centered by default
+
+        # NOTIFICATIONS (with vertical scrollbar)
+        notif = Frame(content)
+        notif.grid(row=4, column=0, sticky="nsew", padx=pad, pady=(0, gap))
+        notif.grid_columnconfigure(0, weight=1)
+        notif.grid_rowconfigure(0, weight=1)
+        self._create_notification_table(notif, scaling=self._scaling)
+
+        # BOTTOM RIGHT LOGO
+        bottom = Frame(content)
+        bottom.grid(row=5, column=0, sticky="ew", padx=pad, pady=(0, pad))
+        bottom.grid_columnconfigure(0, weight=1)
+        Label(bottom, image=self._logo_img).grid(row=0, column=0, sticky="e")
+
+        self._visitor_page = page
+
+        # start periodic update (UI-safe)
+        self._schedule_notification_update()
+
         return self._visitor_page
-    
-    def _create_columns(self, visitor_page):
-        visitor_page.grid_columnconfigure(0, weight=1)
-        visitor_page.grid_columnconfigure(1, weight=1)
-        visitor_page.grid_columnconfigure(2, weight=1)
-        visitor_page.grid_columnconfigure(3, weight=1)
-        visitor_page.grid_columnconfigure(4, weight=1)
-        visitor_page.grid_columnconfigure(5, weight=1)
-        visitor_page.grid_columnconfigure(6, weight=1)
-        visitor_page.grid_columnconfigure(7, weight=1)
-        visitor_page.grid_columnconfigure(8, weight=1)
 
-    def _create_rows(self, visitor_page):
-        visitor_page.grid_rowconfigure(0, weight=1)
-        visitor_page.grid_rowconfigure(1, weight=1)
-        visitor_page.grid_rowconfigure(2, weight=1)
-        visitor_page.grid_rowconfigure(3, weight=1)
-        visitor_page.grid_rowconfigure(4, weight=1)
-        visitor_page.grid_rowconfigure(5, weight=1)
-        visitor_page.grid_rowconfigure(6, weight=1)
-    
-    def _load_images(self):
-        logo_pil = Image.open("img/logo.png")
-        s_size = math.floor(50 * self._scaling)
-        logo_pil = logo_pil.resize((s_size, s_size), Image.Resampling.LANCZOS)
-        self._logo_img = ImageTk.PhotoImage(logo_pil)
-
-        qr_pil = Image.open("img/QR_Code.png")
-        qr_pil = qr_pil.resize((150, 150), Image.Resampling.LANCZOS)
-        self._qr_img = ImageTk.PhotoImage(qr_pil)
-    
-    def _create_order_table(self, visitor_page):
-        #frames
-        form_frame = Frame(visitor_page)
-        form_frame.grid(row=1, column=1, columnspan=7)
-
-        #title label
-        title = Label(
-            form_frame,
-            text="Offene Bestellungen:",
-            font=("Arial", math.floor(self._scaling * 14), "bold"),
-            bg="#05445E",
-            fg="white",
-            width=60
-        )
-        title.grid(row=0, column=0)
-
-        #define table columns
-        columns = ("Stand", "Wartezeit", "Status", "Bestellungsnummer")
-        self._table = ttk.Treeview(form_frame, columns=columns, show="headings", selectmode="browse", height=3)
-
-        #define headings
-        for col in columns:
-            self._table.heading(col, text=col)
-            self._table.column(col, anchor="center", width=math.floor(self._scaling * 180))
-
-        #style rows
-        style = ttk.Style(visitor_page)
-        style.theme_use("default")
-
-        #header style
-        style.configure("Treeview.Heading", font=("Arial", math.floor(self._scaling * 11), "bold"), background="#05445E", foreground="white")
-
-        #row styles
-        style.configure("Treeview", font=("Arial", math.floor(self._scaling * 11)), rowheight=math.floor(self._scaling * 25))
-        self._table.tag_configure("row", background="#D4F1F4")   # baby blue
-
-        self._table.grid(row=1, column=0, sticky="nsew")
-
-        #vertical scrollbar
-        vsb = ttk.Scrollbar(form_frame, orient="vertical", command=self._table.yview)
-        self._table.configure(yscrollcommand=vsb.set)
-        vsb.grid(row=1, column=1, sticky="ns")
-
-        self._table.bind("<Double-1>", self._open_popup)
-    
     def fill_order_table_rows(self, ticket):
-        #clear existing rows
         self._table.delete(*self._table.get_children())
-        #insert sample data
-        data = []
+
         orders = self._database.get_orders_for_ticket(ticket)
         for order in orders:
-            data.append( (order["stand"], order["time"], order["status_desc"], order["ID"]) )
-
-        for i, row in enumerate(data):
+            row = (order["stand"], order["time"], order["status_desc"], order["ID"])
             self._table.insert("", END, values=row, tags=("row",))
 
-        #check vip
         is_vip = self._database.check_vip(ticket)
+        ticket_txt = f"Ticket: {ticket}" + (" ☆" if is_vip else "")
+        self._ticket_label.config(text=ticket_txt)
 
-        ticket_txt = "Ticket: " + ticket
-        if is_vip:
-            ticket_txt = ticket_txt + " ☆"
-        self._ticket_label.config(text=ticket_txt) 
-        credit_txt = "Guthaben: " + str(self._database.get_credit_for_ticket(ticket)) + "€"
-        self._credit_label.config(text=credit_txt) 
+        credit_txt = f"Guthaben: {self._database.get_credit_for_ticket(ticket)}€"
+        self._credit_label.config(text=credit_txt)
 
-        #update ticket
         self._ticket = ticket
-
-        #initially fill notification table
         self.update_notification_table()
-
-    def _create_notification_table(self, visitor_page):
-        #define table columns
-        column = "Benachrichtigungen:"
-        self._table2 = ttk.Treeview(visitor_page, columns=column, show="headings", selectmode="browse", height=3)
-
-        #define headings
-        self._table2.heading(column, text=column)
-        self._table2.column(column, anchor="center", width=math.floor(self._scaling * 600))
-
-        #style rows
-        style = ttk.Style(visitor_page)
-        style.theme_use("default")
-
-        #header style
-        style.configure("Treeview.Heading", font=("Arial", math.floor(self._scaling * 11), "bold"), background="#05445E", foreground="white")
-
-        #row styles
-        style.configure("Treeview", font=("Arial", math.floor(self._scaling * 11)), rowheight=25)
-        self._table2.tag_configure("row", background="#D4F1F4")   # baby blue
-
-        self._table2.grid(row=5, column=1, columnspan=7)
-
-        self._table2.bind("<<TreeviewSelect>>", self._disable_selection)
-
-    def update_notification_table(self):
-        if (self._ticket):
-            data = self._database.get_messages_for_ticket(self._ticket)
-            self._table2.delete(*self._table2.get_children())
-            for msg in reversed(data):
-                self._table2.insert("", END, values=(msg, ), tags=("row",))
-
-    def _on_go_to_order_page(self):
-        self._order_page_management.set_ticket(self._ticket)
-        self._order_page_management.get_page().tkraise()
-
-    def _disable_selection(self, event=None):
-        event.widget.selection_remove(event.widget.selection())
 
     def set_order_page_management(self, order_page_management):
         self._order_page_management = order_page_management
 
-    def _add_credit(self):
-        self._database.add_credit_for_ticket(self._ticket, 10)
+    # ---------- layout helpers ----------
 
-        credit_txt = "Guthaben: " + str(self._database.get_credit_for_ticket(self._ticket)) + "€"
-        self._credit_label.config(text=credit_txt) 
-    
+    def _load_images(self):
+        logo_size = max(40, int(60 * self._scaling))
+        logo_pil = self._logo_pil_original.resize((logo_size, logo_size), Image.Resampling.LANCZOS)
+        self._logo_img = ImageTk.PhotoImage(logo_pil)
+
+        qr_size = max(100, int(160 * self._scaling))
+        qr_pil = self._qr_pil_original.resize((qr_size, qr_size), Image.Resampling.LANCZOS)
+        self._qr_img = ImageTk.PhotoImage(qr_pil)
+
+    def _create_order_table(self, parent, scaling: float, gap: int, rows_visible: int = 4):
+        box = Frame(parent)
+        box.grid(row=0, column=0, sticky="ew")
+        box.grid_columnconfigure(0, weight=1)
+
+        # Title
+        title = Label(
+            box,
+            text="Offene Bestellungen:",
+            font=("Arial", int(14 * scaling), "bold"),
+            bg="#05445E",
+            fg="white",
+            anchor="w",
+            padx=int(12 * scaling),
+            pady=int(6 * scaling),
+        )
+        title.grid(row=0, column=0, sticky="ew")
+
+        # Table container
+        table_area = Frame(box)
+        table_area.grid(row=1, column=0, sticky="ew", pady=(gap, 0))
+        table_area.grid_columnconfigure(0, weight=1)
+
+        columns = ("Stand", "Wartezeit", "Status", "Bestellungsnummer")
+
+        tv_style = "Orders.Treeview"
+        head_style = "Orders.Treeview.Heading"
+
+        base = max(9, int(11 * scaling))
+        self._style.configure(tv_style, font=("Arial", base), rowheight=max(18, int(28 * scaling)))
+        self._style.configure(head_style, font=("Arial", base, "bold"))
+        self._style.configure(head_style, padding=(0, int(5 * scaling)))
+
+        # Treeview
+        self._table = ttk.Treeview(
+            table_area,
+            columns=columns,
+            show="headings",
+            selectmode="browse",
+            height=rows_visible,
+            style=tv_style,
+        )
+
+        # Fixed column widths → enables horizontal scrolling
+        col_width = int(180 * scaling)
+        for col in columns:
+            self._table.heading(col, text=col)
+            self._table.column(col, anchor="center", width=col_width, stretch=False)
+
+        self._table.tag_configure("row", background="#D4F1F4")
+
+        # Grid layout:
+        # row 0: table
+        # row 1: horizontal scrollbar
+        table_area.grid_rowconfigure(0, weight=0)
+        table_area.grid_columnconfigure(0, weight=1)
+
+        self._table.grid(
+            row=0,
+            column=0,
+            sticky="ew",
+            padx=(int(6 * scaling), int(6 * scaling))
+        )
+
+        # Vertical scrollbar
+        vsb = ttk.Scrollbar(table_area, orient="vertical", command=self._table.yview)
+        self._table.configure(yscrollcommand=vsb.set)
+        vsb.grid(row=0, column=1, sticky="ns")
+
+        # Horizontal scrollbar (NEW)
+        hsb = ttk.Scrollbar(table_area, orient="horizontal", command=self._table.xview)
+        self._table.configure(xscrollcommand=hsb.set)
+        hsb.grid(row=1, column=0, sticky="ew", padx=(int(6 * scaling), int(6 * scaling)))
+
+        self._table.bind("<Double-1>", self._open_popup)
+
+
+    def _create_notification_table(self, parent, scaling: float):
+        parent.grid_columnconfigure(0, weight=1)
+        parent.grid_rowconfigure(0, weight=1)
+
+        tv_style = "Notifications.Treeview"
+        head_style = "Notifications.Treeview.Heading"
+
+        base = max(9, int(11 * scaling))
+        self._style.configure(tv_style, font=("Arial", base), rowheight=max(18, int(28 * scaling)))
+        self._style.configure(head_style, font=("Arial", base, "bold"))
+        self._style.configure(head_style, padding=(0, int(5 * scaling)))
+
+        table_area = Frame(parent)
+        table_area.grid(row=0, column=0, sticky="nsew")
+        table_area.grid_columnconfigure(0, weight=1)
+        table_area.grid_rowconfigure(0, weight=1)
+
+        col = "Benachrichtigungen:"
+
+        self._table2 = ttk.Treeview(
+            table_area,
+            columns=(col,),
+            show="headings",
+            selectmode="browse",
+            height=4,              # choose what you like
+            style=tv_style,
+        )
+
+        # ✅ Header centered
+        self._table2.heading(col, text=col, anchor="center")
+
+        # ✅ Row text left, but column stretches to available width
+        self._table2.column(col, anchor="w", width=1, stretch=True)
+
+        self._table2.tag_configure("row", background="#D4F1F4")
+
+        self._table2.grid(row=0, column=0, sticky="nsew")
+
+        # Vertical scrollbar
+        vsb = ttk.Scrollbar(table_area, orient="vertical", command=self._table2.yview)
+        self._table2.configure(yscrollcommand=vsb.set)
+        vsb.grid(row=0, column=1, sticky="ns")
+
+        self._table2.bind("<<TreeviewSelect>>", self._disable_selection)
+
+    # ---------- notifications ----------
+
+    def _schedule_notification_update(self):
+        if self._notify_job is not None:
+            self._root.after_cancel(self._notify_job)
+        self._notify_job = self._root.after(2500, self._poll_notifications)
+
+    def _poll_notifications(self):
+        self.update_notification_table()
+        self._schedule_notification_update()
+
+    def update_notification_table(self):
+        if not self._ticket or not self._table2:
+            return
+        data = self._database.get_messages_for_ticket(self._ticket)
+        self._table2.delete(*self._table2.get_children())
+        for msg in reversed(data):
+            self._table2.insert("", END, values=(msg,), tags=("row",))
+
+    # ---------- actions ----------
+
+    def _on_go_to_order_page(self):
+        if not self._order_page_management:
+            return
+        self._order_page_management.set_ticket(self._ticket)
+        self._order_page_management.get_page().tkraise()
+
+    def _disable_selection(self, event=None):
+        if event is not None:
+            event.widget.selection_remove(event.widget.selection())
+
+    def _add_credit(self):
+        if not self._ticket:
+            return
+        self._database.add_credit_for_ticket(self._ticket, 10)
+        credit_txt = f"Guthaben: {self._database.get_credit_for_ticket(self._ticket)}€"
+        self._credit_label.config(text=credit_txt)
+
     def _unlock_ticket_for_friend(self):
         selected = self._table.focus()
-        friend_ticket = self._friend_ticket_val.get()
+        friend_ticket = self._friend_ticket_val.get().strip()
+
         if not selected or not friend_ticket:
             return
+
         if not self._database.check_ticket_exists(friend_ticket):
-            messagebox.showerror("Fehler", "Ungültige Ticketnummer!") 
+            messagebox.showerror("Fehler", "Ungültige Ticketnummer!")
             return
+
         values = self._table.item(selected, "values")
-        
-        if self._database.connect_order_to_ticket(values[3], friend_ticket):
-            #if successfull
-            self._database.create_message_for_ticket(friend_ticket, f"Für sie wurde eine Bestellung an Stand {values[3]} freigeschaltet.")
-            messagebox.showinfo("Erfolg", "Bestellung erfolgreich freigeschaltet.") 
+        order_id = values[3]
+
+        if self._database.connect_order_to_ticket(order_id, friend_ticket):
+            self._database.create_message_for_ticket(
+                friend_ticket,
+                f"Für sie wurde eine Bestellung an Stand {values[0]} freigeschaltet."
+            )
+            messagebox.showinfo("Erfolg", "Bestellung erfolgreich freigeschaltet.")
         else:
-            messagebox.showinfo("Hinweis", f"Bestellung bereits für Ticket {friend_ticket} freigeschaltet.") 
+            messagebox.showinfo("Hinweis", f"Bestellung bereits für Ticket {friend_ticket} freigeschaltet.")
+
+    # ---------- popup ----------
 
     def _open_popup(self, event=None):
-        #get selection
         selected = self._table.focus()
         if not selected:
             return
         selected_order = self._table.item(selected, "values")
 
-        #create a popup window
         popup = Toplevel(self._visitor_page)
-        popup.title("Bestellung: " + selected_order[0])
-        popup.geometry(f"{math.floor(400 * self._scaling)}x{math.floor(300 * self._scaling)}")
+        popup.title("Bestellung: " + str(selected_order[0]))
+        popup.geometry(f"{int(420 * self._scaling)}x{int(320 * self._scaling)}")
 
-        #title label
+        popup.grid_columnconfigure(0, weight=1)
+        popup.grid_rowconfigure(1, weight=1)
+
         title = Label(
             popup,
             text="Positionen:",
-            font=("Arial", math.floor(self._scaling * 14), "bold"),
+            font=("Arial", int(self._scaling * 14), "bold"),
             bg="#05445E",
             fg="white",
-            width=30
+            anchor="w",
+            padx=int(12 * self._scaling),
+            pady=int(6 * self._scaling),
         )
-        title.grid(row=0, column=0)
+        title.grid(row=0, column=0, sticky="ew")
 
-        #define table columns
         columns = ("Name", "Menge")
-        table = ttk.Treeview(popup, columns=columns, show="headings", selectmode="browse", height=4)
 
-        #define headings
+        tv_style = "Popup.Treeview"
+        head_style = "Popup.Treeview.Heading"
+        base = max(9, int(11 * self._scaling))
+        self._style.configure(tv_style, font=("Arial", base), rowheight=max(18, int(28 * self._scaling)))
+        self._style.configure(head_style, font=("Arial", base, "bold"), padding=(0, int(5 * self._scaling)))
+
+        table_area = Frame(popup)
+        table_area.grid(row=1, column=0, sticky="nsew", padx=int(10 * self._scaling), pady=int(10 * self._scaling))
+        table_area.grid_columnconfigure(0, weight=1)
+        table_area.grid_rowconfigure(0, weight=1)
+
+        table = ttk.Treeview(table_area, columns=columns, show="headings", height=6, style=tv_style)
+
         for col in columns:
             table.heading(col, text=col)
-            table.column(col, anchor="center", width=math.floor(self._scaling * 120))
+            table.column(col, anchor="center", width=int(self._scaling * 160))
 
-        #style rows
-        style = ttk.Style(popup)
-        style.theme_use("default")
+        table.tag_configure("row", background="#D4F1F4")
+        table.grid(row=0, column=0, sticky="nsew")
 
-        #header style
-        style.configure("Treeview.Heading", font=("Arial", math.floor(self._scaling * 11), "bold"), background="#05445E", foreground="white")
+        vsb = ttk.Scrollbar(table_area, orient="vertical", command=table.yview)
+        table.configure(yscrollcommand=vsb.set)   # correct table
+        vsb.grid(row=0, column=1, sticky="ns")
 
-        #row styles
-        style.configure("Treeview", font=("Arial", math.floor(self._scaling * 11)), rowheight=math.floor(self._scaling * 25))
-        table.tag_configure("row", background="#D4F1F4")   # baby blue
-
-        table.grid(row=1, column=0, sticky="nsew")
-
-        #vertical scrollbar
-        vsb = ttk.Scrollbar(popup, orient="vertical", command=table.yview)
-        self._table.configure(yscrollcommand=vsb.set)
-        vsb.grid(row=1, column=1, sticky="ns")
-
-        #fill rows
-        data = []
-        positions = self._database.get_positions_for_order(selected_order[3])
-        special_requests = self._database.get_special_requests_for_order(selected_order[3])
+        # fill rows
+        order_id = selected_order[3]
+        positions = self._database.get_positions_for_order(order_id)
+        special_requests = self._database.get_special_requests_for_order(order_id)
 
         for position in positions:
-            data.append( (position["name"], position["quantity"]) )
+            table.insert("", END, values=(position["name"], position["quantity"]), tags=("row",))
 
-        for i, row in enumerate(data):
-            table.insert("", END, values=row, tags=("row",))
-
-        #special requests label
-        Label(popup, text="Sonderwünsche:", font=self._style_1).grid(row=2, column=0)
-        Label(popup, text=special_requests, font=self._style_1).grid(row=3, column=0)
-
-class MessageUpdater(threading.Thread):
-    def __init__(self, stop_event, visitor_page_management, poll_interval=2.5):
-        super().__init__(daemon=True)
-        self._stop_event = stop_event
-        self._visitor_page_management = visitor_page_management
-        self.poll_interval = poll_interval
-
-    def run(self):
-        while not self._stop_event.is_set():
-            self._visitor_page_management.update_notification_table()
-            time.sleep(self.poll_interval)
+        Label(popup, text="Sonderwünsche:", font=self._style_1).grid(row=2, column=0, sticky="w",
+                                                                     padx=int(10 * self._scaling))
+        Label(popup, text=special_requests, font=self._style_1, wraplength=int(380 * self._scaling))\
+            .grid(row=3, column=0, sticky="w", padx=int(10 * self._scaling), pady=(0, int(10 * self._scaling)))
