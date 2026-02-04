@@ -1,51 +1,65 @@
 from tkinter import *
 from tkinter import font
+import math
+
 from database import Database
 from login_page import LoginPage
 from visitor_page import VisitorPage
 from order_page import OrderPage
 from seller_page import SellerPage
-import math
 
 root = Tk()
-scaling = root.winfo_screenheight() / 1200     #pretty rough scaling 
+
+# --- scaling (clamped) ---
+screen_h = root.winfo_screenheight()
+scaling = screen_h / 1200
+scaling = max(0.75, min(scaling, 1.6))   # clamp to something sane
+
 database = Database()
-style_1 = font.Font(size=math.floor(15 * scaling))
 
-#columns
-root.grid_columnconfigure(0, weight=1)
-root.grid_columnconfigure(1, weight=1)
-root.grid_columnconfigure(2, weight=1)
+# define one main font (use a family explicitly)
+base_font_size = int(15 * scaling)
+style_1 = font.Font(family="Arial", size=base_font_size)
 
-#rows
+# --- window settings ---
+s_size_h = int(750 * scaling)
+s_size_v = int(825 * scaling)
+root.geometry(f"{s_size_h}x{s_size_v}")
+root.title("Festival Catering")
+root.resizable(False, False)
+
+# --- one container for all pages ---
+container = Frame(root)
+container.grid(row=0, column=0, sticky="nsew")
 root.grid_rowconfigure(0, weight=1)
+root.grid_columnconfigure(0, weight=1)
 
-#pages
-login_page_management = LoginPage(root, database, style_1, scaling)
+container.grid_rowconfigure(0, weight=1)
+container.grid_columnconfigure(0, weight=1)
+
+# --- pages (all stacked in same cell) ---
+login_page_management = LoginPage(container, database, style_1, scaling)
 login_page = login_page_management.get_page()
-login_page.grid(row=0, column=1, sticky="nsew")
+login_page.grid(row=0, column=0, sticky="nsew")
 
-visitor_page_management = VisitorPage(root, database, style_1, scaling)
+visitor_page_management = VisitorPage(container, database, style_1, scaling)
 visitor_page = visitor_page_management.get_page()
-visitor_page.grid(row=0, column=1, sticky="nsew")
+visitor_page.grid(row=0, column=0, sticky="nsew")
 
-order_page_management = OrderPage(root, database, style_1, scaling)
+order_page_management = OrderPage(container, database, style_1, scaling)
 order_page = order_page_management.get_page()
-order_page.grid(row=0, column=1, sticky="nsew")
+order_page.grid(row=0, column=0, sticky="nsew")
 
-seller_page_management = SellerPage(root, database, style_1, scaling)
+seller_page_management = SellerPage(container, database, style_1, scaling)
 seller_page = seller_page_management.get_page()
-seller_page.grid(row=0, column=1, sticky="nsew")
+seller_page.grid(row=0, column=0, sticky="nsew")
 
+# --- wiring ---
 login_page_management.set_visitor_pageManagement(visitor_page_management)
 login_page_management.set_seller_page_management(seller_page_management)
 visitor_page_management.set_order_page_management(order_page_management)
 order_page_management.set_visitor_pageManagement(visitor_page_management)
 
-#settings
+# --- start ---
 login_page.tkraise()
-s_size = math.floor(750 * scaling)
-root.geometry(f"{s_size}x{s_size}")   
-root.title("Festival Catering")
-root.resizable(False, False)
 root.mainloop()
