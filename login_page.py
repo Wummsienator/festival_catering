@@ -32,9 +32,7 @@ class LoginPage:
 
         # A single content frame centered in the page
         content = Frame(page)
-        content.grid(row=0, column=0)  # centered because row/col 0 have weight
-        # If you want it to expand but keep padding:
-        # content.grid(row=0, column=0, sticky="n")
+        content.grid(row=0, column=0)
 
         pad = int(16 * self._scaling)
         gap = int(10 * self._scaling)
@@ -56,10 +54,8 @@ class LoginPage:
         Label(form, text="Ticket:", font=self._style_1).grid(row=0, column=0, sticky="w", padx=(0, gap), pady=(0, gap))
         Label(form, text="Password:", font=self._style_1).grid(row=1, column=0, sticky="w", padx=(0, gap), pady=(0, gap))
 
-        Entry(form, font=self._style_1, bg="#D4F1F4", textvariable=self.ticket_val)\
-            .grid(row=0, column=1, sticky="ew", pady=(0, gap))
-        Entry(form, font=self._style_1, bg="#D4F1F4", textvariable=self.password_val, show="*")\
-            .grid(row=1, column=1, sticky="ew", pady=(0, gap))
+        Entry(form, font=self._style_1, bg="#D4F1F4", textvariable=self.ticket_val).grid(row=0, column=1, sticky="ew", pady=(0, gap))
+        Entry(form, font=self._style_1, bg="#D4F1F4", textvariable=self.password_val, show="*").grid(row=1, column=1, sticky="ew", pady=(0, gap))
 
         Button(
             form,
