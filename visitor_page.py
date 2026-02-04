@@ -169,8 +169,6 @@ class VisitorPage:
     def set_order_page_management(self, order_page_management):
         self._order_page_management = order_page_management
 
-    # ---------- layout helpers ----------
-
     def _load_images(self):
         logo_size = max(40, int(60 * self._scaling))
         logo_pil = self._logo_pil_original.resize((logo_size, logo_size), Image.Resampling.LANCZOS)
@@ -295,8 +293,6 @@ class VisitorPage:
 
         self._table2.bind("<<TreeviewSelect>>", self._disable_selection)
 
-    # ---------- notifications ----------
-
     def _schedule_notification_update(self):
         if self._notify_job is not None:
             self._root.after_cancel(self._notify_job)
@@ -313,8 +309,6 @@ class VisitorPage:
         self._table2.delete(*self._table2.get_children())
         for msg in reversed(data):
             self._table2.insert("", END, values=(msg,), tags=("row",))
-
-    # ---------- actions ----------
 
     def _on_go_to_order_page(self):
         if not self._order_page_management:
@@ -355,8 +349,6 @@ class VisitorPage:
             messagebox.showinfo("Erfolg", "Bestellung erfolgreich freigeschaltet.")
         else:
             messagebox.showinfo("Hinweis", f"Bestellung bereits für Ticket {friend_ticket} freigeschaltet.")
-
-    # ---------- popup ----------
 
     def _open_popup(self, event=None):
         selected = self._table.focus()

@@ -16,7 +16,6 @@ class SellerPage:
         self._seller_page = None
         self._stand = None
 
-        # widgets
         self._stand_label = None
         self._logo_img = None
 
@@ -29,8 +28,6 @@ class SellerPage:
         # style
         self._style = ttk.Style(self._root)
         self._style.theme_use("default")
-
-    # ---------------- public ----------------
 
     def get_page(self):
         if self._seller_page:
@@ -57,7 +54,7 @@ class SellerPage:
 
         self._load_images()
 
-        # ---------- TOP BAR ----------
+        # top
         top = Frame(content)
         top.grid(row=0, column=0, sticky="ew", padx=pad, pady=(pad, gap))
         top.grid_columnconfigure(0, weight=1)
@@ -66,10 +63,10 @@ class SellerPage:
         self._stand_label = Label(top, text="Stand Nr.: -", font=self._style_1)
         self._stand_label.grid(row=0, column=0, sticky="w")
 
-        # ---------- ORDERS TABLE ----------
+        # order table
         self._create_order_table(content, row=1, padx=pad, pady=(0, gap))
 
-        # ---------- STATUS BUTTON ROW ----------
+        # status button
         btn_row = Frame(content)
         btn_row.grid(row=2, column=0, sticky="ew", padx=pad, pady=(0, gap))
         btn_row.grid_columnconfigure(0, weight=1)
@@ -82,13 +79,13 @@ class SellerPage:
             background="#75E6DA"
         ).grid(row=0, column=0, sticky="w")
 
-        # ---------- INVENTORY TABLE ----------
+        # inventory table
         self._create_product_table(content, row=3, padx=pad, pady=(0, gap))
 
-        # ---------- ADD STOCK ROW ----------
+        # add product row
         self._create_product_combo_box(content, row=4, padx=pad, pady=(0, gap))
 
-        # ---------- FOOTER / LOGO ----------
+        # logo
         footer = Frame(content)
         footer.grid(row=5, column=0, sticky="nsew", padx=pad, pady=(0, pad))
         footer.grid_columnconfigure(0, weight=1)
@@ -98,8 +95,6 @@ class SellerPage:
 
         self._seller_page = page
         return self._seller_page
-
-    # ---------------- helpers ----------------
 
     def _load_images(self):
         logo_pil = Image.open("img/logo.png")
@@ -178,8 +173,6 @@ class SellerPage:
 
         return tv
 
-    # ---------------- tables ----------------
-
     def _create_order_table(self, seller_page, row, padx, pady):
         columns = ("Bestellung Nr.", "Zeitstempel", "Zeit", "Status", "Priorisiert")
         self._table = self._create_table_block(
@@ -209,8 +202,6 @@ class SellerPage:
             col_width=170
         )
         self._table_2.bind("<<TreeviewSelect>>", self._disable_selection)
-
-    # ---------------- controls ----------------
 
     def _create_product_combo_box(self, seller_page, row, padx, pady):
         wrap = Frame(seller_page)
@@ -256,8 +247,6 @@ class SellerPage:
     def _disable_selection(self, event=None):
         event.widget.selection_remove(event.widget.selection())
 
-    # ---------------- data fill ----------------
-
     def fill_order_table_rows(self, stand):
         self._table.delete(*self._table.get_children())
 
@@ -282,8 +271,6 @@ class SellerPage:
         for product in products:
             warning = "!!!" if int(product["quantity"]) < 10 else ""
             self._table_2.insert("", END, values=(product["name"], product["quantity"], warning), tags=("row",))
-
-    # ---------------- actions ----------------
 
     def _on_add_product(self, event=None):
         display = self._product_combo.get()
@@ -346,7 +333,7 @@ class SellerPage:
         table.grid(row=0, column=0, sticky="nsew")
 
         vsb = ttk.Scrollbar(table_area, orient="vertical", command=table.yview)
-        table.configure(yscrollcommand=vsb.set)   # correct table
+        table.configure(yscrollcommand=vsb.set)
         vsb.grid(row=0, column=1, sticky="ns")
 
         # fill rows
@@ -357,8 +344,7 @@ class SellerPage:
         for position in positions:
             table.insert("", END, values=(position["name"], position["quantity"]), tags=("row",))
 
-        Label(popup, text="Sonderwünsche:", font=self._style_1).grid(row=2, column=0, sticky="w",
-                                                                     padx=int(10 * self._scaling))
+        Label(popup, text="Sonderwünsche:", font=self._style_1).grid(row=2, column=0, sticky="w", padx=int(10 * self._scaling))
         Label(popup, text=special_requests, font=self._style_1, wraplength=int(380 * self._scaling))\
             .grid(row=3, column=0, sticky="w", padx=int(10 * self._scaling), pady=(0, int(10 * self._scaling)))
 
