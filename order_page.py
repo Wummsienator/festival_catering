@@ -190,8 +190,6 @@ class OrderPage:
         self._order_page = page
         return self._order_page
 
-    # ---------------- layout helpers ----------------
-
     def _load_images(self):
         logo_pil = Image.open("img/logo.png")
         s1 = max(30, round(50 * self._scaling))
