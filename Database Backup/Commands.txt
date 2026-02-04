@@ -15,3 +15,18 @@ FROM DISK = 'E:\Documents\Berufsschule\LF10\LF10_Projekt_Festival_Catering\Datab
 WITH REPLACE;
 
 ALTER DATABASE FestivalCateringAPP SET MULTI_USER;
+
+#Check if database is used
+SELECT 
+    s.session_id,
+    s.login_name,
+    s.host_name,
+    s.program_name
+FROM sys.dm_exec_sessions s
+WHERE s.database_id = DB_ID('FestivalCateringAPP');
+
+#Kill sessions
+USE master;
+GO
+KILL 77;
+GO
