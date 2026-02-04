@@ -1,6 +1,5 @@
 from tkinter import *
 from tkinter import font
-
 from database import Database
 from login_page import LoginPage
 from visitor_page import VisitorPage

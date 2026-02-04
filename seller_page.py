@@ -2,9 +2,6 @@ from tkinter import *
 from tkinter import ttk
 from PIL import Image, ImageTk
 from elements import PlaceholderEntry
-import datetime
-import math
-
 
 class SellerPage:
     def __init__(self, root, database, style_1, scaling):

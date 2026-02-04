@@ -3,8 +3,6 @@ from tkinter import ttk, messagebox
 from PIL import Image, ImageTk
 from elements import PlaceholderEntry
 from decimal import Decimal
-import math
-
 
 class OrderPage:
     def __init__(self, root, database, style_1, scaling):
@@ -72,7 +70,7 @@ class OrderPage:
 
         self._load_images()
 
-        # ---------- TOP BAR ----------
+        # top
         top = Frame(content)
         top.grid(row=0, column=0, sticky="ew", padx=pad, pady=(pad, gap))
         top.grid_columnconfigure(0, weight=1)
@@ -94,7 +92,7 @@ class OrderPage:
             background="#75E6DA"
         ).grid(row=0, column=1, sticky="e")
 
-        # ---------- TABLES AREA (vertical stack) ----------
+        # tables
         tables = Frame(content)
         tables.grid(row=1, column=0, sticky="nsew", padx=pad)
         tables.grid_columnconfigure(0, weight=1)
@@ -105,7 +103,7 @@ class OrderPage:
         tables.grid_rowconfigure(3, weight=1)  # Warenkorb
         tables.grid_rowconfigure(4, weight=1)  # spacer
 
-        # --- Stand search input ---
+        # search input
         search = Frame(tables)
         search.grid(row=0, column=0, sticky="ew", pady=(0, gap))
         search.grid_columnconfigure(0, weight=1)
@@ -125,18 +123,15 @@ class OrderPage:
         self._create_bestellkarte_table(tables, gap=gap)   
         self._create_warenkorb_table(tables, gap=0)      
 
-        # spacer to absorb extra height (so tables remain compact)
+        # spacer to absorb extra height
         spacer = Frame(tables)
         spacer.grid(row=4, column=0, sticky="nsew")
 
-        # ---------- BOTTOM ----------
+        # bottom
         bottom = Frame(content)
         bottom.grid(row=2, column=0, sticky="ew", padx=pad, pady=(gap, pad))
         bottom.grid_columnconfigure(0, weight=1)
 
-        # row 0: Sonderwünsche
-        # row 1: Priorisieren
-        # row 2: controls (labels left, buttons+logo right)
         bottom.grid_rowconfigure(0, weight=0)
         bottom.grid_rowconfigure(1, weight=0)
         bottom.grid_rowconfigure(2, weight=0)
