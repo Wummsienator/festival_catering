@@ -3,8 +3,6 @@ from tkinter import ttk, messagebox
 from PIL import Image, ImageTk
 from elements import PlaceholderEntry
 from decimal import Decimal
-import math
-
 
 class OrderPage:
     def __init__(self, root, database, style_1, scaling):
@@ -21,7 +19,6 @@ class OrderPage:
         self._current_price = Decimal("0.00")
         self._priority = False
 
-        # widgets
         self._ticket_label = None
         self._credit_label = None
         self._time_label = None
@@ -51,8 +48,6 @@ class OrderPage:
 
         self._visitor_page_management = None
 
-    # ---------------- public ----------------
-
     def get_page(self):
         if self._order_page:
             return self._order_page
@@ -75,7 +70,7 @@ class OrderPage:
 
         self._load_images()
 
-        # ---------- TOP BAR ----------
+        # top
         top = Frame(content)
         top.grid(row=0, column=0, sticky="ew", padx=pad, pady=(pad, gap))
         top.grid_columnconfigure(0, weight=1)
@@ -97,19 +92,18 @@ class OrderPage:
             background="#75E6DA"
         ).grid(row=0, column=1, sticky="e")
 
-        # ---------- TABLES AREA (vertical stack) ----------
+        # tables
         tables = Frame(content)
         tables.grid(row=1, column=0, sticky="nsew", padx=pad)
         tables.grid_columnconfigure(0, weight=1)
 
-        # FIXED-height table blocks: do NOT give them weight=1
         tables.grid_rowconfigure(0, weight=1)  # search input
         tables.grid_rowconfigure(1, weight=1)  # Stand Auswahl
         tables.grid_rowconfigure(2, weight=1)  # Bestellkarte
         tables.grid_rowconfigure(3, weight=1)  # Warenkorb
         tables.grid_rowconfigure(4, weight=1)  # spacer
 
-        # --- Stand search input (ABOVE stand table) ---
+        # search input
         search = Frame(tables)
         search.grid(row=0, column=0, sticky="ew", pady=(0, gap))
         search.grid_columnconfigure(0, weight=1)
@@ -125,23 +119,19 @@ class OrderPage:
 
         Label(search, text="⌕", font=self._style_1).grid(row=0, column=1, padx=(gap, 0))
 
-        # --- tables in the required order ---
-        self._create_stand_table(tables, gap=gap)            # row=1
-        self._create_bestellkarte_table(tables, gap=gap)     # row=2
-        self._create_warenkorb_table(tables, gap=0)          # row=3
+        self._create_stand_table(tables, gap=gap)        
+        self._create_bestellkarte_table(tables, gap=gap)   
+        self._create_warenkorb_table(tables, gap=0)      
 
-        # spacer to absorb extra height (so tables remain compact)
+        # spacer to absorb extra height
         spacer = Frame(tables)
         spacer.grid(row=4, column=0, sticky="nsew")
 
-        # ---------- BOTTOM ----------
+        # bottom
         bottom = Frame(content)
         bottom.grid(row=2, column=0, sticky="ew", padx=pad, pady=(gap, pad))
         bottom.grid_columnconfigure(0, weight=1)
 
-        # row 0: Sonderwünsche
-        # row 1: Priorisieren
-        # row 2: controls (labels left, buttons+logo right)
         bottom.grid_rowconfigure(0, weight=0)
         bottom.grid_rowconfigure(1, weight=0)
         bottom.grid_rowconfigure(2, weight=0)
@@ -154,11 +144,11 @@ class OrderPage:
         )
         self._special_requests_ipt.grid(row=0, column=0, sticky="ew", pady=(0, gap))
 
-        # priority row (own row)
+        # priority row 
         priority_row = Frame(bottom)
         priority_row.grid(row=1, column=0, sticky="ew", pady=(0, gap))
         priority_row.grid_columnconfigure(0, weight=1)
-        self._create_priority_switch(priority_row)  # your version that grids inside parent
+        self._create_priority_switch(priority_row) 
 
         # controls row
         controls = Frame(bottom)
@@ -166,7 +156,7 @@ class OrderPage:
         controls.grid_columnconfigure(0, weight=1)  # left block
         controls.grid_columnconfigure(1, weight=0)  # right block
 
-        # LEFT: both labels grouped
+        # left block
         left_block = Frame(controls)
         left_block.grid(row=0, column=0, sticky="w")
 
@@ -176,7 +166,7 @@ class OrderPage:
         self._price_label = Label(left_block, text="Gesamtpreis: 0€", font=self._style_1)
         self._price_label.grid(row=0, column=1, sticky="w")
 
-        # RIGHT: buttons + logo bottom-right
+        # right block
         right_block = Frame(controls)
         right_block.grid(row=0, column=1, sticky="e")
 
@@ -194,7 +184,7 @@ class OrderPage:
             background="#75E6DA"
         ).grid(row=0, column=1, sticky="e", padx=(0, gap))
 
-        # logo at bottom-right
+        # logo
         Label(right_block, image=self._logo_img).grid(row=0, column=2, sticky="e")
 
         self._order_page = page
@@ -228,7 +218,7 @@ class OrderPage:
         self._priority_switch.grid(row=0, column=1, sticky="w")
 
     def _table_style(self, prefix: str):
-        """Create a consistent unique style name per table."""
+        # Create a consistent unique style name per table
         base = max(9, int(11 * self._scaling))
         rowh = max(18, int(28 * self._scaling))
         tv_style = f"{prefix}.Treeview"
@@ -244,7 +234,7 @@ class OrderPage:
         wrap = Frame(parent)
         wrap.grid(row=row, column=0, sticky="ew", pady=(0, gap) if gap else 0)
         wrap.grid_columnconfigure(0, weight=1)
-        wrap.grid_rowconfigure(1, weight=0)  # fixed height block
+        wrap.grid_rowconfigure(1, weight=0) 
 
         title = Label(
             wrap,
@@ -261,10 +251,8 @@ class OrderPage:
         area = Frame(wrap)
         area.grid(row=1, column=0, sticky="ew", pady=(gap, 0))
 
-        # ✅ Make the table column expand, scrollbar column stay fixed
         area.grid_columnconfigure(0, weight=1)
         area.grid_columnconfigure(1, weight=0)
-        # ✅ Keep fixed height (but allow nsew without vertical growth)
         area.grid_rowconfigure(0, weight=0)
 
         base = max(9, int(11 * self._scaling))
@@ -296,7 +284,6 @@ class OrderPage:
 
         tv.tag_configure("row", background="#D4F1F4")
 
-        # ✅ Fill available width AND keep fixed height (row weight is 0)
         tv.grid(
             row=0, column=0,
             sticky="nsew",
@@ -327,7 +314,7 @@ class OrderPage:
             gap=gap,
             row=1,
             height=3,
-            stretch_cols=True   # Name column fills width
+            stretch_cols=True
         )
         self._table.bind("<<TreeviewSelect>>", self._on_select_stand)
 
@@ -356,8 +343,6 @@ class OrderPage:
             height=3
         )
         self._table_3.bind("<Double-1>", self._on_remove_order_position)
-
-    # ---------------- existing logic (mostly unchanged) ----------------
 
     def _switch_priority(self):
         if self._priority:

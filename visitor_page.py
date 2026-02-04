@@ -1,8 +1,6 @@
 from tkinter import *
 from tkinter import ttk, messagebox
 from PIL import Image, ImageTk
-import math
-
 
 class VisitorPage:
     def __init__(self, root, database, style_1, scaling):
@@ -40,8 +38,6 @@ class VisitorPage:
         # periodic update
         self._notify_job = None
 
-    # ---------- public ----------
-
     def get_page(self):
         if self._visitor_page:
             return self._visitor_page
@@ -57,25 +53,18 @@ class VisitorPage:
         content = Frame(page)
         content.grid(row=0, column=0, sticky="nsew")
 
-        # Row plan:
-        # 0 top bar (ticket/credit)
-        # 1 order table (fixed height, not expanding)
-        # 2 actions (order + unlock)
-        # 3 QR (between unlock and message table)
-        # 4 notifications (with scrollbar)
-        # 5 bottom logo
         content.grid_columnconfigure(0, weight=1)
         content.grid_rowconfigure(0, weight=0)
-        content.grid_rowconfigure(1, weight=0)  # orders: DO NOT EXPAND
+        content.grid_rowconfigure(1, weight=0)
         content.grid_rowconfigure(2, weight=0)
         content.grid_rowconfigure(3, weight=0)
         content.grid_rowconfigure(4, weight=1)  # notifications can take leftover space
         content.grid_rowconfigure(5, weight=0)
 
-        # render images once (scaled)
+        # render images once
         self._load_images()
 
-        # TOP BAR
+        # Top bar
         top = Frame(content)
         top.grid(row=0, column=0, sticky="ew", padx=pad, pady=(pad, gap))
         top.grid_columnconfigure(0, weight=1)
@@ -96,13 +85,13 @@ class VisitorPage:
             background="#75E6DA"
         ).grid(row=0, column=2, sticky="e")
 
-        # ORDERS (fixed height)
+        # Orders
         orders = Frame(content)
         orders.grid(row=1, column=0, sticky="ew", padx=pad)
         orders.grid_columnconfigure(0, weight=1)
         self._create_order_table(orders, scaling=self._scaling, gap=gap, rows_visible=4)
 
-        # ACTIONS (order + unlock)
+        # Actions
         actions = Frame(content)
         actions.grid(row=2, column=0, sticky="ew", padx=pad, pady=(gap, gap))
         actions.grid_columnconfigure(0, weight=1)
@@ -133,21 +122,20 @@ class VisitorPage:
             background="#75E6DA"
         ).grid(row=0, column=2, sticky="e")
 
-        # QR ROW (between unlock and message table)
         qr_row = Frame(content)
         qr_row.grid(row=3, column=0, sticky="ew", padx=pad, pady=(0, gap))
         qr_row.grid_columnconfigure(0, weight=1)
 
         Label(qr_row, image=self._qr_img).grid(row=0, column=0)  # centered by default
 
-        # NOTIFICATIONS (with vertical scrollbar)
+        # Notifications
         notif = Frame(content)
         notif.grid(row=4, column=0, sticky="nsew", padx=pad, pady=(0, gap))
         notif.grid_columnconfigure(0, weight=1)
         notif.grid_rowconfigure(0, weight=1)
         self._create_notification_table(notif, scaling=self._scaling)
 
-        # BOTTOM RIGHT LOGO
+        # Logo
         bottom = Frame(content)
         bottom.grid(row=5, column=0, sticky="ew", padx=pad, pady=(0, pad))
         bottom.grid_columnconfigure(0, weight=1)
@@ -180,8 +168,6 @@ class VisitorPage:
 
     def set_order_page_management(self, order_page_management):
         self._order_page_management = order_page_management
-
-    # ---------- layout helpers ----------
 
     def _load_images(self):
         logo_size = max(40, int(60 * self._scaling))
@@ -236,7 +222,6 @@ class VisitorPage:
             style=tv_style,
         )
 
-        # Fixed column widths → enables horizontal scrolling
         col_width = int(180 * scaling)
         for col in columns:
             self._table.heading(col, text=col)
@@ -244,9 +229,6 @@ class VisitorPage:
 
         self._table.tag_configure("row", background="#D4F1F4")
 
-        # Grid layout:
-        # row 0: table
-        # row 1: horizontal scrollbar
         table_area.grid_rowconfigure(0, weight=0)
         table_area.grid_columnconfigure(0, weight=1)
 
@@ -262,7 +244,7 @@ class VisitorPage:
         self._table.configure(yscrollcommand=vsb.set)
         vsb.grid(row=0, column=1, sticky="ns")
 
-        # Horizontal scrollbar (NEW)
+        # Horizontal scrollbar
         hsb = ttk.Scrollbar(table_area, orient="horizontal", command=self._table.xview)
         self._table.configure(xscrollcommand=hsb.set)
         hsb.grid(row=1, column=0, sticky="ew", padx=(int(6 * scaling), int(6 * scaling)))
@@ -295,18 +277,13 @@ class VisitorPage:
             columns=(col,),
             show="headings",
             selectmode="browse",
-            height=4,              # choose what you like
+            height=4,
             style=tv_style,
         )
 
-        # ✅ Header centered
         self._table2.heading(col, text=col, anchor="center")
-
-        # ✅ Row text left, but column stretches to available width
         self._table2.column(col, anchor="w", width=1, stretch=True)
-
         self._table2.tag_configure("row", background="#D4F1F4")
-
         self._table2.grid(row=0, column=0, sticky="nsew")
 
         # Vertical scrollbar
@@ -315,8 +292,6 @@ class VisitorPage:
         vsb.grid(row=0, column=1, sticky="ns")
 
         self._table2.bind("<<TreeviewSelect>>", self._disable_selection)
-
-    # ---------- notifications ----------
 
     def _schedule_notification_update(self):
         if self._notify_job is not None:
@@ -334,8 +309,6 @@ class VisitorPage:
         self._table2.delete(*self._table2.get_children())
         for msg in reversed(data):
             self._table2.insert("", END, values=(msg,), tags=("row",))
-
-    # ---------- actions ----------
 
     def _on_go_to_order_page(self):
         if not self._order_page_management:
@@ -376,8 +349,6 @@ class VisitorPage:
             messagebox.showinfo("Erfolg", "Bestellung erfolgreich freigeschaltet.")
         else:
             messagebox.showinfo("Hinweis", f"Bestellung bereits für Ticket {friend_ticket} freigeschaltet.")
-
-    # ---------- popup ----------
 
     def _open_popup(self, event=None):
         selected = self._table.focus()
@@ -427,7 +398,7 @@ class VisitorPage:
         table.grid(row=0, column=0, sticky="nsew")
 
         vsb = ttk.Scrollbar(table_area, orient="vertical", command=table.yview)
-        table.configure(yscrollcommand=vsb.set)   # correct table
+        table.configure(yscrollcommand=vsb.set)
         vsb.grid(row=0, column=1, sticky="ns")
 
         # fill rows
@@ -438,7 +409,6 @@ class VisitorPage:
         for position in positions:
             table.insert("", END, values=(position["name"], position["quantity"]), tags=("row",))
 
-        Label(popup, text="Sonderwünsche:", font=self._style_1).grid(row=2, column=0, sticky="w",
-                                                                     padx=int(10 * self._scaling))
+        Label(popup, text="Sonderwünsche:", font=self._style_1).grid(row=2, column=0, sticky="w", padx=int(10 * self._scaling))
         Label(popup, text=special_requests, font=self._style_1, wraplength=int(380 * self._scaling))\
             .grid(row=3, column=0, sticky="w", padx=int(10 * self._scaling), pady=(0, int(10 * self._scaling)))
