@@ -234,7 +234,7 @@ class OrderPage:
         tv_style = f"{prefix}.Treeview"
         head_style = f"{prefix}.Treeview.Heading"
         self._style.configure(tv_style, font=("Arial", base), rowheight=rowh)
-        self._style.configure(head_style, font=("Arial", base, "bold"), padding=(0, int(5 * self._scaling)))
+        self._style.configure(head_style, font=("Arial", base, "bold"), padding=(0, int(5 * self._scaling)), background="#05445E", foreground="white")
         return tv_style
 
     def _create_treeview_block(
@@ -272,7 +272,7 @@ class OrderPage:
         tv_style = f"{prefix}.Treeview"
         head_style = f"{prefix}.Treeview.Heading"
         self._style.configure(tv_style, font=("Arial", base), rowheight=rowh)
-        self._style.configure(head_style, font=("Arial", base, "bold"), padding=(0, int(5 * self._scaling)))
+        self._style.configure(head_style, font=("Arial", base, "bold"), padding=(0, int(5 * self._scaling)), background="#05445E", foreground="white")
 
         tv = ttk.Treeview(
             area,

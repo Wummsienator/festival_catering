@@ -224,6 +224,7 @@ class VisitorPage:
         self._style.configure(tv_style, font=("Arial", base), rowheight=max(18, int(28 * scaling)))
         self._style.configure(head_style, font=("Arial", base, "bold"))
         self._style.configure(head_style, padding=(0, int(5 * scaling)))
+        self._style.configure(head_style, background="#05445E", foreground="white")
 
         # Treeview
         self._table = ttk.Treeview(
@@ -280,6 +281,7 @@ class VisitorPage:
         self._style.configure(tv_style, font=("Arial", base), rowheight=max(18, int(28 * scaling)))
         self._style.configure(head_style, font=("Arial", base, "bold"))
         self._style.configure(head_style, padding=(0, int(5 * scaling)))
+        self._style.configure(head_style, background="#05445E", foreground="white")
 
         table_area = Frame(parent)
         table_area.grid(row=0, column=0, sticky="nsew")
@@ -408,7 +410,7 @@ class VisitorPage:
         head_style = "Popup.Treeview.Heading"
         base = max(9, int(11 * self._scaling))
         self._style.configure(tv_style, font=("Arial", base), rowheight=max(18, int(28 * self._scaling)))
-        self._style.configure(head_style, font=("Arial", base, "bold"), padding=(0, int(5 * self._scaling)))
+        self._style.configure(head_style, font=("Arial", base, "bold"), padding=(0, int(5 * self._scaling)), background="#05445E", foreground="white")
 
         table_area = Frame(popup)
         table_area.grid(row=1, column=0, sticky="nsew", padx=int(10 * self._scaling), pady=int(10 * self._scaling))
