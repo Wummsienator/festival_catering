@@ -328,32 +328,44 @@ class SellerPage:
         )
         title.grid(row=0, column=0, sticky="ew")
 
-        area = Frame(popup)
-        area.grid(row=1, column=0, sticky="nsew")
-        area.grid_columnconfigure(0, weight=1)
-        area.grid_columnconfigure(1, weight=0)
-
         columns = ("Name", "Menge")
-        style = self._apply_treeview_style("Popup")
 
-        table = ttk.Treeview(area, columns=columns, show="headings", selectmode="browse", height=6, style=style)
-        for c in columns:
-            table.heading(c, text=c, anchor="center")
-            table.column(c, anchor="center", width=int(180 * self._scaling), stretch=False)
+        tv_style = "Popup.Treeview"
+        head_style = "Popup.Treeview.Heading"
+        base = max(9, int(11 * self._scaling))
+        self._style.configure(tv_style, font=("Arial", base), rowheight=max(18, int(28 * self._scaling)))
+        self._style.configure(head_style, font=("Arial", base, "bold"), padding=(0, int(5 * self._scaling)), background="#05445E", foreground="white")
 
-        table.grid(row=0, column=0, sticky="nsew", padx=(int(6 * self._scaling), int(6 * self._scaling)))
+        table_area = Frame(popup)
+        table_area.grid(row=1, column=0, sticky="nsew", padx=int(10 * self._scaling), pady=int(10 * self._scaling))
+        table_area.grid_columnconfigure(0, weight=1)
+        table_area.grid_rowconfigure(0, weight=1)
 
-        vsb = ttk.Scrollbar(area, orient="vertical", command=table.yview)
-        table.configure(yscrollcommand=vsb.set)
+        table = ttk.Treeview(table_area, columns=columns, show="headings", height=6, style=tv_style)
+
+        for col in columns:
+            table.heading(col, text=col)
+            table.column(col, anchor="center", width=int(self._scaling * 160))
+
+        table.tag_configure("row", background="#D4F1F4")
+        table.grid(row=0, column=0, sticky="nsew")
+
+        vsb = ttk.Scrollbar(table_area, orient="vertical", command=table.yview)
+        table.configure(yscrollcommand=vsb.set)   # correct table
         vsb.grid(row=0, column=1, sticky="ns")
 
-        positions, special_requests = self._database.get_positions_for_order(selected_order[0])
-        for p in positions:
-            table.insert("", END, values=(p["name"], p["quantity"]), tags=("row",))
+        # fill rows
+        order_id = selected_order[0]
+        positions = self._database.get_positions_for_order(order_id)
+        special_requests = self._database.get_special_requests_for_order(order_id)
 
-        Label(popup, text="Sonderwünsche:", font=self._style_1).grid(row=2, column=0, sticky="w", padx=int(10 * self._scaling), pady=(int(6 * self._scaling), 0))
-        Label(popup, text=special_requests, font=self._style_1, wraplength=int(380 * self._scaling), justify="left") \
-            .grid(row=3, column=0, sticky="w", padx=int(10 * self._scaling))
+        for position in positions:
+            table.insert("", END, values=(position["name"], position["quantity"]), tags=("row",))
+
+        Label(popup, text="Sonderwünsche:", font=self._style_1).grid(row=2, column=0, sticky="w",
+                                                                     padx=int(10 * self._scaling))
+        Label(popup, text=special_requests, font=self._style_1, wraplength=int(380 * self._scaling))\
+            .grid(row=3, column=0, sticky="w", padx=int(10 * self._scaling), pady=(0, int(10 * self._scaling)))
 
     def _on_change_status(self, event=None):
         selected = self._table.focus()
