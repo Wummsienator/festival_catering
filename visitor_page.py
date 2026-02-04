@@ -23,7 +23,7 @@ class VisitorPage:
         self._logo_pil_original = Image.open("img/logo.png")
         self._qr_pil_original = Image.open("img/QR_Code.png")
 
-        # ttk styles (created once)
+        # ttk styles
         self._style = ttk.Style(self._root)
         self._style.theme_use("default")
 
