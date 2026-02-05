@@ -397,7 +397,7 @@ class VisitorPage:
         selected_order = self._table.item(selected, "values")
 
         popup = Toplevel(self._visitor_page)
-        popup.title("Bestellung: " + str(selected_order[0]))
+        popup.title("Bestellung: " + str(selected_order[3]))
         popup.geometry(f"{int(420 * self._scaling)}x{int(320 * self._scaling)}")
 
         popup.grid_columnconfigure(0, weight=1)
