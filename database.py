@@ -353,9 +353,9 @@ class Database:
         self._cursor.execute(insert)
         self._cursor.commit()
     
-    def get_qr_code_img(self, ticket):
+    def get_qr_code_payload(self, ticket):
         select = f"""
-                 SELECT QrPng FROM Tickets WHERE TicketNR = {ticket}
+                 SELECT QrPayload FROM Tickets WHERE TicketNR = {ticket}
                  """    
             
         row = self._cursor.execute(select).fetchone()[0]

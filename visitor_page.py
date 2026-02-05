@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import ttk, messagebox
 from PIL import Image, ImageTk
 import io
+import qrcode
 
 class VisitorPage:
     def __init__(self, root, database, style_1, scaling):
@@ -173,7 +174,8 @@ class VisitorPage:
         self._credit_label.config(text=credit_txt)
 
     def _load_and_set_qr_code(self):
-        png_bytes = bytes(self._database.get_qr_code_img(self._ticket))
+        qr_payload = self._database.get_qr_code_payload(self._ticket)
+        png_bytes = bytes(self._make_qr_png_bytes(qr_payload))
         img = Image.open(io.BytesIO(png_bytes))
  
         #scaling
@@ -183,6 +185,22 @@ class VisitorPage:
         self._qr_img = ImageTk.PhotoImage(img)
         self._qr_label.config(image=self._qr_img)
         self._qr_label.image = self._qr_img  
+
+    def _make_qr_png_bytes(self, payload: str, box_size=10, border=2):
+        qr = qrcode.QRCode(
+            version=None,
+            error_correction=qrcode.constants.ERROR_CORRECT_M,
+            box_size=box_size,
+            border=border,
+        )
+        qr.add_data(payload)
+        qr.make(fit=True)
+
+        img = qr.make_image(fill_color="black", back_color="white").convert("RGB")
+
+        buf = io.BytesIO()
+        img.save(buf, format="PNG")
+        return buf.getvalue()
 
     def set_order_page_management(self, order_page_management):
         self._order_page_management = order_page_management
