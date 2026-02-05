@@ -22,3 +22,10 @@ class PlaceholderEntry(Entry):
         if not self.get():
             self.insert(0, self.placeholder)
             self["fg"] = self.placeholder_color
+
+    def restore_placeholder(self):
+        text = self.get()
+        if text == "" or (self["fg"] == self.placeholder_color and text != self.placeholder):
+            self.delete(0, END)
+            self.insert(0, self.placeholder)
+            self["fg"] = self.placeholder_color

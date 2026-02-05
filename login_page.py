@@ -79,10 +79,12 @@ class LoginPage:
             self.password_val.set("")
             if not stand:
                 self._visitor_page_management.init_data_for_ticket(ticket)
+                self._root.focus_set()
                 self._visitor_page_management.get_page().tkraise()
             else:
                 self._seller_page_management.fill_order_table_rows(stand)
                 self._seller_page_management.fill_product_table_rows(stand)
+                self._root.focus_set()
                 self._seller_page_management.get_page().tkraise()
         else:
             messagebox.showerror("Fehler", "Ungültige Login-Daten!")

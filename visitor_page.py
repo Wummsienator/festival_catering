@@ -352,6 +352,8 @@ class VisitorPage:
         if not self._order_page_management:
             return
         self._order_page_management.set_ticket(self._ticket)
+        self._root.focus_set()
+        self._order_page_management.restore_place_holder()               #because somehow placeholders are cleared on opening page for second time
         self._order_page_management.get_page().tkraise()
 
     def _disable_selection(self, event=None):
