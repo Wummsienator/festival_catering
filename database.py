@@ -5,7 +5,7 @@ from decimal import *
 class Database:
     def __init__(self):
         cnxn = pyodbc.connect("Driver={ODBC Driver 18 for SQL Server};"
-                            r"Server=Control-Tower3\FESAPPSQLSERVER;"
+                            r"Server=LAPTOP-KJ4I65LS\GENERALSQL;"
                             "Database=FestivalCateringAPP;"
                             "Trusted_Connection=yes;"
                             "Encrypt=yes;"
@@ -293,6 +293,21 @@ class Database:
             #update status
             self._cursor.execute(f"UPDATE Orders SET StatusID = StatusID + 1 WHERE OrderID = {order}")
             self._cursor.commit()
+
+    
+    def storno_for_orders(self, order):
+        select = f"""
+                 SELECT StatusID FROM Orders
+                 WHERE OrderID = {order}
+                 """
+        
+        row = self._cursor.execute(select).fetchone()
+
+        if row and row[0] < 4:
+            #update status
+            self._cursor.execute(f"UPDATE Orders SET StatusID = 5 where OrderID = {order}")
+            self._cursor.commit()
+    
 
     def search_stand(self, standStr):
         stands = []
