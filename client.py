@@ -20,9 +20,9 @@ base_font_size = int(15 * scaling)
 style_1 = font.Font(family="Arial", size=base_font_size)
 
 # window
-s_size_h = int(750 * scaling)
-s_size_v = int(825 * scaling)
-root.geometry(f"{s_size_h}x{s_size_v}")
+s_size_w = int(775 * scaling)
+s_size_h = int(825 * scaling)
+root.geometry(f"{s_size_w}x{s_size_h}")
 root.title("Festival Catering")
 root.resizable(False, False)
 
