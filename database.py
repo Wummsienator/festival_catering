@@ -5,7 +5,7 @@ from decimal import *
 class Database:
     def __init__(self):
         cnxn = pyodbc.connect("Driver={ODBC Driver 18 for SQL Server};"
-                            r"Control-Tower3\FESAPPSQLSERVER;"
+                            r"Server=Control-Tower3\FESAPPSQLSERVER;"
                             "Database=FestivalCateringAPP;"
                             "Trusted_Connection=yes;"
                             "Encrypt=yes;"
