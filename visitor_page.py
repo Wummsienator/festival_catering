@@ -388,7 +388,7 @@ class VisitorPage:
             )
             messagebox.showinfo("Erfolg", "Bestellung erfolgreich freigeschaltet.")
         else:
-            messagebox.showinfo("Hinweis", f"Bestellung bereits für Ticket {friend_ticket} freigeschaltet.")
+            messagebox.showinfo("Hinweis", f"Bestellung ist bereits für Ticket {friend_ticket} freigeschaltet.")
 
     def _open_popup(self, event=None):
         selected = self._table.focus()
