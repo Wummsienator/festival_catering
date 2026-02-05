@@ -352,3 +352,11 @@ class Database:
         
         self._cursor.execute(insert)
         self._cursor.commit()
+    
+    def get_qr_code_img(self, ticket):
+        select = f"""
+                 SELECT QrPng FROM Tickets WHERE TicketNR = {ticket}
+                 """    
+            
+        row = self._cursor.execute(select).fetchone()[0]
+        return row

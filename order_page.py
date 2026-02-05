@@ -507,7 +507,7 @@ class OrderPage:
         if self._priority_switch:
             self._priority_switch.config(image=self._off_img)
 
-        self._visitor_page_management.fill_order_table_rows(self._ticket)
+        self._visitor_page_management.init_data_for_ticket(self._ticket)
         self._visitor_page_management.get_page().tkraise()
 
     def _on_order(self):
