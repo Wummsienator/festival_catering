@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import ttk, messagebox
 from PIL import Image, ImageTk
+import io
 
 class VisitorPage:
     def __init__(self, root, database, style_1, scaling):
@@ -126,7 +127,8 @@ class VisitorPage:
         qr_row.grid(row=3, column=0, sticky="ew", padx=pad, pady=(0, gap))
         qr_row.grid_columnconfigure(0, weight=1)
 
-        Label(qr_row, image=self._qr_img).grid(row=0, column=0)  # centered by default
+        self._qr_label = Label(qr_row, image=self._qr_img)
+        self._qr_label.grid(row=0, column=0)                    # centered by default
 
         # Notifications
         notif = Frame(content)
@@ -147,33 +149,51 @@ class VisitorPage:
         self._schedule_notification_update()
 
         return self._visitor_page
+    
+    def init_data_for_ticket(self, ticket):
+        self._ticket = ticket
 
-    def fill_order_table_rows(self, ticket):
+        self._fill_order_table_rows()
+        self._load_and_set_qr_code()
+        self.update_notification_table()
+
+    def _fill_order_table_rows(self):
         self._table.delete(*self._table.get_children())
 
-        orders = self._database.get_orders_for_ticket(ticket)
+        orders = self._database.get_orders_for_ticket(self._ticket)
         for order in orders:
             row = (order["stand"], order["time"], order["status_desc"], order["ID"])
             self._table.insert("", END, values=row, tags=("row",))
 
-        is_vip = self._database.check_vip(ticket)
-        ticket_txt = f"Ticket: {ticket}" + (" ☆" if is_vip else "")
+        is_vip = self._database.check_vip(self._ticket)
+        ticket_txt = f"Ticket: {self._ticket}" + (" ☆" if is_vip else "")
         self._ticket_label.config(text=ticket_txt)
 
-        credit_txt = f"Guthaben: {self._database.get_credit_for_ticket(ticket)}€"
+        credit_txt = f"Guthaben: {self._database.get_credit_for_ticket(self._ticket)}€"
         self._credit_label.config(text=credit_txt)
 
-        self._ticket = ticket
-        self.update_notification_table()
+    def _load_and_set_qr_code(self):
+        png_bytes = bytes(self._database.get_qr_code_img(self._ticket))
+        img = Image.open(io.BytesIO(png_bytes))
+ 
+        #scaling
+        size = max(100, int(160 * self._scaling))
+        img = img.resize((size, size), Image.Resampling.LANCZOS)
+
+        self._qr_img = ImageTk.PhotoImage(img)
+        self._qr_label.config(image=self._qr_img)
+        self._qr_label.image = self._qr_img  
 
     def set_order_page_management(self, order_page_management):
         self._order_page_management = order_page_management
 
     def _load_images(self):
+        #logo
         logo_size = max(40, int(60 * self._scaling))
         logo_pil = self._logo_pil_original.resize((logo_size, logo_size), Image.Resampling.LANCZOS)
         self._logo_img = ImageTk.PhotoImage(logo_pil)
 
+        #demo qr code
         qr_size = max(100, int(160 * self._scaling))
         qr_pil = self._qr_pil_original.resize((qr_size, qr_size), Image.Resampling.LANCZOS)
         self._qr_img = ImageTk.PhotoImage(qr_pil)
