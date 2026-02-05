@@ -294,6 +294,21 @@ class Database:
             self._cursor.execute(f"UPDATE Orders SET StatusID = StatusID + 1 WHERE OrderID = {order}")
             self._cursor.commit()
 
+    
+    def storno_for_orders(self, order):
+        select = f"""
+                 SELECT StatusID FROM Orders
+                 WHERE OrderID = {order}
+                 """
+        
+        row = self._cursor.execute(select).fetchone()
+
+        if row and row[0] < 4:
+            #update status
+            self._cursor.execute(f"UPDATE Orders SET StatusID = 5 where OrderID = {order}")
+            self._cursor.commit()
+    
+
     def search_stand(self, standStr):
         stands = []
         select = f"""

@@ -76,6 +76,14 @@ class SellerPage:
             background="#75E6DA"
         ).grid(row=0, column=0, sticky="w")
 
+        Button(
+            btn_row,
+            text="Bestellung stornieren",
+            command=self._status_to_storno,
+            font=self._style_1,
+            background="#75E6DA"
+        ).grid(row=0, column=4, sticky="w")
+
         # inventory table
         self._create_product_table(content, row=3, padx=pad, pady=(0, gap))
 
@@ -352,3 +360,11 @@ class SellerPage:
         selected_order = self._table.item(selected, "values")
         self._database.change_status_for_order(selected_order[0])
         self.fill_order_table_rows(self._stand)
+
+    def _status_to_storno(self, event=None):
+        selected = self._table.focus()
+        if not selected:
+            return
+        selected_order = self._table.item(selected, "values")
+        self._database.storno_for_orders(selected_order[0])
+        self.fill_order_table_rows(self._stand) 
