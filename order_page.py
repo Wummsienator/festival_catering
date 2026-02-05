@@ -508,6 +508,7 @@ class OrderPage:
             self._priority_switch.config(image=self._off_img)
 
         self._visitor_page_management.init_data_for_ticket(self._ticket)
+        self._root.focus_set()
         self._visitor_page_management.get_page().tkraise()
 
     def _on_order(self):
@@ -544,3 +545,7 @@ class OrderPage:
         self._database.add_credit_for_ticket(self._ticket, 10)
         credit_txt = "Guthaben: " + str(self._database.get_credit_for_ticket(self._ticket)) + "€"
         self._credit_label.config(text=credit_txt)
+
+    def restore_place_holder(self):
+        self._special_requests_ipt.restore_placeholder()
+        self._stand_ipt.restore_placeholder()
