@@ -139,6 +139,9 @@ class Database:
                      """
             self._cursor.execute(insert)
 
+            #update stand inventory
+            self._cursor.execute(f"UPDATE Stand2Product SET Quantity = Quantity - {position_list[index]["quantity"]} WHERE ProductID = {row[0]}")
+
         #new order
         insert = """
                  INSERT INTO Orders
