@@ -92,7 +92,7 @@ class SellerPage:
         # add product row
         self._create_product_combo_box(content, row=4, padx=pad, pady=(0, gap))
 
-        # logo
+        # Logout and logo
         bottom = Frame(content)
         bottom.grid(row=5, column=0, sticky="nsew", padx=pad, pady=(0, pad))
         bottom.grid_columnconfigure(0, weight=1)
