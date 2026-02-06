@@ -19,6 +19,8 @@ class SellerPage:
         self._table = None    # orders
         self._table_2 = None  # inventory
 
+        self._login_page_management = None
+
         self._product_combo = None
         self._quantity_val = StringVar()
 
@@ -47,7 +49,7 @@ class SellerPage:
         content.grid_rowconfigure(2, weight=0)
         content.grid_rowconfigure(3, weight=0)
         content.grid_rowconfigure(4, weight=0)
-        content.grid_rowconfigure(5, weight=1)  # spacer/footer
+        content.grid_rowconfigure(5, weight=1)  # spacer/bottom
 
         self._load_images()
 
@@ -91,15 +93,26 @@ class SellerPage:
         self._create_product_combo_box(content, row=4, padx=pad, pady=(0, gap))
 
         # logo
-        footer = Frame(content)
-        footer.grid(row=5, column=0, sticky="nsew", padx=pad, pady=(0, pad))
-        footer.grid_columnconfigure(0, weight=1)
-        footer.grid_rowconfigure(0, weight=1)
+        bottom = Frame(content)
+        bottom.grid(row=5, column=0, sticky="nsew", padx=pad, pady=(0, pad))
+        bottom.grid_columnconfigure(0, weight=1)
+        bottom.grid_rowconfigure(0, weight=1)
 
-        Label(footer, image=self._logo_img).grid(row=0, column=0, sticky="se")
+        Button(
+            bottom,
+            text="Logout",
+            command=self._on_logout,
+            font=self._style_1,
+            background="#75E6DA"
+        ).grid(row=0, column=0, sticky="sw")
+
+        Label(bottom, image=self._logo_img).grid(row=0, column=1, sticky="se")
 
         self._seller_page = page
         return self._seller_page
+    
+    def set_login_page_management(self, login_page_management):
+        self._login_page_management = login_page_management
 
     def _load_images(self):
         logo_pil = Image.open("img/logo.png")
@@ -368,3 +381,9 @@ class SellerPage:
         selected_order = self._table.item(selected, "values")
         self._database.storno_for_orders(selected_order[0])
         self.fill_order_table_rows(self._stand) 
+
+    def _on_logout(self):
+        if not self._login_page_management:
+            return
+        self._root.focus_set()
+        self._login_page_management.get_page().tkraise()

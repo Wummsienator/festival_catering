@@ -54,8 +54,10 @@ seller_page.grid(row=0, column=0, sticky="nsew")
 
 login_page_management.set_visitor_pageManagement(visitor_page_management)
 login_page_management.set_seller_page_management(seller_page_management)
+visitor_page_management.set_login_page_management(login_page_management)
 visitor_page_management.set_order_page_management(order_page_management)
 order_page_management.set_visitor_pageManagement(visitor_page_management)
+seller_page_management.set_login_page_management(login_page_management)
 
 # start
 login_page.tkraise()

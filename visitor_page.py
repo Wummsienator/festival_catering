@@ -14,6 +14,7 @@ class VisitorPage:
         self._visitor_page = None
         self._ticket = None
 
+        self._login_page_management = None
         self._order_page_management = None
 
         # vars
@@ -138,11 +139,20 @@ class VisitorPage:
         notif.grid_rowconfigure(0, weight=1)
         self._create_notification_table(notif, scaling=self._scaling)
 
-        # Logo
+        # Logout and logo
         bottom = Frame(content)
         bottom.grid(row=5, column=0, sticky="ew", padx=pad, pady=(0, pad))
         bottom.grid_columnconfigure(0, weight=1)
-        Label(bottom, image=self._logo_img).grid(row=0, column=0, sticky="e")
+
+        Button(
+            bottom,
+            text="Logout",
+            command=self._on_logout,
+            font=self._style_1,
+            background="#75E6DA"
+        ).grid(row=0, column=0, sticky="w")
+
+        Label(bottom, image=self._logo_img).grid(row=0, column=1, sticky="e")
 
         self._visitor_page = page
 
@@ -201,6 +211,9 @@ class VisitorPage:
         buf = io.BytesIO()
         img.save(buf, format="PNG")
         return buf.getvalue()
+    
+    def set_login_page_management(self, login_page_management):
+        self._login_page_management = login_page_management
 
     def set_order_page_management(self, order_page_management):
         self._order_page_management = order_page_management
@@ -389,6 +402,12 @@ class VisitorPage:
             messagebox.showinfo("Erfolg", "Bestellung erfolgreich freigeschaltet.")
         else:
             messagebox.showinfo("Hinweis", f"Bestellung ist bereits für Ticket {friend_ticket} freigeschaltet.")
+
+    def _on_logout(self):
+        if not self._login_page_management:
+            return
+        self._root.focus_set()
+        self._login_page_management.get_page().tkraise()
 
     def _open_popup(self, event=None):
         selected = self._table.focus()
