@@ -404,7 +404,7 @@ class VisitorPage:
             messagebox.showinfo("Hinweis", f"Bestellung ist bereits für Ticket {friend_ticket} freigeschaltet.")
 
     def _on_logout(self):
-        if not self._login_page_management:
+        if not self._login_page_management or not messagebox.askokcancel("Logout", "Sind sie sicher?"):
             return
         self._root.focus_set()
         self._login_page_management.get_page().tkraise()
