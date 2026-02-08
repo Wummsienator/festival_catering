@@ -1,5 +1,5 @@
 from tkinter import *
-from tkinter import ttk
+from tkinter import ttk, messagebox
 from PIL import Image, ImageTk
 from elements import PlaceholderEntry
 
@@ -383,7 +383,7 @@ class SellerPage:
         self.fill_order_table_rows(self._stand) 
 
     def _on_logout(self):
-        if not self._login_page_management:
+        if not self._login_page_management or not messagebox.askokcancel("Logout", "Sind sie sicher?"):
             return
         self._root.focus_set()
         self._login_page_management.get_page().tkraise()
