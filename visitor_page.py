@@ -432,6 +432,12 @@ class VisitorPage:
             messagebox.showerror("Fehler", "Sie sind nicht der Auftraggeber!")
             return
         self._database.cancel_order(selected_order[3])
+
+        #create message
+        self._database.create_message_for_ticket(
+            selected_order[4],
+            f"Bestellung {selected_order[3]} erfolgreich storniert."
+        )
         self._fill_order_table_rows() 
 
     def _open_popup(self, event=None):

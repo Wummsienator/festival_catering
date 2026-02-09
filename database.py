@@ -360,5 +360,13 @@ class Database:
                  SELECT QrPayload FROM Tickets WHERE TicketNR = {ticket}
                  """    
             
-        row = self._cursor.execute(select).fetchone()[0]
-        return row
+        value = self._cursor.execute(select).fetchone()[0]
+        return value
+    
+    def get_order_placed_by(self, order):
+        select = f"""
+            SELECT PlacedByTicketNR FROM Orders WHERE OrderID = {order}
+            """    
+            
+        value = self._cursor.execute(select).fetchone()[0]
+        return value
