@@ -298,7 +298,7 @@ class Database:
             self._cursor.commit()
 
     
-    def storno_for_orders(self, order):
+    def cancel_order(self, order):
         select = f"""
                  SELECT StatusID FROM Orders
                  WHERE OrderID = {order}
