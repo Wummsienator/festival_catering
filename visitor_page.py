@@ -431,7 +431,7 @@ class VisitorPage:
         if not self._ticket == selected_order[4]:
             messagebox.showerror("Fehler", "Sie sind nicht der Auftraggeber!")
             return
-        # self._database.cancel_order(selected_order[3])
+        self._database.cancel_order(selected_order[3])
         self._fill_order_table_rows() 
 
     def _open_popup(self, event=None):
