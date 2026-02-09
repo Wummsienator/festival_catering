@@ -36,7 +36,7 @@ class Database:
             priorisiert = "Nein"
             if row[7]:
                 priorisiert = "Ja"
-            orders.append({"ID": row[0], "time": row[1], "timestamp": row[2], "price": round(row[3], 2), "status": row[4], "status_desc": row[8], "special_request": row[5], "stand": row[6], "prioritized": priorisiert})
+            orders.append({"ID": row[0], "time": row[1], "timestamp": row[2], "price": round(row[3], 2), "status": row[4], "status_desc": row[9], "special_request": row[5], "stand": row[6], "prioritized": priorisiert, "placed_by": row[8]})
         return orders
     
     def get_orders_for_stand(self, stand):
@@ -51,7 +51,7 @@ class Database:
             priorisiert = "Nein"
             if row[7]:
                 priorisiert = "Ja"
-            orders.append({"ID": row[0], "time": row[1], "timestamp": row[2], "price": round(row[3], 2), "status": row[4], "status_desc": row[8], "special_request": row[5], "stand": row[6], "prioritized": priorisiert})
+            orders.append({"ID": row[0], "time": row[1], "timestamp": row[2], "price": round(row[3], 2), "status": row[4], "status_desc": row[9], "special_request": row[5], "stand": row[6], "prioritized": priorisiert, "placed_by": row[8]})
         return orders
     
     def get_positions_for_order(self, order):

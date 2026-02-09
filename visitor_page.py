@@ -173,7 +173,7 @@ class VisitorPage:
 
         orders = self._database.get_orders_for_ticket(self._ticket)
         for order in orders:
-            row = (order["stand"], order["time"], order["status_desc"], order["ID"])
+            row = (order["stand"], order["time"], order["status_desc"], order["ID"], order["placed_by"])
             self._table.insert("", END, values=row, tags=("row",))
 
         is_vip = self._database.check_vip(self._ticket)
@@ -252,7 +252,7 @@ class VisitorPage:
         table_area.grid(row=1, column=0, sticky="ew", pady=(gap, 0))
         table_area.grid_columnconfigure(0, weight=1)
 
-        columns = ("Stand", "Wartezeit", "Status", "Bestellungsnummer")
+        columns = ("Stand", "Wartezeit", "Status", "Bestellungsnummer", "Aufgegeben von")
 
         tv_style = "Orders.Treeview"
         head_style = "Orders.Treeview.Heading"
