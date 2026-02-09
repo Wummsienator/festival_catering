@@ -125,8 +125,22 @@ class VisitorPage:
             background="#75E6DA"
         ).grid(row=0, column=2, sticky="e")
 
+        # Actions 2
+        actions_2 = Frame(content)
+        actions_2.grid(row=3, column=0, sticky="ew", padx=pad, pady=(0, gap))
+        actions_2.grid_columnconfigure(0, weight=1)
+
+        Button(
+            actions_2,
+            text="Bestellung stornieren",
+            command=self._cancel_order,
+            font=self._style_1,
+            background="#75E6DA"
+        ).grid(row=0, column=1, sticky="w")
+
+        # QR code
         qr_row = Frame(content)
-        qr_row.grid(row=3, column=0, sticky="ew", padx=pad, pady=(0, gap))
+        qr_row.grid(row=4, column=0, sticky="ew", padx=pad, pady=(0, gap))
         qr_row.grid_columnconfigure(0, weight=1)
 
         self._qr_label = Label(qr_row, image=self._qr_img)
@@ -134,14 +148,14 @@ class VisitorPage:
 
         # Notifications
         notif = Frame(content)
-        notif.grid(row=4, column=0, sticky="nsew", padx=pad, pady=(0, gap))
+        notif.grid(row=5, column=0, sticky="nsew", padx=pad, pady=(0, gap))
         notif.grid_columnconfigure(0, weight=1)
         notif.grid_rowconfigure(0, weight=1)
         self._create_notification_table(notif, scaling=self._scaling)
 
         # Logout and logo
         bottom = Frame(content)
-        bottom.grid(row=5, column=0, sticky="ew", padx=pad, pady=(0, pad))
+        bottom.grid(row=6, column=0, sticky="ew", padx=pad, pady=(0, pad))
         bottom.grid_columnconfigure(0, weight=1)
 
         Button(
@@ -408,6 +422,17 @@ class VisitorPage:
             return
         self._root.focus_set()
         self._login_page_management.get_page().tkraise()
+
+    def _cancel_order(self):
+        selected = self._table.focus()
+        if not selected:
+            return
+        selected_order = self._table.item(selected, "values")
+        if not self._ticket == selected_order[4]:
+            messagebox.showerror("Fehler", "Sie sind nicht der Auftraggeber!")
+            return
+        self._database.cancel_order(selected_order[3])
+        self._fill_order_table_rows() 
 
     def _open_popup(self, event=None):
         selected = self._table.focus()

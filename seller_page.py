@@ -81,7 +81,7 @@ class SellerPage:
         Button(
             btn_row,
             text="Bestellung stornieren",
-            command=self._status_to_storno,
+            command=self._cancel_order,
             font=self._style_1,
             background="#75E6DA"
         ).grid(row=0, column=4, sticky="w")
@@ -374,12 +374,12 @@ class SellerPage:
         self._database.change_status_for_order(selected_order[0])
         self.fill_order_table_rows(self._stand)
 
-    def _status_to_storno(self, event=None):
+    def _cancel_order(self, event=None):
         selected = self._table.focus()
         if not selected:
             return
         selected_order = self._table.item(selected, "values")
-        self._database.storno_for_orders(selected_order[0])
+        self._database.cancel_order(selected_order[0])
         self.fill_order_table_rows(self._stand) 
 
     def _on_logout(self):

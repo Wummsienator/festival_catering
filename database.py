@@ -30,7 +30,7 @@ class Database:
                     SELECT o.*, s.StatusText FROM Orders AS o 
                     INNER JOIN Order2Ticket AS o2t ON o2t.OrderID = o.OrderID 
                     INNER JOIN Status AS s ON s.StatusID = o.StatusID 
-                    WHERE o2t.TicketNR = {ticket}
+                    WHERE o2t.TicketNR = {ticket} AND o.StatusID < 4
                  """
         for row in self._cursor.execute(select):
             priorisiert = "Nein"
@@ -298,9 +298,9 @@ class Database:
             self._cursor.commit()
 
     
-    def storno_for_orders(self, order):
+    def cancel_order(self, order):
         select = f"""
-                 SELECT StatusID FROM Orders
+                 SELECT StatusID, Price, PlacedByTicketNR FROM Orders
                  WHERE OrderID = {order}
                  """
         
@@ -309,6 +309,8 @@ class Database:
         if row and row[0] < 4:
             #update status
             self._cursor.execute(f"UPDATE Orders SET StatusID = 5 where OrderID = {order}")
+            #update credit
+            self._cursor.execute(f"UPDATE Tickets SET Credit = Credit + {row[1]} where TicketNR = {row[2]}")
             self._cursor.commit()
     
 
