@@ -32,8 +32,8 @@ class SellerPage:
         if self._seller_page:
             return self._seller_page
 
-        pad = int(18 * self._scaling)
-        gap = int(10 * self._scaling)
+        pad = int(18 * self._scaling)       # page padding
+        gap = int(10 * self._scaling)       # internal gaps
 
         page = Frame(self._root)
         page.grid_rowconfigure(0, weight=1)

@@ -34,8 +34,8 @@ class LoginPage:
         content = Frame(page)
         content.grid(row=0, column=0)
 
-        pad = int(16 * self._scaling)
-        gap = int(10 * self._scaling)
+        pad = int(16 * self._scaling)       # page padding
+        gap = int(10 * self._scaling)       # internal gaps
 
         # Logo block
         logo_size = max(120, int(260 * self._scaling))
