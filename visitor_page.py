@@ -436,8 +436,15 @@ class VisitorPage:
         #create message
         self._database.create_message_for_ticket(
             selected_order[4],
-            f"Bestellung {selected_order[3]} erfolgreich storniert."
+            f"Sie haben Bestellung {selected_order[3]} erfolgreich storniert."
         )
+        for ticket in self._database.get_tickets_for_order(selected_order[3]):
+            if ticket == selected_order[4]:
+                return
+            self._database.create_message_for_ticket(
+                ticket,
+                f"Bestellung {selected_order[3]} wurde storniert."
+            )
         self._fill_order_table_rows() 
 
     def _open_popup(self, event=None):

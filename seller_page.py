@@ -382,10 +382,11 @@ class SellerPage:
         self._database.cancel_order(selected_order[0])
 
         #create message
-        self._database.create_message_for_ticket(
-            self._database.get_order_placed_by(selected_order[0]),
-            f"Bestellung {selected_order[0]} wurde storniert."
-        )
+        for ticket in self._database.get_tickets_for_order(selected_order[0]):
+            self._database.create_message_for_ticket(
+                ticket,
+                f"Bestellung {selected_order[0]} wurde storniert."
+            )
         self.fill_order_table_rows(self._stand) 
 
     def _on_logout(self):
