@@ -1,5 +1,5 @@
 from tkinter import *
-from tkinter import ttk
+from tkinter import ttk, messagebox
 from PIL import Image, ImageTk
 from elements import PlaceholderEntry
 from decimal import *
@@ -435,7 +435,9 @@ class OrderPage():
         self._visitor_page_management.fill_order_table_rows(self._ticket)
         self._visitor_page_management.get_page().tkraise()
 
+    '''
     def _on_order(self):
+
         #not enough credit
         if self._current_price > self._database.get_credit_for_ticket(self._ticket):
             return
@@ -455,6 +457,20 @@ class OrderPage():
 
             self._database.place_order(self._selected_stand, self._ticket, order_positions, self._current_price, special_requests)
         self._on_cancel()
+    '''
+        
+    def _on_order(self):
+        credit = self._database.get_credit_for_ticket(self._ticket)
+
+        if float(self._current_price) > float(credit):
+            messagebox.showerror(
+                "Nicht genügend Guthaben",
+                f"Dein Guthaben reicht nicht aus.\n\n"
+                f"Guthaben: {credit:.2f}€\n"
+                f"Gesamtpreis: {float(self._current_price):.2f}€"
+            )
+            return
+
 
     def set_visitor_pageManagement(self, visitor_page_management):
         self._visitor_page_management = visitor_page_management

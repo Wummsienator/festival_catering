@@ -278,5 +278,19 @@ class Database:
             stands.append({"ID": row[0], "name": row[1]})
         return stands
 
+    def add_credit_for_ticket(self, ticket: int | str, amount: float) -> None:
+        # Schutz: amount muss > 0 sein
+        if amount <= 0:
+            raise ValueError("amount must be > 0")
+
+        # Parameterized Query
+        update = """
+            UPDATE Tickets
+            SET Credit = Credit + ?
+            WHERE TicketNR = ?
+        """
+        self._cursor.execute(update, (amount, int(ticket)))
+        self._cursor.commit()
+
 
 

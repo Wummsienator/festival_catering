@@ -1,6 +1,8 @@
 from tkinter import *
 from tkinter import ttk
+from tkinter import messagebox
 from PIL import Image, ImageTk
+from credit_dialog import CreditDialog
 
 class VisitorPage():
     def __init__(self, root, database, style_1):
@@ -40,7 +42,9 @@ class VisitorPage():
             Label(visitor_page, image=self._logo_img, font=self._style_1).grid(row=6, column=7)
 
             #buttons
-            Button(visitor_page, text="€▷", command=lambda: self._add_credit(), font=self._style_1, background="#75E6DA").grid(row=0, column=7)
+            #Button(visitor_page, text="€▷", command=lambda: self._add_credit(), font=self._style_1, background="#75E6DA").grid(row=0, column=7)
+            #Button(visitor_page, text="€▷", command=lambda: self.openCreditPopup(), font=self._style_1, background="#75E6DA").grid(row=0, column=7)
+            Button(visitor_page, text="€▷", command=self.openCreditPopup, font=self._style_1, background="#75E6DA").grid(row=0, column=7)
             Button(visitor_page, text="Bestellung aufnehmen", command=lambda: self._on_go_to_order_page(), font=self._style_1, background="#75E6DA").grid(row=2, column=1)
             Button(form_frame, text="Bestellung freischalten", command=lambda: self._unlock_ticket_for_friend(), font=self._style_1, background="#75E6DA").grid(row=2, column=1)
 
@@ -189,13 +193,32 @@ class VisitorPage():
     def set_order_page_management(self, order_page_management):
         self._order_page_management = order_page_management
 
+
+    '''
     def _add_credit(self):
         self._database.add_credit_for_ticket(self._ticket, 10)
 
         credit_txt = "Guthaben: " + str(self._database.get_credit_for_ticket(self._ticket)) + "€"
         self._credit_label.config(text=credit_txt) 
+    '''
+
+    def openCreditPopup(self):
+        # Sicherheit: Ticket muss gesetzt sein
+        if not self._ticket:
+            messagebox.showerror("Fehler", "Kein Ticket gesetzt. Bitte neu einloggen.")
+            return
+
+        def on_success(amount: float):
+            # Guthaben in DB erhöhen
+            self._database.add_credit_for_ticket(self._ticket, amount)
+            # neues Guthaben holen und Label aktualisieren
+            new_credit = self._database.get_credit_for_ticket(self._ticket)
+            self._credit_label.config(text=f"Guthaben: {float(new_credit):.2f}€")
+
+        # Popup öffnen
+        CreditDialog(self._root, self._style_1, on_success)
     
-    
+
     def _unlock_ticket_for_friend(self):
         selected = self._table.focus()
         if not selected:
