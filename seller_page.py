@@ -33,8 +33,8 @@ class SellerPage:
         if self._seller_page:
             return self._seller_page
 
-        pad = int(18 * self._scaling)
-        gap = int(10 * self._scaling)
+        pad = int(18 * self._scaling)       # page padding
+        gap = int(10 * self._scaling)       # internal gaps
 
         page = Frame(self._root)
         page.grid_rowconfigure(0, weight=1)
@@ -328,10 +328,11 @@ class SellerPage:
         self._database.cancel_order(selected_order[0])
 
         #create message
-        self._database.create_message_for_ticket(
-            self._database.get_order_placed_by(selected_order[0]),
-            f"Bestellung {selected_order[0]} wurde storniert."
-        )
+        for ticket in self._database.get_tickets_for_order(selected_order[0]):
+            self._database.create_message_for_ticket(
+                ticket,
+                f"Bestellung {selected_order[0]} wurde storniert."
+            )
         self.fill_order_table_rows(self._stand) 
 
     def _on_logout(self):

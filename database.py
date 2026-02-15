@@ -39,6 +39,16 @@ class Database:
             orders.append({"ID": row[0], "time": row[1], "timestamp": row[2], "price": round(row[3], 2), "status": row[4], "status_desc": row[9], "special_request": row[5], "stand": row[6], "prioritized": priorisiert, "placed_by": row[8]})
         return orders
     
+    def get_tickets_for_order(self, order):
+        tickets = []
+        select = f"""
+                    SELECT TicketNR FROM Order2Ticket
+                    WHERE OrderID = {order}
+                 """
+        for row in self._cursor.execute(select):
+            tickets.append(row[0])
+        return tickets
+    
     def get_orders_for_stand(self, stand):
         orders = []
         select = f"""
