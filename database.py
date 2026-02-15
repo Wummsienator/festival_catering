@@ -195,6 +195,11 @@ class Database:
         
         row = self._cursor.execute(select).fetchone()
         return round(row[0],2)
+    
+    def add_credit_for_ticket(self, ticket, amount):
+        #update credit
+        self._cursor.execute(f"UPDATE Tickets SET Credit = Credit + {amount} WHERE TicketNR = {ticket}")
+        self._cursor.commit()
         
     def check_login(self, ticket, password):
         if not ticket.isdigit():
@@ -380,3 +385,28 @@ class Database:
             
         value = self._cursor.execute(select).fetchone()[0]
         return value
+    
+    def check_credit_card(self, card, pin):
+        if not card.isdigit():
+            return False, False
+        elif not pin.isdigit() or len(str(pin)) != 4:
+            return True, False
+
+        select = f"""
+                 SELECT * FROM CreditCards
+                 WHERE CardID = {card}
+                 """
+        
+        #check if credit card exists
+        row = self._cursor.execute(select).fetchone()
+        if row:
+            #check password
+            if row[1] == pin:
+                return True, True
+            else:
+                #wrong pin
+                return True, False
+        else:
+            #credit card doesnt exist
+            return False, False
+    

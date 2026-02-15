@@ -1,6 +1,8 @@
 from tkinter import *
 from tkinter import ttk, messagebox
 from PIL import Image, ImageTk
+from order_details_dialog import OrderDetailsDialog
+from credit_dialog import CreditDialog
 import io
 import qrcode
 
@@ -83,7 +85,7 @@ class VisitorPage:
         Button(
             top,
             text="€▷",
-            command=self._add_credit,
+            command=self._open_credit_popup,
             font=self._style_1,
             background="#75E6DA"
         ).grid(row=0, column=2, sticky="e")
@@ -387,13 +389,6 @@ class VisitorPage:
         if event is not None:
             event.widget.selection_remove(event.widget.selection())
 
-    def _add_credit(self):
-        if not self._ticket:
-            return
-        self._database.add_credit_for_ticket(self._ticket, 10)
-        credit_txt = f"Guthaben: {self._database.get_credit_for_ticket(self._ticket)}€"
-        self._credit_label.config(text=credit_txt)
-
     def _unlock_ticket_for_friend(self):
         selected = self._table.focus()
         friend_ticket = self._friend_ticket_val.get().strip()
@@ -453,59 +448,15 @@ class VisitorPage:
             return
         selected_order = self._table.item(selected, "values")
 
-        popup = Toplevel(self._visitor_page)
-        popup.title("Bestellung: " + str(selected_order[3]))
-        popup.geometry(f"{int(420 * self._scaling)}x{int(320 * self._scaling)}")
+        OrderDetailsDialog(self._visitor_page, self._style, self._style_1, self._scaling, self._database, selected_order[3])
 
-        popup.grid_columnconfigure(0, weight=1)
-        popup.grid_rowconfigure(1, weight=1)
+    def _open_credit_popup(self):
+        # Popup öffnen
+        CreditDialog(self._root, self._style_1, self._database, self._on_add_credit_success)
 
-        title = Label(
-            popup,
-            text="Positionen:",
-            font=("Arial", int(self._scaling * 14), "bold"),
-            bg="#05445E",
-            fg="white",
-            anchor="w",
-            padx=int(12 * self._scaling),
-            pady=int(6 * self._scaling),
-        )
-        title.grid(row=0, column=0, sticky="ew")
-
-        columns = ("Name", "Menge")
-
-        tv_style = "Popup.Treeview"
-        head_style = "Popup.Treeview.Heading"
-        base = max(9, int(11 * self._scaling))
-        self._style.configure(tv_style, font=("Arial", base), rowheight=max(18, int(28 * self._scaling)))
-        self._style.configure(head_style, font=("Arial", base, "bold"), padding=(0, int(5 * self._scaling)), background="#05445E", foreground="white")
-
-        table_area = Frame(popup)
-        table_area.grid(row=1, column=0, sticky="nsew", padx=int(10 * self._scaling), pady=int(10 * self._scaling))
-        table_area.grid_columnconfigure(0, weight=1)
-        table_area.grid_rowconfigure(0, weight=1)
-
-        table = ttk.Treeview(table_area, columns=columns, show="headings", height=6, style=tv_style)
-
-        for col in columns:
-            table.heading(col, text=col)
-            table.column(col, anchor="center", width=int(self._scaling * 160))
-
-        table.tag_configure("row", background="#D4F1F4")
-        table.grid(row=0, column=0, sticky="nsew")
-
-        vsb = ttk.Scrollbar(table_area, orient="vertical", command=table.yview)
-        table.configure(yscrollcommand=vsb.set)
-        vsb.grid(row=0, column=1, sticky="ns")
-
-        # fill rows
-        order_id = selected_order[3]
-        positions = self._database.get_positions_for_order(order_id)
-        special_requests = self._database.get_special_requests_for_order(order_id)
-
-        for position in positions:
-            table.insert("", END, values=(position["name"], position["quantity"]), tags=("row",))
-
-        Label(popup, text="Sonderwünsche:", font=self._style_1).grid(row=2, column=0, sticky="w", padx=int(10 * self._scaling))
-        Label(popup, text=special_requests, font=self._style_1, wraplength=int(380 * self._scaling))\
-            .grid(row=3, column=0, sticky="w", padx=int(10 * self._scaling), pady=(0, int(10 * self._scaling)))
+    def _on_add_credit_success(self, amount):
+        # add credit
+        self._database.add_credit_for_ticket(self._ticket, amount)
+        # update label
+        credit_txt = f"Guthaben: {self._database.get_credit_for_ticket(self._ticket)}€"
+        self._credit_label.config(text=credit_txt)
