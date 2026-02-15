@@ -63,8 +63,8 @@ class CreditDialog(Toplevel):
         self.bind("<Return>", lambda e: self._submit())
 
     def _submit(self):
-        card = self._card_val.get().strip()
-        pin = self._pin_val.get().strip()
+        card = self._card_val.get()
+        pin = self._pin_val.get()
         amount_str = self._amount_val.get().strip().replace(",", ".")
 
         chk_card, chk_pin = self._database.check_credit_card(card, pin)

@@ -401,7 +401,7 @@ class Database:
         row = self._cursor.execute(select).fetchone()
         if row:
             #check password
-            if row[1] == pin:
+            if int(row[1]) == int(pin):
                 return True, True
             else:
                 #wrong pin
