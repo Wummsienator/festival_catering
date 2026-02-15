@@ -2,11 +2,6 @@ from tkinter import *
 from tkinter import messagebox
 
 class CreditDialog(Toplevel):
-    TEST_CARDS = {
-        "4111111111111111": "1234",
-        "5555555555554444": "4321",
-    }
-
     def __init__(self, parent, style_font, database, on_success):
         super().__init__(parent)
         self._style_1 = style_font
