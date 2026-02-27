@@ -3,6 +3,7 @@ from tkinter import ttk, messagebox
 from PIL import Image, ImageTk
 from elements import PlaceholderEntry
 from decimal import Decimal
+from credit_dialog import CreditDialog
 
 class OrderPage:
     def __init__(self, root, database, style_1, scaling):
@@ -87,7 +88,7 @@ class OrderPage:
 
         Button(
             right_top, text="€▷",
-            command=self._add_credit,
+            command=self._open_credit_popup,
             font=self._style_1,
             background="#75E6DA"
         ).grid(row=0, column=1, sticky="e")
@@ -549,3 +550,14 @@ class OrderPage:
     def restore_place_holder(self):
         self._special_requests_ipt.restore_placeholder()
         self._stand_ipt.restore_placeholder()
+
+    def _open_credit_popup(self):
+        # Popup öffnen
+        CreditDialog(self._root, self._style_1, self._database, self._on_add_credit_success)
+
+    def _on_add_credit_success(self, amount):
+        # add credit
+        self._database.add_credit_for_ticket(self._ticket, amount)
+        # update label
+        credit_txt = f"Guthaben: {self._database.get_credit_for_ticket(self._ticket)}€"
+        self._credit_label.config(text=credit_txt)
