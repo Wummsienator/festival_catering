@@ -11,7 +11,7 @@ class Server:
     def _schedule_waittime_update(self):
         if self._waittime_job is not None:
             self._root.after_cancel(self._waittime_job)
-        self._waittime_job = self._root.after(30_000, self._update_waittimes_db)
+        self._waittime_job = self._root.after(60_000, self._update_waittimes_db)
 
     def _update_waittimes_db(self):
         self._database.decrease_waittime_for_all_orders()
