@@ -353,6 +353,6 @@ class SellerPage:
 
     def _update_waittimes(self):
         # reload table data
-        self._fill_order_table_rows()
+        self.fill_order_table_rows()
         # plan update timer
         self._schedule_waittime_update()
