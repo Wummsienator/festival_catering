@@ -5,6 +5,7 @@ from login_page import LoginPage
 from visitor_page import VisitorPage
 from order_page import OrderPage
 from seller_page import SellerPage
+from server import Server
 
 root = Tk()
 
@@ -58,6 +59,16 @@ visitor_page_management.set_login_page_management(login_page_management)
 visitor_page_management.set_order_page_management(order_page_management)
 order_page_management.set_visitor_pageManagement(visitor_page_management)
 seller_page_management.set_login_page_management(login_page_management)
+
+# server for global data updating
+server = Server(root, database)
+
+# events on closing app
+def on_closing():
+    server.cancel_waittime_update()
+    root.destroy()
+
+root.protocol("WM_DELETE_WINDOW", on_closing)
 
 # start
 login_page.tkraise()

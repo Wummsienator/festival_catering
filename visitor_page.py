@@ -43,6 +43,9 @@ class VisitorPage:
         # periodic update
         self._notify_job = None
 
+        # waittime db update
+        self._waittime_job = None
+
     def get_page(self):
         if self._visitor_page:
             return self._visitor_page
@@ -183,6 +186,7 @@ class VisitorPage:
         self._fill_order_table_rows()
         self._load_and_set_qr_code()
         self.update_notification_table()
+        self._schedule_waittime_update()
 
     def _fill_order_table_rows(self):
         self._table.delete(*self._table.get_children())
@@ -360,13 +364,26 @@ class VisitorPage:
 
         self._table2.bind("<<TreeviewSelect>>", self._disable_selection)
 
+    def _schedule_waittime_update(self):
+        if self._waittime_job is not None:
+            self._root.after_cancel(self._waittime_job)
+        self._waittime_job = self._root.after(2500, self._update_waittimes_db)
+
+    def _update_waittimes_db(self):
+        # reload table data
+        self._fill_order_table_rows()
+        # plan update timer
+        self._schedule_waittime_update()
+
     def _schedule_notification_update(self):
         if self._notify_job is not None:
             self._root.after_cancel(self._notify_job)
         self._notify_job = self._root.after(2500, self._poll_notifications)
 
     def _poll_notifications(self):
+        # reload table data
         self.update_notification_table()
+        # plan update timer
         self._schedule_notification_update()
 
     def update_notification_table(self):
