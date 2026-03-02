@@ -5,7 +5,7 @@ from decimal import *
 class Database:
     def __init__(self):
         cnxn = pyodbc.connect("Driver={ODBC Driver 18 for SQL Server};"
-                            r"Server=Control-Tower3\FESAPPSQLSERVER;"
+                            r"Server=LAPTOP-KJ4I65LS\GENERALSQL;"
                             "Database=FestivalCateringAPP;"
                             "Trusted_Connection=yes;"
                             "Encrypt=yes;"
@@ -410,3 +410,11 @@ class Database:
             #credit card doesnt exist
             return False, False
     
+    def decrease_waittime_for_all_orders(self):
+        update = """
+        UPDATE orders
+        SET time = time - 1
+        WHERE time > 0
+        """
+        self._cursor.execute(update)
+        self._cursor.connection.commit()

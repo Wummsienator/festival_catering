@@ -43,6 +43,9 @@ class VisitorPage:
         # periodic update
         self._notify_job = None
 
+        # waittime db update
+        self._waittime_job = None
+
     def get_page(self):
         if self._visitor_page:
             return self._visitor_page
@@ -183,6 +186,7 @@ class VisitorPage:
         self._fill_order_table_rows()
         self._load_and_set_qr_code()
         self.update_notification_table()
+        self._schedule_waittime_update()
 
     def _fill_order_table_rows(self):
         self._table.delete(*self._table.get_children())
@@ -360,6 +364,21 @@ class VisitorPage:
 
         self._table2.bind("<<TreeviewSelect>>", self._disable_selection)
 
+
+    def _schedule_waittime_update(self):
+        if self._waittime_job is not None:
+            self._root.after_cancel(self._waittime_job)
+        # alle 30 Sekunden
+        self._waittime_job = self._root.after(30_000, self._update_waittimes_db)
+
+    def _update_waittimes_db(self):
+        # DB: alle offenen Bestellungen -1
+        self._database.decrease_waittime_for_all_orders()
+        # Tabelle neu laden
+        self._fill_order_table_rows()
+        # Timer erneut planen
+        self._schedule_waittime_update()
+
     def _schedule_notification_update(self):
         if self._notify_job is not None:
             self._root.after_cancel(self._notify_job)
@@ -413,6 +432,9 @@ class VisitorPage:
             messagebox.showinfo("Hinweis", f"Bestellung ist bereits für Ticket {friend_ticket} freigeschaltet.")
 
     def _on_logout(self):
+        if self._waittime_job:
+            self._root.after_cancel(self._waittime_job)
+            self._waittime_job = None
         if not self._login_page_management or not messagebox.askokcancel("Logout", "Sind sie sicher?"):
             return
         self._root.focus_set()
