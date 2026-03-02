@@ -82,8 +82,7 @@ class LoginPage:
                 self._root.focus_set()
                 self._visitor_page_management.get_page().tkraise()
             else:
-                self._seller_page_management.fill_order_table_rows(stand)
-                self._seller_page_management.fill_product_table_rows(stand)
+                self._seller_page_management.init_data_for_stand(stand)
                 self._root.focus_set()
                 self._seller_page_management.get_page().tkraise()
         else:
