@@ -367,9 +367,9 @@ class VisitorPage:
     def _schedule_waittime_update(self):
         if self._waittime_job is not None:
             self._root.after_cancel(self._waittime_job)
-        self._waittime_job = self._root.after(2500, self._update_waittimes_db)
+        self._waittime_job = self._root.after(2500, self._update_waittimes)
 
-    def _update_waittimes_db(self):
+    def _update_waittimes(self):
         # reload table data
         self._fill_order_table_rows()
         # plan update timer

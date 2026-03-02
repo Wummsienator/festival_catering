@@ -29,6 +29,11 @@ class SellerPage:
         self._style = ttk.Style(self._root)
         self._style.theme_use("default")
 
+        # waittime db update
+        self._waittime_job = None
+
+        self._schedule_waittime_update()
+
     def get_page(self):
         if self._seller_page:
             return self._seller_page
@@ -340,3 +345,14 @@ class SellerPage:
             return
         self._root.focus_set()
         self._login_page_management.get_page().tkraise()
+
+    def _schedule_waittime_update(self):
+        if self._waittime_job is not None:
+            self._root.after_cancel(self._waittime_job)
+        self._waittime_job = self._root.after(2500, self._update_waittimes)
+
+    def _update_waittimes(self):
+        # reload table data
+        self._fill_order_table_rows()
+        # plan update timer
+        self._schedule_waittime_update()
