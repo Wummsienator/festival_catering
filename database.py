@@ -410,3 +410,11 @@ class Database:
             #credit card doesnt exist
             return False, False
     
+    def decrease_waittime_for_all_orders(self):
+        update = """
+        UPDATE orders
+        SET time = time - 1
+        WHERE time > 0
+        """
+        self._cursor.execute(update)
+        self._cursor.connection.commit()
