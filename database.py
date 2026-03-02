@@ -155,7 +155,7 @@ class Database:
         #new order
         insert = """
                  INSERT INTO Orders
-                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                  """
         
         params = (
@@ -166,7 +166,7 @@ class Database:
             1,
             special_requests,
             stand,
-            prioritized
+            ticket
         )
         
         self._cursor.execute(insert, params)
