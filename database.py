@@ -414,7 +414,7 @@ class Database:
         update = """
         UPDATE orders
         SET time = time - 1
-        WHERE time > 0
+        WHERE time > 0 AND StatusID = 2
         """
         self._cursor.execute(update)
         self._cursor.connection.commit()
