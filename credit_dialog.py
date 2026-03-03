@@ -2,18 +2,10 @@ from tkinter import *
 from tkinter import messagebox
 
 class CreditDialog(Toplevel):
-    """
-    Popup: Kreditkarte + PIN + Betrag -> ruft on_success(amount) bei Erfolg auf
-    """
-
-    TEST_CARDS = {
-        "4111111111111111": "1234",
-        "5555555555554444": "4321",
-    }
-
-    def __init__(self, parent, style_font, on_success):
+    def __init__(self, parent, style_font, database, on_success):
         super().__init__(parent)
         self._style_1 = style_font
+        self._database = database
         self._on_success = on_success
 
         self.title("Guthaben aufladen")
@@ -66,24 +58,26 @@ class CreditDialog(Toplevel):
         self.bind("<Return>", lambda e: self._submit())
 
     def _submit(self):
-        card = self._card_val.get().strip()
-        pin = self._pin_val.get().strip()
+        card = self._card_val.get()
+        pin = self._pin_val.get()
         amount_str = self._amount_val.get().strip().replace(",", ".")
 
-        if card not in self.TEST_CARDS:
-            messagebox.showerror("Fehler", "Test-Kreditkarte unbekannt.")
+        chk_card, chk_pin = self._database.check_credit_card(card, pin)
+
+        if not chk_card:
+            messagebox.showerror("Fehler", "Kreditkarte unbekannt!")
             return
-        if self.TEST_CARDS[card] != pin:
-            messagebox.showerror("Fehler", "PIN ist falsch.")
+        elif not chk_pin:
+            messagebox.showerror("Fehler", "PIN ist falsch!")
             return
 
         try:
             amount = float(amount_str)
         except ValueError:
-            messagebox.showerror("Fehler", "Bitte gültigen Betrag eingeben (z.B. 10 oder 10.50).")
+            messagebox.showerror("Fehler", "Bitte gültigen Betrag eingeben (z.B. 10 oder 10.50)!")
             return
         if amount <= 0:
-            messagebox.showerror("Fehler", "Betrag muss größer als 0 sein.")
+            messagebox.showerror("Fehler", "Betrag muss größer als 0 sein!")
             return
 
         try:

@@ -30,21 +30,38 @@ class Database:
                     SELECT o.*, s.StatusText FROM Orders AS o 
                     INNER JOIN Order2Ticket AS o2t ON o2t.OrderID = o.OrderID 
                     INNER JOIN Status AS s ON s.StatusID = o.StatusID 
-                    WHERE o2t.TicketNR = {ticket}
+                    WHERE o2t.TicketNR = {ticket} AND o.StatusID < 4
                  """
         for row in self._cursor.execute(select):
-            orders.append({"ID": row[0], "time": row[1], "timestamp": row[2], "price": round(row[3], 2), "status": row[4], "status_desc": row[7], "special_request": row[5], "stand": row[6]})
+            priorisiert = "Nein"
+            if row[7]:
+                priorisiert = "Ja"
+            orders.append({"ID": row[0], "time": row[1], "timestamp": row[2], "price": round(row[3], 2), "status": row[4], "status_desc": row[9], "special_request": row[5], "stand": row[6], "prioritized": priorisiert, "placed_by": row[8]})
         return orders
+    
+    def get_tickets_for_order(self, order):
+        tickets = []
+        select = f"""
+                    SELECT TicketNR FROM Order2Ticket
+                    WHERE OrderID = {order}
+                 """
+        for row in self._cursor.execute(select):
+            tickets.append(row[0])
+        return tickets
     
     def get_orders_for_stand(self, stand):
         orders = []
         select = f"""
                     SELECT o.*, s.StatusText FROM Orders AS o 
                     INNER JOIN Status AS s ON s.StatusID = o.StatusID 
-                    WHERE o.StandID = {stand}
+                    WHERE o.StandID = {stand} AND o.StatusID < 4
+                    ORDER BY StatusID DESC, Prioritized DESC, timestamp ASC
                  """
         for row in self._cursor.execute(select):
-            orders.append({"ID": row[0], "time": row[1], "timestamp": row[2], "price": round(row[3], 2), "status": row[4], "status_desc": row[7], "special_request": row[5], "stand": row[6]})
+            priorisiert = "Nein"
+            if row[7]:
+                priorisiert = "Ja"
+            orders.append({"ID": row[0], "time": row[1], "timestamp": row[2], "price": round(row[3], 2), "status": row[4], "status_desc": row[9], "special_request": row[5], "stand": row[6], "prioritized": priorisiert, "placed_by": row[8]})
         return orders
     
     def get_positions_for_order(self, order):
@@ -84,7 +101,7 @@ class Database:
         for row in self._cursor.execute(select):
             return row[0]
         
-    def place_order(self, stand, ticket, position_list, price, special_requests):    #returns boolean if order could be placed
+    def place_order(self, stand, ticket, position_list, price, special_requests, prioritized):    #returns boolean if order could be placed
         #check if ticket has enough credits
         if self.get_credit_for_ticket(ticket) < price:
             return False
@@ -132,10 +149,13 @@ class Database:
                      """
             self._cursor.execute(insert)
 
+            #update stand inventory
+            self._cursor.execute(f"UPDATE Stand2Product SET Quantity = Quantity - {position_list[index]['quantity']} WHERE ProductID = {row[0]}")
+
         #new order
         insert = """
                  INSERT INTO Orders
-                 VALUES (?, ?, ?, ?, ?, ?, ?)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                  """
         
         params = (
@@ -145,7 +165,9 @@ class Database:
             price,
             1,
             special_requests,
-            stand
+            stand,
+            prioritized,
+            ticket
         )
         
         self._cursor.execute(insert, params)
@@ -174,8 +196,16 @@ class Database:
         
         row = self._cursor.execute(select).fetchone()
         return round(row[0],2)
+    
+    def add_credit_for_ticket(self, ticket, amount):
+        #update credit
+        self._cursor.execute(f"UPDATE Tickets SET Credit = Credit + {amount} WHERE TicketNR = {ticket}")
+        self._cursor.commit()
         
     def check_login(self, ticket, password):
+        if not ticket.isdigit():
+            return False, None
+
         select = f"""
                  SELECT * FROM Tickets
                  WHERE TicketNR = {ticket}
@@ -196,13 +226,27 @@ class Database:
         else:
             #ticket doesnt exist
             return False, None
+        
+    def check_ticket_exists(self, ticket):
+        if not ticket.isdigit():
+            return False
+
+        select = f"""
+        SELECT * FROM Tickets
+        WHERE TicketNR = {ticket}
+        """
+    
+        row = self._cursor.execute(select).fetchone()
+        if row:
+            return True
+        else:
+            return False
     
     def connect_order_to_ticket(self, order, ticket):
         if self._check_order2ticket_exists(order, ticket):
-            return
+            return False
         
         #get new id
-        new_order2ticket_id = ''
         select = """
                  SELECT NextID FROM GlobalIDs
                  WHERE Name = 'Order2Ticket'
@@ -220,6 +264,8 @@ class Database:
         
         self._cursor.execute(insert)
         self._cursor.commit()
+
+        return True
     
     def _check_order2ticket_exists(self, order, ticket):
         select = f"""
@@ -267,30 +313,109 @@ class Database:
             self._cursor.execute(f"UPDATE Orders SET StatusID = StatusID + 1 WHERE OrderID = {order}")
             self._cursor.commit()
 
+    
+    def cancel_order(self, order):
+        select = f"""
+                 SELECT StatusID, Price, PlacedByTicketNR FROM Orders
+                 WHERE OrderID = {order}
+                 """
+        
+        row = self._cursor.execute(select).fetchone()
+
+        if row and row[0] < 4:
+            #update status
+            self._cursor.execute(f"UPDATE Orders SET StatusID = 5 where OrderID = {order}")
+            #update credit
+            self._cursor.execute(f"UPDATE Tickets SET Credit = Credit + {row[1]} where TicketNR = {row[2]}")
+            self._cursor.commit()
+    
+
     def search_stand(self, standStr):
         stands = []
         select = f"""
                  SELECT * FROM Stands
-                 WHERE Name LIKE '%{standStr}%'
+                 WHERE StandID LIKE '%{standStr}%' OR Name LIKE '%{standStr}%'
                  """
         
         for row in self._cursor.execute(select):
             stands.append({"ID": row[0], "name": row[1]})
         return stands
+    
+    def get_messages_for_ticket(self, ticket):
+        messages = []
+        select = f"""
+                 SELECT * FROM [Messages]
+                 WHERE TicketNR = {ticket}
+                 """
+        
+        for row in self._cursor.execute(select):
+            messages.append(row[2])
+        return messages
+    
+    def create_message_for_ticket(self, ticket, msg):
+        #get new id
+        select = """
+                 SELECT NextID FROM GlobalIDs
+                 WHERE Name = 'Messages'
+                 """
+        
+        new_message_id = self._cursor.execute(select).fetchone()[0]
+        self._cursor.execute(f"UPDATE GlobalIDs SET NextID = NextID + 1 WHERE Name = 'Messages'")
 
-    def add_credit_for_ticket(self, ticket: int | str, amount: float) -> None:
-        # Schutz: amount muss > 0 sein
-        if amount <= 0:
-            raise ValueError("amount must be > 0")
-
-        # Parameterized Query
-        update = """
-            UPDATE Tickets
-            SET Credit = Credit + ?
-            WHERE TicketNR = ?
-        """
-        self._cursor.execute(update, (amount, int(ticket)))
+        #create new message
+        insert = f"""
+                 INSERT INTO Messages
+                 VALUES ({new_message_id},{ticket},'{msg}')
+                 """
+        
+        self._cursor.execute(insert)
         self._cursor.commit()
+    
+    def get_qr_code_payload(self, ticket):
+        select = f"""
+                 SELECT QrPayload FROM Tickets WHERE TicketNR = {ticket}
+                 """    
+            
+        value = self._cursor.execute(select).fetchone()[0]
+        return value
+    
+    def get_order_placed_by(self, order):
+        select = f"""
+            SELECT PlacedByTicketNR FROM Orders WHERE OrderID = {order}
+            """    
+            
+        value = self._cursor.execute(select).fetchone()[0]
+        return value
+    
+    def check_credit_card(self, card, pin):
+        if not card.isdigit():
+            return False, False
+        elif not pin.isdigit() or len(str(pin)) != 4:
+            return True, False
 
-
-
+        select = f"""
+                 SELECT * FROM CreditCards
+                 WHERE CardID = {card}
+                 """
+        
+        #check if credit card exists
+        row = self._cursor.execute(select).fetchone()
+        if row:
+            #check password
+            if int(row[1]) == int(pin):
+                return True, True
+            else:
+                #wrong pin
+                return True, False
+        else:
+            #credit card doesnt exist
+            return False, False
+    
+    def decrease_waittime_for_all_orders(self):
+        update = """
+        UPDATE orders
+        SET time = time - 1
+        WHERE time > 0 AND StatusID = 2
+        """
+        self._cursor.execute(update)
+        self._cursor.connection.commit()
