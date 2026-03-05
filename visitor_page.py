@@ -193,8 +193,9 @@ class VisitorPage:
 
         orders = self._database.get_orders_for_ticket(self._ticket)
         for order in orders:
+            iid = str(order["ID"])
             row = (order["stand"], order["time"], order["status_desc"], order["ID"], order["placed_by"])
-            self._table.insert("", END, values=row, tags=("row",))
+            self._table.insert("", END, iid=iid, values=row, tags=("row",))
 
         is_vip = self._database.check_vip(self._ticket)
         ticket_txt = f"Ticket: {self._ticket}" + (" ☆" if is_vip else "")
@@ -364,6 +365,7 @@ class VisitorPage:
 
         self._table2.bind("<<TreeviewSelect>>", self._disable_selection)
 
+<<<<<<< HEAD
 
     def _schedule_waittime_update(self):
         if self._waittime_job is not None:
@@ -379,13 +381,59 @@ class VisitorPage:
         # Timer erneut planen
         self._schedule_waittime_update()
 
+=======
+    def _schedule_waittime_update(self):
+        if self._waittime_job is not None:
+            self._root.after_cancel(self._waittime_job)
+        self._waittime_job = self._root.after(2500, self._update_waittimes)
+
+    def _update_waittimes(self):
+        # reload table data
+        self._refresh_order_table()
+        # plan update timer
+        self._schedule_waittime_update()
+
+    def _refresh_order_table(self):
+        orders = self._database.get_orders_for_ticket(self._ticket)
+        selected = self._table.focus()
+        yview = self._table.yview()
+
+        seen = set()
+        for order in orders:
+            iid = str(order["ID"])
+            seen.add(iid)
+            row = (order["stand"], order["time"], order["status_desc"], order["ID"], order["placed_by"])
+
+            if self._table.exists(iid):
+                # update in place
+                self._table.item(iid, values=row)
+            else: 
+                self._table.insert("", "end", iid=iid, values=row, tags=("row",))
+
+        # remove rows that no longer exist in db
+        for iid in self._table.get_children(""):
+            if iid not in seen:
+                self._table.delete(iid)
+
+        # restore ui state
+        still_selected = [iid for iid in selected if self._table.exists(iid)]
+        if still_selected:
+            self._table.selection_set(still_selected)
+        if selected and self._table.exists(selected):
+            self._table.focus(selected)
+
+        self._table.yview_moveto(yview[0])
+
+>>>>>>> origin/master
     def _schedule_notification_update(self):
         if self._notify_job is not None:
             self._root.after_cancel(self._notify_job)
         self._notify_job = self._root.after(2500, self._poll_notifications)
 
     def _poll_notifications(self):
+        # reload table data
         self.update_notification_table()
+        # plan update timer
         self._schedule_notification_update()
 
     def update_notification_table(self):

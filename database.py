@@ -155,7 +155,7 @@ class Database:
         #new order
         insert = """
                  INSERT INTO Orders
-                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                  """
         
         params = (
@@ -166,7 +166,8 @@ class Database:
             1,
             special_requests,
             stand,
-            prioritized
+            prioritized,
+            ticket
         )
         
         self._cursor.execute(insert, params)
@@ -414,7 +415,11 @@ class Database:
         update = """
         UPDATE orders
         SET time = time - 1
+<<<<<<< HEAD
         WHERE time > 0
+=======
+        WHERE time > 0 AND StatusID = 2
+>>>>>>> origin/master
         """
         self._cursor.execute(update)
         self._cursor.connection.commit()

@@ -29,6 +29,9 @@ class SellerPage:
         self._style = ttk.Style(self._root)
         self._style.theme_use("default")
 
+        # waittime db update
+        self._waittime_job = None
+
     def get_page(self):
         if self._seller_page:
             return self._seller_page
@@ -111,6 +114,13 @@ class SellerPage:
 
         self._seller_page = page
         return self._seller_page
+    
+    def init_data_for_stand(self, stand):
+        self._stand = stand
+
+        self.fill_order_table_rows()
+        self.fill_product_table_rows()
+        self._schedule_waittime_update()
     
     def set_login_page_management(self, login_page_management):
         self._login_page_management = login_page_management
@@ -266,10 +276,10 @@ class SellerPage:
     def _disable_selection(self, event=None):
         event.widget.selection_remove(event.widget.selection())
 
-    def fill_order_table_rows(self, stand):
+    def fill_order_table_rows(self):
         self._table.delete(*self._table.get_children())
 
-        orders = self._database.get_orders_for_stand(stand)
+        orders = self._database.get_orders_for_stand(self._stand)
         for order in orders:
             row = (
                 order["ID"],
@@ -280,13 +290,12 @@ class SellerPage:
             )
             self._table.insert("", END, values=row, tags=("row",))
 
-        self._stand = stand
-        self._stand_label.config(text=f"Stand Nr.: {stand}")
+        self._stand_label.config(text=f"Stand Nr.: {self._stand}")
 
-    def fill_product_table_rows(self, stand):
+    def fill_product_table_rows(self):
         self._table_2.delete(*self._table_2.get_children())
 
-        products = self._database.get_products_for_stand(stand)
+        products = self._database.get_products_for_stand(self._stand)
         for product in products:
             warning = "!!!" if int(product["quantity"]) < 10 else ""
             self._table_2.insert("", END, values=(product["name"], product["quantity"], warning), tags=("row",))
@@ -299,7 +308,7 @@ class SellerPage:
 
         key = display.split("(", 1)[1].strip(")")
         self._database.add_product_for_stand(self._stand, key, int(quantity))
-        self.fill_product_table_rows(self._stand)
+        self.fill_product_table_rows()
 
         self._product_combo.set("Produkt wählen")
         self._quantity_val.set("")
@@ -318,7 +327,7 @@ class SellerPage:
             return
         selected_order = self._table.item(selected, "values")
         self._database.change_status_for_order(selected_order[0])
-        self.fill_order_table_rows(self._stand)
+        self.fill_order_table_rows()
 
     def _cancel_order(self, event=None):
         selected = self._table.focus()
@@ -333,10 +342,58 @@ class SellerPage:
                 ticket,
                 f"Bestellung {selected_order[0]} wurde storniert."
             )
-        self.fill_order_table_rows(self._stand) 
+        self.fill_order_table_rows() 
 
     def _on_logout(self):
         if not self._login_page_management or not messagebox.askokcancel("Logout", "Sind sie sicher?"):
             return
         self._root.focus_set()
         self._login_page_management.get_page().tkraise()
+
+    def _schedule_waittime_update(self):
+        if self._waittime_job is not None:
+            self._root.after_cancel(self._waittime_job)
+        self._waittime_job = self._root.after(2500, self._update_waittimes)
+
+    def _update_waittimes(self):
+        # reload table data
+        self._refresh_order_table()
+        # plan update timer
+        self._schedule_waittime_update()
+
+    def _refresh_order_table(self):
+        orders = self._database.get_orders_for_stand(self._stand)
+        selected = self._table.focus()
+        yview = self._table.yview()
+
+        seen = set()
+        for order in orders:
+            iid = str(order["ID"])
+            seen.add(iid)
+            row = (                
+                order["ID"],
+                order["timestamp"].strftime("%d.%m.%y %X"),
+                order["time"],
+                order["status_desc"],
+                order["prioritized"]
+            )
+
+            if self._table.exists(iid):
+                # update in place
+                self._table.item(iid, values=row)
+            else: 
+                self._table.insert("", "end", iid=iid, values=row, tags=("row",))
+
+        # remove rows that no longer exist in db
+        for iid in self._table.get_children(""):
+            if iid not in seen:
+                self._table.delete(iid)
+
+        # restore ui state
+        still_selected = [iid for iid in selected if self._table.exists(iid)]
+        if still_selected:
+            self._table.selection_set(still_selected)
+        if selected and self._table.exists(selected):
+            self._table.focus(selected)
+
+        self._table.yview_moveto(yview[0])
