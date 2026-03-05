@@ -166,6 +166,7 @@ class Database:
             1,
             special_requests,
             stand,
+            prioritized,
             ticket
         )
         
