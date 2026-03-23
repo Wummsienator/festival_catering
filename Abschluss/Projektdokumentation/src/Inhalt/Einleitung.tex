@@ -1,6 +1,71 @@
 % !TEX root = ../Projektdokumentation.tex
 \section{Einleitung}
 \label{sec:Einleitung}
+Die folgende Projektdokumentation schildert den Ablauf des Demo-Abschlussprojektes, welches
+die Autoren im Rahmen ihrer Ausbildung zum Fachinformatiker Fachrichtung Anwendungsentwicklung 
+durchgeführt haben. Auftraggeber ist das TGBBZ1, eine Berufsschule in Saarbrücken. Das Projekt
+dient zur Vorbereitung auf die IHK-Abschlussprüfung. 
+
+\subsection{Projektbeschreibung} 
+\label{sec:Projektbeschreibung}
+Im Rahmen des Projekts wird ein digitales Bestell- und Abholsystem für ein Musikfestival
+konzipiert und umgesetzt. Ziel ist es, den klassischen Verkaufsprozess an Essens- und
+Getränkeständen durch eine softwaregestützte Lösung zu optimieren. Besucher*innen des
+Festivals erhalten die Möglichkeit, über eine mobile Anwendung Bestellungen aufzugeben.
+Nach der Anmeldung mittels Ticketnummer kann ein Guthaben verwaltet werden, welches für
+Bestellungen genutzt wird. Die Bestellung erfolgt standgebunden und berücksichtigt
+aktuelle Verfügbarkeiten sowie geschätzte Wartezeiten. Pro Ticket wird ein digitaler
+Abholcode (QR-Code) generiert, um beim Abholen die Übergabe zu verifizieren. Der Status
+der Bestellung wird in Echtzeit aktualisiert (z.B. „In Bearbeitung, „Bereit zur Abholung“).
+Das Standpersonal kann Bestellungen verwalten, deren Status anpassen sowie Produkt-Bestände
+nachfüllen. Die Ausgabe erfolgt durch das Scannen des QR-Codes. Zusätzlich beinhaltet das
+System Funktionen zur Rückerstattung bei stornierten Bestellungen und stellt eine priorisierte
+Behandlung von VIP-Besucher*innen bereit.
+
+\subsection{Projektziel} 
+\label{sec:Projektziel}
+Ziel des Projekts ist die Entwicklung einer Anwendung zur Digitalisierung und Optimierung
+der Bestell- und Ausgabeprozesse auf einem Musikfestival.
+
+Dabei sollen insbesondere folgende Ziele erreicht werden:
+
+\begin{itemize}
+    \item Reduzierung von Warteschlangen an Verkaufsständen
+    \item Verbesserung der Benutzerfreundlichkeit für Besucher*innen
+    \item Effizientere Organisation der Bestellabläufe für Standpersonal
+    \item Transparente Darstellung von Bestellstatus und Wartezeiten
+    \item Echtzeit-Verwaltung von Beständen und Bestellungen
+\end{itemize}
+
+Das System soll mehrere Benutzerrollen (Besucher, VIP-Besucher,Standpersonal) unterstützen und
+deren spezifische Anforderungen abbilden.
 
 \subsection{Projektumfeld} 
 \label{sec:Projektumfeld}
+Das Projekt wird im Rahmen eines Abschlussprojekts zum Fachinformatiker für
+Anwendungsentwicklung durchgeführt. Auftraggeber ist das TGBBZ1, das als fiktiver
+Kunde agiert.
+
+Die Entwicklung erfolgt in einer simulierten Projektumgebung, welche reale Bedingungen
+eines Musikfestivals nachbildet. Dazu zählen:
+
+\begin{itemize}
+    \item Mehrere Verkaufsstände mit unterschiedlichen Angeboten
+    \item Zugriff durch Personen mit unterschiedlichen Benutzerrollen
+    \item Echtzeitkommunikation zwischen Frontend und Backend
+\end{itemize}
+
+Die Umsetzung erfolgt als Gruppenprojekt unter Verwendung moderner Entwicklungswerkzeuge
+und -methoden. Die Anwendung besteht aus mehreren Komponenten, wie z.B. der Frontend-App
+(Python, Tkinter) und einer Datenbank, umgesetzt über Microsoft SQL Server.
+
+\subsection{Projektbegründung} 
+\label{sec:Projektbegründung}
+Auf Musikfestivals entstehen häufig lange Warteschlangen an Essens- und Getränkeständen,
+was zu Unzufriedenheit bei Besucher*innen und chaotischen Abläufen führt.
+Durch die Digitalisierung des Bestellprozesses können Warteschlangen durch zeitversetzte
+Abholung vermieden, Stoßzeiten durch bessere Planbarkeit entzerrt und Kommunikationsfehler
+bei Bestellungen reduziert werden. Die Verwaltung von Echtzeitdaten Hilft bei der Optimierung
+des Lager- und Bestandnachfüllprozesses.
+Das Projekt bietet zudem einen hohen Praxisbezug, da vergleichbare Systeme bereits
+in der Gastronomie und auf Veranstaltungen eingesetzt werden.
