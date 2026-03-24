@@ -1,2 +1,12 @@
 #pycache
 __pycache__
+
+#latex
+*.log
+*.lof
+*.aux
+*.toc
+*.synctex.gz
+*.fdb_latexmk
+*.lot
+*.fls
