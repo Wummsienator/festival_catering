@@ -22,6 +22,35 @@ gleichzeitig Bestellungen entgegennehmen, kassieren, zubereiten und ausgeben, wa
 Besucher*innen haben momentan keine direkte Information über die aktuellen Wartezeiten, die Verfügbarkeit von Produkten oder den Status 
 ihrer Bestellung.
 
+\subsection{Soll-Konzept}
+\label{sec:SollKonzept}
+Zur Behebung der in der Ist-Analyse beschriebenen Schwächen soll ein digitales Bestell- und Abholsystem entwickelt werden, das die bisherigen
+manuellen Abläufe auf dem Festival teilweise ersetzt und organisatorisch verbessert.
+
+\subsubsection{Benutzersicht}
+Besucher*innen sollen sich über ihre Ticketnummer am System anmelden können. Nach erfolgreicher Anmeldung soll ein Ticket-gebundenes Guthaben
+zur Verfügung stehen, das für Bestellungen genutzt werden kann. Außerdem soll dem Benutzer bzw. der Benutzerin ein QR-Code zur Verfügung gestellt werden,
+der zur Abholung der Bestellung verwendet wird. Innerhalb der Anwendung sollen Produkte standbezogen ausgewählt und bestellt werden können.
+Zusätzlich sollen Informationen über Wartezeiten und Produktverfügbarkeiten angezeigt werden. Ebenso soll der aktuelle Bearbeitungsstatus der Bestellung
+jederzeit einsehbar sein.
+
+\subsubsection{Standsicht}
+Für das Standpersonal soll eine Verwaltungsoberfläche bereitgestellt werden, in der eingehende Bestellungen übersichtlich dargestellt werden. Die Bestellungen
+sollen dort nach Bearbeitungsstatus und gegebenenfalls Priorität verwaltet werden können. Darüber hinaus soll das Personal den Status einzelner Bestellungen ändern
+sowie Produktbestände einsehen und bei Bedarf aktualisieren können.
+
+\subsubsection{Bestands- und Bestellverwaltung}
+Das System soll Produktbestände zentral verwalten. Bestellungen dürfen nur dann abgeschlossen werden, wenn die benötigten Produkte in ausreichender Menge verfügbar sind.
+Nach Abschluss einer Bestellung oder Ausgabe soll der Bestand automatisch angepasst werden.
+
+\subsubsection{Sonderfälle}
+Es soll eine Möglichkeit zum stornieren von Bestellungen bereit gestellt werden, darauf folgend muss das zuvor belastete Guthaben automatisch zurückgebucht werden. 
+Zusätzlich soll das System eine bevorzugte Behandlung von VIP-Besucher*innen ermöglichen.
+
+\subsubsection{Zielsetzung des Soll-Konzepts}
+Durch die Umsetzung des Soll-Konzepts sollen Wartezeiten reduziert, Abläufe an den Verkaufsständen strukturiert und die Transparenz für alle beteiligten Benutzergruppen
+erhöht werden. Gleichzeitig soll die digitale Verarbeitung der Bestellungen eine bessere Nachvollziehbarkeit und effizientere Bestandsverwaltung ermöglichen.
+
 \subsection{Wirtschaftlichkeitsanalyse}
 \label{sec:Wirtschaftlichkeitsanalyse}
 Ziel der Wirtschaftlichkeitsanalyse ist es, die finanzielle Vorteilhaftigkeit der entwickelten Anwendung zu bewerten. 
@@ -82,3 +111,30 @@ Das Diagramm ist im Anhang unter \bhref{app:Use-Case-Diagramm} zu finden und bil
 
 \subsection{Qualitätsanforderungen}
 \label{sec:Qualitaetsanforderungen}
+Die Qualitätsanforderungen konkretisieren die Erwartungen an die Güte des Systems und dienen als Maßstab für die Bewertung der Umsetzung.
+
+\subsubsection{Funktionale Qualität}
+Das System muss alle definierten Funktionen vollständig und korrekt abbilden. Bestellungen dürfen nur bei ausreichendem Guthaben und verfügbaren 
+Produkten durchgeführt werden. Statusänderungen müssen nachvollziehbar und konsistent erfolgen.
+
+\subsubsection{Benutzerfreundlichkeit}
+Die Anwendung soll eine einfache und verständliche Bedienung ermöglichen. Alle relevanten Informationen, wie Bestellstatus oder Wartezeiten, sollen
+klar und übersichtlich dargestellt werden.
+
+\subsubsection{Performance}
+Die Reaktionszeiten des Systems sollen so gering wie möglich gehalten werden, um eine flüssige Nutzung zu gewährleisten. Insbesondere das Aufgeben
+von Bestellungen und das Aktualisieren von Statusinformationen sollen ohne spürbare Verzögerung erfolgen.
+
+\subsubsection{Zuverlässigkeit und Stabilität}
+Das System soll auch unter hoher Last stabil funktionieren. Fehlerhafte Zustände, wie doppelte Bestellungen oder falsche Bestände, sollen vermieden werden.
+
+\subsubsection{Nachvollziehbarkeit}
+Alle relevanten Aktionen, insbesondere Bestellungen, Stornierungen und Statusänderungen, sollen im System nachvollziehbar gespeichert werden.
+
+\subsubsection{Erweiterbarkeit}
+Das System soll so konzipiert sein, dass zukünftige Erweiterungen, wie zusätzliche Benutzerrollen oder neue Funktionen, ohne grundlegende Änderungen möglich sind.
+
+\subsection{Lastenheft/Fachkonzept}
+\label{sec:Lastenheft}
+Als Ergebnis der Analysephase wurde ein Lastenheft erstellt. Dieses umfasst alle Anforderungen der Auftraggeber an die zu erstellende Anwendung.
+Ein Auszug aus dem Lastenheft mit Fokus auf die konkreten Anforderungen befindet sich im Anhang \bhref{app:Lastenheft}.
