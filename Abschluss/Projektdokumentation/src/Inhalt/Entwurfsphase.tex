@@ -5,22 +5,18 @@
 \subsection{Zielplattform}
 \label{sec:Zielplattform}
 Im Rahmen der Entwurfsphase wurde die Zielplattform für die Umsetzung des Systems festgelegt. Dabei wurden sowohl die
-Anforderungen des Projekts als auch die im schulischen Umfeld verfügbaren Technologien berücksichtigt.
-
-Die Anwendung wird als Desktop-Anwendung entwickelt und basiert auf der Programmiersprache Python. Python wurde gewählt, da
-diese Sprache im Unterricht verwendet wird und somit eine sichere und effiziente Umsetzung ermöglicht. Zudem bietet Python eine
-große Anzahl an Bibliotheken, die die Entwicklung unterstützen.
+Anforderungen des Projekts als auch die im schulischen Umfeld verfügbaren Technologien berücksichtigt. Die Anwendung wird als Desktop-Anwendung
+entwickelt und basiert auf der Programmiersprache Python. Python wurde gewählt, da im schulichen Unterricht größtenteils diese Sprache verwendet
+wurde und diese somit eine sichere und effiziente Umsetzung ermöglicht. Zudem bietet Python eine große Anzahl an Bibliotheken, die die Entwicklung unterstützen.
 
 Für die grafische Benutzeroberfläche wird die Bibliothek Tkinter eingesetzt. Tkinter ist Bestandteil der Standardbibliothek von
 Python und ermöglicht die Erstellung einfacher, plattformunabhängiger Benutzeroberflächen. Aufgrund der guten Integration in Python
 und der geringen Einstiegshürde eignet sich Tkinter insbesondere für den Einsatz im schulischen Kontext.
-
 Zur Datenhaltung wird ein Microsoft SQL Server verwendet. Dieser stellt ein relationales Datenbankmanagementsystem dar und
-ermöglicht eine strukturierte und konsistente Speicherung der anfallenden Daten, wie beispielsweise Benutzerinformationen, Bestellungen
+ermöglicht eine strukturierte und konsistente Speicherung der benötigten Daten, wie beispielsweise Benutzerinformationen, Bestellungen
 und Produktbestände. Die Verwaltung der Datenbank erfolgt über das Tool SQL Server Management Studio 22.
-
 Die Kommunikation zwischen Anwendung und Datenbank wird über die Python-Bibliothek \texttt{pyodbc} realisiert. Diese ermöglicht den
-Zugriff auf relationale Datenbanken über eine standardisierte Schnittstelle (ODBC) und unterstützt die Ausführung von SQL-Abfragen direkt
+Zugriff auf relationale Datenbanken über eine standardisierte Schnittstelle (\acs{ODBC}) und unterstützt die Ausführung von SQL-Abfragen direkt
 aus der Anwendung heraus.
 
 Durch die gewählte Kombination aus Python, Tkinter und Microsoft SQL Server wird eine klare Trennung zwischen Benutzeroberfläche, Anwendungslogik
@@ -28,7 +24,7 @@ und Datenhaltung erreicht. Gleichzeitig ermöglicht die Zielplattform eine stabi
 
 \subsection{Architekturdesign}
 \label{sec:Architekturdesign}
-Für den Aufbau der Anwendung wurde eine an das Model-View-Controller-Muster (MVC) angelehnte Softwarearchitektur gewählt. Ziel dieser Architektur
+Für den Aufbau der Anwendung wurde eine an das Model-View-Controller-Muster (\acs{MVC}) angelehnte Softwarearchitektur gewählt. Ziel dieser Architektur
 ist die Trennung von Benutzeroberfläche, Anwendungslogik und Datenzugriff, um die Anwendung übersichtlicher, wartbarer und besser erweiterbar zu gestalten.
 
 Das \textbf{Model} umfasst in diesem Projekt insbesondere den Zugriff auf die Datenbank sowie die Verarbeitung und Bereitstellung der benötigten Daten.
@@ -46,7 +42,6 @@ zum Beispiel neue Bestellungen oder Statusänderungen, direkt in der Anwendung s
 Die Umsetzung orientiert sich an diesem Muster, ohne es vollständig in strikt getrennte Klassenstrukturen zu überführen. Insbesondere innerhalb einzelner
 GUI-Klassen werden sowohl Darstellungslogik als auch steuernde Funktionen zusammengefasst. Dennoch ist eine fachliche Trennung der Verantwortlichkeiten erkennbar:
 Die Oberfläche dient primär der Darstellung, während Datenbankoperationen über separate Methoden und Objekte ausgeführt werden.
-
 Ein Beispiel hierfür ist die Besucheransicht. Diese stellt dem Benutzer Informationen wie Ticketnummer, Guthaben, offene Bestellungen, Benachrichtigungen und
 den QR-Code grafisch zur Verfügung. Gleichzeitig werden Benutzeraktionen, wie das Stornieren einer Bestellung, das Freischalten einer Bestellung für Freund*innen
 oder das Aufladen von Guthaben, über entsprechende Steuerungsfunktionen verarbeitet. Die dafür notwendigen Daten werden über die Datenzugriffsschicht aus der Datenbank
@@ -57,33 +52,19 @@ Wartung und Erweiterung der Software. Insbesondere die Trennung von Oberflächen
 
 \subsection{Entwurf der Benutzeroberfläche}
 \label{sec:Benutzeroberflaeche} 
-Im Rahmen der Entwurfsphase wurde die Benutzeroberfläche der Anwendung zunächst in Form von Mockups prototypisch geplant. Ziel dieser Vorab-Visualisierung war es,
+Im Rahmen der Entwurfsphase wurde die Benutzeroberfläche der Anwendung zunächst in Form von Mockups geplant. Ziel dieser Vorab-Visualisierung war es,
 die Struktur, Navigation und grundlegende Bedienlogik der Anwendung festzulegen, bevor mit der eigentlichen Implementierung begonnen wurde.
-
-Die Mockups dienen dabei als konzeptionelle Grundlage für die spätere Umsetzung und ermöglichen eine frühzeitige Überprüfung der Benutzerführung sowie der Anordnung
-der einzelnen Bedienelemente. Insbesondere wurde darauf geachtet, die Benutzeroberfläche übersichtlich und intuitiv zu gestalten, um eine einfache Bedienung für alle
-Benutzergruppen zu gewährleisten.
+Die Mockups dienen dabei als konzeptionelle Grundlage für die spätere Umsetzung und ermöglichen eine frühzeitige Absprache der Benutzerführung mit dem Auftraggeber
+sowie der Anordnung der einzelnen Bedienelemente. Insbesondere wurde darauf geachtet, die Benutzeroberfläche übersichtlich und intuitiv zu gestalten, um eine einfache
+edienung für alle Benutzergruppen zu gewährleisten.
 
 Für jede zentrale Benutzerrolle (Besucher*innen, Standpersonal) wurden entsprechende Oberflächen entworfen. Dabei wurden typische Nutzungsszenarien berücksichtigt, wie
 beispielsweise das Aufgeben einer Bestellung, die Anzeige von Bestellstatus oder die Verwaltung von Bestellungen durch das Standpersonal.
-
-Die Mockups umfassen unter anderem folgende Ansichten:
-\begin{itemize}
-    \item Besucheransicht mit Anzeige von Ticketnummer, Guthaben, offenen Bestellungen und QR-Code
-    \item Bestellansicht zur Auswahl von Produkten und Ständen
-    \item Verwaltungsansicht für Standpersonal zur Bearbeitung eingehender Bestellungen
-\end{itemize}
-
-Ein besonderer Fokus lag auf der klaren Darstellung von Statusinformationen, wie beispielsweise dem Fortschritt einer Bestellung (\glqq in Zubereitung\grqq{},
-\glqq abholbereit\grqq{}). Darüber hinaus wurden wichtige Funktionen wie das Stornieren von Bestellungen oder das Aufladen von Guthaben leicht zugänglich gestaltet.
-
-Die im Entwurfsprozess erstellten Mockups sind im Anhang unter \bhref{app:Mockups} einsehbar und dienten als Vorlage für die spätere Umsetzung mit der Tkinter-Bibliothek.
+Ein besonderer Fokus lag auf der klaren Darstellung von Statusinformationen, wie beispielsweise dem Fortschritt einer Bestellung. Darüber hinaus wurden wichtige Funktionen
+wie das Stornieren von Bestellungen oder das Aufladen von Guthaben leicht zugänglich gestaltet. Die im Entwurfsprozess erstellten Mockups sind im Anhang unter
+\bhref{app:Mockups} einsehbar und dienten als Vorlage für die spätere programmatische Umsetzung.
 Während der Implementierungsphase wurden kleinere Anpassungen vorgenommen, um technische Gegebenheiten sowie praktische Anforderungen zu berücksichtigen.
-
 Durch den Einsatz von Mockups konnte die Benutzeroberfläche bereits vor der Implementierung strukturiert geplant und potenzielle Usability-Probleme frühzeitig erkannt werden.
-
-Besonderes Augenmerk wurde dabei auf eine konsistente Gestaltung der Benutzeroberflächen gelegt, sodass sich Bedienelemente und Abläufe für alle Benutzerrollen möglichst
-ähnlich darstellen.
 
 \subsection{Datenmodell}
 \label{sec:Datenmodell}
@@ -130,3 +111,6 @@ Bestellungen, Beständen und Benutzerinformationen innerhalb der Anwendung.
 
 \subsection{Maßnahmen zur Qualitätssicherung}
 \label{sec:Qualitaetssicherung}
+
+\subsection{Pflichtenheft/Datenverarbeitungskonzept}
+\label{sec:Pflichtenheft}
