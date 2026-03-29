@@ -40,7 +40,7 @@ Datenbankfunktionen auf und aktualisiert anschließend die dargestellten Inhalte
 zum Beispiel neue Bestellungen oder Statusänderungen, direkt in der Anwendung sichtbar werden.
 
 Die Umsetzung orientiert sich an diesem Muster, ohne es vollständig in strikt getrennte Klassenstrukturen zu überführen. Insbesondere innerhalb einzelner
-GUI-Klassen werden sowohl Darstellungslogik als auch steuernde Funktionen zusammengefasst. Dennoch ist eine fachliche Trennung der Verantwortlichkeiten erkennbar:
+\acs{GUI}-Klassen werden sowohl Darstellungslogik als auch steuernde Funktionen zusammengefasst. Dennoch ist eine fachliche Trennung der Verantwortlichkeiten erkennbar:
 Die Oberfläche dient primär der Darstellung, während Datenbankoperationen über separate Methoden und Objekte ausgeführt werden.
 Ein Beispiel hierfür ist die Besucheransicht. Diese stellt dem Benutzer Informationen wie Ticketnummer, Guthaben, offene Bestellungen, Benachrichtigungen und
 den QR-Code grafisch zur Verfügung. Gleichzeitig werden Benutzeraktionen, wie das Stornieren einer Bestellung, das Freischalten einer Bestellung für Freund*innen
@@ -69,48 +69,39 @@ Durch den Einsatz von Mockups konnte die Benutzeroberfläche bereits vor der Imp
 \subsection{Datenmodell}
 \label{sec:Datenmodell}
 Im Rahmen der Entwurfsphase wurde ein Datenmodell entwickelt, um die für das System benötigten Informationen strukturiert und konsistent in einer relationalen Datenbank
-abzubilden. Ziel war es, alle relevanten Geschäftsobjekte des Bestell- und Abholprozesses sowie deren Beziehungen zueinander nachvollziehbar zu modellieren.
+abzubilden. Ziel war es, alle relevanten Datenobjekte des Bestell- und Abholprozesses sowie deren Beziehungen zueinander nachvollziehbar zu modellieren. Als Grundlage
+für die Modellierung wurde zunächst ein Entity-Relationship-Diagramm erstellt. Dieses dient der konzeptionellen Darstellung der wichtigsten Entitäten, Attribute und Beziehungen.
+Aufbauend darauf wurde ein relationales Datenbankmodell entworfen, welches die technische Umsetzung in Microsoft SQL Server beschreibt. Beide Darstellungen sind im Anhang unter
+\bhref{app:ER-Diagramm} und \bhref{app:Relationales_Datenbankmodell} einsehbar.
 
-Als Grundlage für die Modellierung wurde zunächst ein Entity-Relationship-Diagramm erstellt. Dieses dient der konzeptionellen Darstellung der wichtigsten Entitäten,
-Attribute und Beziehungen. Aufbauend darauf wurde ein relationales Datenbankmodell entworfen, welches die technische Umsetzung in Microsoft SQL Server beschreibt.
-Beide Darstellungen sind im Anhang unter \bhref{app:ER-Diagramm} und \bhref{app:Relationales_Datenbankmodell} einsehbar.
+Das Datenmodell bildet die zentralen Bestandteile des Systems ab. Dazu zählen insbesondere die Entitäten \emph{Tickets}, \emph{Orders}, \emph{OrderPositions},
+\emph{Products}, \emph{Stands}, \emph{Status} und \emph{Messages}. Ergänzt werden diese durch Verknüpfungstabellen wie \emph{Stand2Product} und
+\emph{Order2Ticket}, welche n:m-Beziehungen zwischen den jeweiligen Entitäten auflösen.
 
-Das Datenmodell bildet die zentralen Bestandteile des Systems ab. Dazu zählen insbesondere die Entitäten \glqq Tickets\grqq{}, \glqq Orders\grqq{}, \glqq OrderPositions\grqq{},
-\glqq Products\grqq{}, \glqq Stands\grqq{}, \glqq Status\grqq{} und \glqq Messages\grqq. Ergänzt werden diese durch Verknüpfungstabellen wie \glqq Stand2Product\grqq{} und
-\glqq Order2Ticket\grqq{}, welche n:m-Beziehungen zwischen den jeweiligen Entitäten auflösen.
-
-Die Entität \glqq Tickets\grqq{} speichert die Zugangsdaten und benutzerspezifischen Informationen der Festivalbesucher*innen. Hierzu gehören unter anderem die Ticketnummer,
-ein Passwort, das aktuelle Guthaben sowie die Kennzeichnung, ob es sich um einen VIP-Zugang handelt. Zusätzlich ist jedem Ticket ein Stand zugeordnet, wodurch auch die
-Benutzerrolle des Standpersonals abgebildet werden kann.
-
-Bestellungen werden in der Entität \glqq Orders\grqq{} gespeichert. Dort werden unter anderem die geschätzte Bearbeitungszeit, ein Zeitstempel, der Gesamtpreis, der aktuelle
-Status, Sonderwünsche, der zugehörige Stand sowie die Priorisierung einer Bestellung hinterlegt. Da eine Bestellung aus mehreren Positionen bestehen kann, wurde mit
-\glqq OrderPositions\grqq{} eine separate Tabelle zur Speicherung der einzelnen bestellten Produkte und Mengen angelegt.
-
-Die Entität \glqq Products\grqq{} enthält die angebotenen Produkte mit Namen, Preis und Bearbeitungszeit. Da ein Produkt an mehreren Ständen angeboten werden kann und
-ein Stand mehrere Produkte verkauft, wurde hierfür die Verknüpfungstabelle \glqq Stand2Product\grqq{} eingeführt. In dieser wird zusätzlich die verfügbare Menge eines
-Produkts pro Stand gespeichert.
-
-Die Tabelle \glqq Status\grqq{} dient der zentralen Verwaltung möglicher Bestellzustände. Dadurch werden Statuswerte nicht direkt als Text in Bestellungen gespeichert,
-sondern über Fremdschlüssel referenziert. Dies erhöht die Konsistenz und vereinfacht spätere Erweiterungen.
-
-Über die Tabelle \glqq Order2Ticket\grqq{} werden Bestellungen den beteiligten Tickets zugeordnet. Dies ermöglicht es, eine Bestellung mehreren Personen zugänglich zu machen,
-beispielsweise im Rahmen der Funktion zur Freigabe einer Bestellung für Freund*innen.
-
-Zusätzlich wurde mit der Entität \glqq Messages\grqq{} eine Struktur geschaffen, um systemseitige Benachrichtigungen für einzelne Tickets zu speichern. Dadurch können
-Nutzer*innen innerhalb der Anwendung über relevante Ereignisse, wie Statusänderungen oder Stornierungen, informiert werden.
-
-Bei der Modellierung wurde darauf geachtet, Redundanzen weitgehend zu vermeiden und Beziehungen zwischen den Entitäten über Primär- und Fremdschlüssel eindeutig abzubilden.
-Durch die relationale Struktur können Daten konsistent gespeichert und effizient abgefragt werden. Dies bildet die Grundlage für die zuverlässige Verarbeitung von
-Bestellungen, Beständen und Benutzerinformationen innerhalb der Anwendung.
-
-% Normalform erwähnen
+Bei der Modellierung wurde darauf geachtet, Redundanzen weitgehend zu vermeiden und Beziehungen zwischen den Entitäten über Primär- und Fremdschlüssel eindeutig abzubilden. Das
+Datenbankmodell befindet sich in der dritten Normalform.  Durch die relationale Struktur können Daten konsistent gespeichert und effizient abgefragt werden. Dies bildet die
+Grundlage für die zuverlässige Verarbeitung von Bestellungen, Beständen und Benutzerinformationen innerhalb der Anwendung.
 
 \subsection{Geschäftslogik}
 \label{sec:Geschaeftslogik}
+Um die Umsetzung der Geschäftsobjekte vorab grob planen zu können, wurde während der Entwurfsphase ein Klassendiagramm erstellt. Es macht den ungefähren Aufbau der zu
+implementierenden Objektklassen anschaulich und ist im Anhang unter \bhref{app:Klassendiagramm} zu finden.
+
+Mit Blick auf die in Abschnitt \bhref{sec:Architekturdesign} erwähnten Rollen des \acs{MVC}-Musters, nimmt die Klasse \emph{Database} die Rolle des Models ein. Die jeweiligen
+Seitenobjekte (\emph{LoginPage}, \emph{VisitorPage}, \emph{OrderPage}, \emph{SellerPage}) Bilden die Controller, welche die zugrunde liegende Logik hinter den View-Objekten 
+bereitstellen. Über die jeweilige \emph{get\_page()} Methode wird innerhalb der Controller-Klassen das, auf Tkinter aufgebaute, View-Objekt initialisiert und mit dem Controller
+verbunden.
+
+Für den Dialog zum aufladen des Ticket-gebunden Guthabens (\emph{CreditDialog}) wird eine eigene, wiederverwendbare Klasse implementiert. So kann der Dialog einfach und erweiterbar
+an diversen Stellen der Anwendung eingebunden werden.
 
 \subsection{Maßnahmen zur Qualitätssicherung}
 \label{sec:Qualitaetssicherung}
+Es werden Black-Box-Tests durch eine Test-Gruppe bestehend aus Mitschülern geplant. Die Testfälle werden aus dem zur Verfügung gestellten Anforderungsdokument erstellt. In Folge der
+Durchführung der Tests werden Fehler analysiert und korrigiert. Es werden kontinuierliche Feature-Tests durch die Entwickler während der Entwicklung durchgeführt.
 
-\subsection{Pflichtenheft/Datenverarbeitungskonzept}
+\subsection{Pflichtenheft}
 \label{sec:Pflichtenheft}
+Am Ende der Entwurfsphase wurde ein Pflichtenheft erstellt. Dieses baut auf dem Lastenheft (Abschnitt \bhref{sec:Lastenheft}) auf und beschreibt wie und womit die Autoren die
+Anforderungen des Fachbereiches umsetzen möchten. Es dient als Grundlage für die Realisierung des Projektes. Ein Auszug aus dem Pflichtenheft ist im Anhang \bhref{app:Pflichtenheft}
+einzusehen.

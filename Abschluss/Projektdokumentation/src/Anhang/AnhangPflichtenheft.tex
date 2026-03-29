@@ -1,0 +1,111 @@
+\subsection{Pflichtenheft (Auszug)}
+\label{app:Pflichtenheft}
+In folgendem Auszug aus dem Pflichtenheft wird die geplante Umsetzung der im Lastenheft definierten
+Anforderungen beschrieben:
+
+\subsubsection{Umsetzung Funktionale Anforderungen}
+\label{sec:UmsetzungFunktionaleAnforderungen}
+
+\subsubsection*{Benutzerverwaltung}
+\begin{itemize}
+    \item Die Anmeldung erfolgt über die Eingabe einer Ticketnummer und eines Passworts 
+    \item Die Benutzeroberfläche ist als Login-Maske mit zwei Eingabefeldern und einem Login-Button umgesetzt
+    \item Validierung der Eingaben gegen die Datenbank
+    \item Zuordnung einer Benutzerrolle (Besucher, VIP, Standpersonal)
+    \item Anzeige des aktuellen Guthabens nach erfolgreichem Login
+    \item Button zum öffnen eines Dialogs zum aufladen des Guthabens
+    \item QR-Code wird pro Ticket lokal aus zugrunde liegenden Daten aus dem Model generiert
+\end{itemize}
+
+\subsubsection*{Bestellsystem}
+\begin{itemize}
+    \item Anzeige aller verfügbaren Verkaufsstände in einer Liste
+    \item Auswahl eines Standes über Suchfeld oder Tabellenansicht
+    \item Anzeige der Produkte inklusive:
+    \begin{itemize}
+        \item Name
+        \item Wartezeit
+        \item Lagerbestand
+    \end{itemize}
+    \item Produkte können über Buttons dem Warenkorb hinzugefügt werden
+    \item Positionen im Warenkorb können über Buttons entfernt werden
+    \item Der Bestellung kann über ein Eingabefeld ein Sonderwunsch hinzugefügt werden
+    \item Über eine Anzeige werden Gesamtpreis und Gesamtwartezeit angezeigt
+    \item VIP-Besucher können über einen Schalter die Bestellung als priorisiert markieren
+    \item Per Button kann die Bestellung aufgegeben oder abgebrochen werden
+    \item Nach Abschluss wird das verfügbare Guthaben validiert und aktualisiert
+\end{itemize}
+
+\subsubsection*{Bestellverwaltung}
+\begin{itemize}
+    \item In der Besucherübersicht werden alle laufenden Bestellungen angezeigt
+    \item Folgende Felder werden in der Tabellensicht dargestellt:
+    \begin{itemize}
+        \item Standnummer
+        \item Wartezeit
+        \item Status
+        \item Bestellnummer
+    \end{itemize}
+    \item Das Standpersonal kann die, dem Stand zugehörigen, Bestellungen in einer Tabelle innerhalb der Verkäufer-Sicht einsehen
+    \item Über die Verkäufer-Sicht kann der Status der Bestellungen (Bestellung aufgegeben, In Bearbeitung, Bereit zur Abholung, Ausgegeben) angepasst werden
+\end{itemize}
+
+\subsubsection*{Abholprozess}
+\begin{itemize}
+    \item Der generierte QR-Code wird innerhalb der Besucher-Sicht angezeigt
+    \item Verifikation der Bestellung durch Scannen des QR-Codes
+    \item Validierung der Bestellung im System
+    \item Statusänderung auf „Ausgegeben“ durch das Standpersonal
+\end{itemize}
+
+\subsubsection*{Bestandsverwaltung}
+\begin{itemize}
+    \item Die Bestände werden automatisch durch das System verwaltet
+    \item Reduzierung des Lagerbestands bei Bestellung
+    \item Aktualisierung bei Ausgabe
+    \item Kennzeichnung von Produkten mit einer Warnung innerhalb er Verkäufer-Sicht als bei Unterschreitung eines Grenzwerts
+\end{itemize}
+
+\subsubsection*{Stornierung und Sonderfälle}
+\begin{itemize}
+    \item Automatische Stornierung bei nicht ausreichendem Bestand
+    \item Bestellung kann durch Besucher storniert werden
+    \item Automatische Rückerstattung des Guthabens
+    \item Stornierung nicht abgeholter Bestellungen kann durch Standpersonal durchgeführt werden
+\end{itemize}
+
+\subsubsection{Umsetzung Nichtfunktionale Anforderungen}
+\label{sec:UmsetzungNichtfunktionaleAnforderungen}
+
+\subsubsection*{Benutzbarkeit (Usability)}
+\begin{itemize}
+    \item Klare Strukturierung in Bereiche (Bestellungen, Warenkorb, Benachrichtigungen)
+    \item Konsistente Farbgestaltung
+    \item Intuitive Bedienung durch Buttons und Tabellen
+\end{itemize}
+
+\subsubsection*{Leistungsanforderungen (Performance)}
+\begin{itemize}
+    \item Datenbankabfragen werden optimiert ausgeführt
+    \item Minimierung von Ladezeiten durch direkte Verarbeitung
+    \item Echtzeit-Aktualisierung von Bestellstatus und Beständen
+\end{itemize}
+
+\subsubsection*{Zuverlässigkeit}
+\begin{itemize}
+    \item Korrekte Verarbeitung von Bestellungen ohne Datenverlust
+    \item Bestell und Bestandsdaten werden über die Datenbank gespeichert und direkt abgerufen
+\end{itemize}
+
+\subsubsection*{Sicherheit}
+\begin{itemize}
+    \item Authentifizierung über Ticketnummer und Passwort
+    \item Zugriffsbeschränkung je nach Benutzerrolle
+    \item Validierung aller Eingaben
+\end{itemize}
+
+\subsubsection*{Wartbarkeit und Erweiterbarkeit}
+\begin{itemize}
+    \item Modularer Aufbau (Trennung von GUI, Logik und Datenbank)
+    \item Erweiterbarkeit für zusätzliche Funktionen (z. B. weitere Rollen oder Zahlungsarten) kann einfach über die Datenbank durchgeführt werden
+\end{itemize}

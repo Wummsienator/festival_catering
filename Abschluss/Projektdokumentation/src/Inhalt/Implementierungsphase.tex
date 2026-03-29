@@ -4,9 +4,20 @@
 
 \subsection{Implementierung der Datenstrukturen}
 \label{sec:ImplementierungDatenstrukturen}
-
-\subsection{Implementierung der Benutzeroberfläche}
-\label{sec:ImplementierungBenutzeroberflaeche}
+Auf Grundlage der in Abschnitt \bhref{sec:Datenmodell} definierten Datenstruktur wurde die Implementierung der Datenbank vorgenommen. Zunächst wurde eine
+neue Microsoft SQL Server Instanz initialisiert und gehosted. Über das SQL Server Management Studio wurde innerhalb der Server-Instanz eine neue Datenbank angelegt. 
+Dieser wurden die benötigten Tabellen (und Demo-Daten) durch \acs{SQL}-Statements hinzugfügt. Die erstellte Datenbank entspricht somit der in der Entwurfsphase definierten
+Struktur und erfüllt die nötigen Anforderungen.
 
 \subsection{Implementierung der Geschäftslogik}
 \label{sec:ImplementierungGeschaeftslogik}
+Da die Implementierung der Geschäftslogik den Kernbestandteil des gesamten Projektes darstellt, soll diese im folgenden Abschnitt genauer erläutert werden. Um die
+Implementierung möglichst komfortabel durchführen zu können, ist eine geeignete Entwicklungsumgebung von großer Bedeutung. Die Autorin hat dafür Visual Studio
+Code verwendet.
+
+\subsection{Implementierung der Benutzeroberfläche}
+\label{sec:ImplementierungBenutzeroberflaeche}
+Die Implementierung der Benutzeroberfläche wurde, wie im Abschnitt \bhref{sec:Architekturdesign} geplant, mit Hilfe des Tkinter-Frameworks umgesetzt. Für das Design der Oberfläche
+haben sich die Autoren an den in der Entwurfsphase entworfenen Mockups orientiert. Für die Darstellung von Bild-Objekten wie dem generierten QR-Code wurde das Pillow-Framework
+(\acs{PIL}) verwendet. Es wurde eine globales Font festgellegt, was über alle Oberflächenobjekte hinweg verwendet wird. Auch wurde ein grobes Scaling implementiert, um die 
+Bedienung der Anwendung Bildschirmgrößen-unabhängig zu ermöglichen. Die Platzierung der Oberflächenelemente wird über ein Grid-Layout gesteuert.
