@@ -1,0 +1,35 @@
+% !TEX root = ../Projektdokumentation.tex
+\section{Implementierungsphase} 
+\label{sec:Implementierungsphase}
+
+\subsection{Implementierung der Datenstrukturen}
+\label{sec:ImplementierungDatenstrukturen}
+Auf Grundlage der in Abschnitt \bhref{sec:Datenmodell} definierten Datenstruktur wurde die Implementierung der Datenbank vorgenommen. Zunächst wurde eine
+neue Microsoft SQL Server Instanz initialisiert und gehostet. Über das SQL Server Management Studio wurde innerhalb der Server-Instanz eine neue Datenbank angelegt. 
+Dieser wurden die benötigten Tabellen (und Demo-Daten) durch \acs{SQL}-Statements hinzugefügt. Die erstellte Datenbank entspricht somit der in der Entwurfsphase definierten
+Struktur und erfüllt die nötigen Anforderungen.
+
+\subsection{Implementierung der Geschäftslogik}
+\label{sec:ImplementierungGeschaeftslogik}
+Da die Implementierung der Geschäftslogik den Kernbestandteil des gesamten Projektes darstellt, soll diese im folgenden Abschnitt genauer erläutert werden. Um die
+Implementierung möglichst komfortabel durchführen zu können, ist eine geeignete Entwicklungsumgebung von großer Bedeutung. Die Autorin hat dafür Visual Studio
+Code verwendet.
+
+Zu Beginn der Implementierung würde das Grundgerüst der Anwendung erstellt. Dafür wurde ein Main-File erstellt, welches als Einstiegspunkt der Ausführung der Anwendung dient.
+Dort werden Fonts, die Skalierung und die Initialisierung der einzelnen Objekt-Klassen definiert. Der Main-Loop des Wurzelobjekts der Tkinter-Objekte wird ebenso hier definiert.
+Als nächstes wurde die Klasse \emph{Database} implementiert, welche alle benötigten Funktionen zur Kommunikation mit der Datenbank mit Hilfe des pyodbc-Frameworks bereitstellt.
+Anschließend haben die Autoren sich mit der Implementierung der einzelnen Seiten-Objekten befasst und diese mit den benötigten Funktionen versorgt, welche von den späteren
+View-Objekten der Tkinter-Oberfläche verwendet werden. Eine lokale Generierung der \acs{QR}-Codes für den Abholprozess wurde über die Python Bibliothek \emph{qrcode} realisiert. Als
+Grundlage der Generierung werden Informationen abgerufen, welche in den Daten des jeweiligen Tickets innerhalb der Datenbank hinterlegt werden. Als letztes wurde eine fortlaufende
+Aktualisierung der Wartezeiten sowie der Nachrichtenobjekte innerhalb der Model-Daten der Besucherseite implementiert.
+
+\subsection{Implementierung der Benutzeroberfläche}
+\label{sec:ImplementierungBenutzeroberflaeche}
+Die Implementierung der Benutzeroberfläche wurde, wie im Abschnitt \bhref{sec:Architekturdesign} geplant, mit Hilfe des Tkinter-Frameworks umgesetzt. Für das Design der Oberfläche
+haben sich die Autoren an den in der Entwurfsphase entworfenen Mockups orientiert. Für die Darstellung von Bild-Objekten wie dem generierten \acs{QR}-Code wurde das Pillow-Framework
+(\acs{PIL}) verwendet. Es wurde eine globales Font festgellegt, was über alle Oberflächenobjekte hinweg verwendet wird. Auch wurde eine grobe Skalierung implementiert, um die 
+Bedienung der Anwendung Bildschirmgrößen-unabhängig zu ermöglichen. Die Platzierung der Oberflächenelemente wird über ein Grid-Layout gesteuert.
+
+Die gesamte Implementierung der Geschäftslogik und der Benutzerobefläche erfolgte nach dem in Abschnitt \bhref{sec:Entwicklungsprozess} beschriebenen Ablauf. Der Code wurde
+fortlaufend durch die Autoren gereviewed und während der Entwicklung funktional getestet. Die Implementierungsphase konnte mit dem Fertigstellen der Benutzeroberfläche
+abgeschlossen werden. 

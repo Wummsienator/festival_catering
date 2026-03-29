@@ -1,0 +1,88 @@
+\subsection{Lastenheft (Auszug)}
+\label{app:Lastenheft}
+Es folgt ein Auszug aus dem Lastenheft mit Fokus auf die Anforderungen:
+
+\subsubsection{Funktionale Anforderungen}
+\label{sec:FunktionaleAnforderungen}
+Die funktionalen Anforderungen beschreiben die konkreten Funktionen, die das System bereitstellen muss.
+
+\subsubsection*{Benutzerverwaltung}
+\begin{itemize}
+    \item Anmeldung von Besucher*innen mittels Ticketnummer
+    \item Verwaltung eines persönlichen Guthabens
+    \item Unterscheidung von Benutzerrollen (Besucher*innen, \acs{VIP}-Besucher*innen, Standpersonal)
+    \item Generierung eines eindeutigen \acs{QR}-Codes pro Besucher-Ticket
+\end{itemize}
+
+\subsubsection*{Bestellsystem}
+\begin{itemize}
+    \item Anzeige verfügbarer Verkaufsstände und Produkte
+    \item Darstellung von Produktverfügbarkeiten und geschätzten Wartezeiten
+    \item Hinzufügen von Sonderwünschen pro Bestellung
+    \item Priorisierung von Bestellungen für \acs{VIP}-Besucher*innen
+    \item Durchführung von Bestellungen mit Guthabenabbuchung
+\end{itemize}
+
+\subsubsection*{Bestellverwaltung}
+\begin{itemize}
+    \item Anzeige aller Bestellungen für Besucher*innen inklusive Status
+    \item Verwaltung von Bestellungen durch Standpersonal
+    \item Änderung des Bestellstatus (Bestellung aufgegeben, In Bearbeitung, Bereit zur Abholung, Ausgegeben)
+\end{itemize}
+
+\subsubsection*{Abholprozess}
+\begin{itemize}
+    \item Anzeige des \acs{QR}-Codes zur Abholung
+    \item Verifikation der Bestellung durch Scannen des \acs{QR}-Codes
+    \item Abschluss der Bestellung nach erfolgreicher Ausgabe
+\end{itemize}
+
+\subsubsection*{Bestandsverwaltung}
+\begin{itemize}
+    \item Verwaltung der Produktbestände pro Stand
+    \item Automatische Reduzierung des Bestands nach Bestellung oder Ausgabe
+    \item Kennzeichnung nicht verfügbarer Produkte
+\end{itemize}
+
+\subsubsection*{Stornierung und Sonderfälle}
+\begin{itemize}
+    \item Stornierung von Bestellungen bei fehlender Verfügbarkeit
+    \item Automatische Rückerstattung des Guthabens
+    \item Behandlung nicht abgeholter Bestellungen
+\end{itemize}
+
+\subsubsection{Nichtfunktionale Anforderungen}
+\label{sec:NichtfunktionaleAnforderungen}
+Die nichtfunktionalen Anforderungen beschreiben qualitative Eigenschaften des Systems.
+
+\subsubsection*{Benutzbarkeit (Usability)}
+\begin{itemize}
+    \item Intuitive und übersichtliche Benutzeroberfläche
+    \item Schnelle Erlernbarkeit ohne umfangreiche Einarbeitung
+    \item Klare Darstellung von Statusinformationen und Rückmeldungen
+\end{itemize}
+
+\subsubsection*{Leistungsanforderungen (Performance)}
+\begin{itemize}
+    \item Schnelle Verarbeitung von Bestellungen in Echtzeit
+    \item Geringe Ladezeiten bei Benutzerinteraktionen
+    \item Stabiler Betrieb auch bei hoher Anzahl gleichzeitiger Benutzer
+\end{itemize}
+
+\subsubsection*{Zuverlässigkeit}
+\begin{itemize}
+    \item Korrekte Verarbeitung von Bestellungen ohne Datenverlust
+    \item Konsistente Speicherung von Bestell- und Bestandsdaten
+\end{itemize}
+
+\subsubsection*{Sicherheit}
+\begin{itemize}
+    \item Schutz vor unbefugtem Zugriff auf Benutzerdaten
+    \item Sichere Verarbeitung von Guthaben und Transaktionen
+\end{itemize}
+
+\subsubsection*{Wartbarkeit und Erweiterbarkeit}
+\begin{itemize}
+    \item Modularer Aufbau des Systems
+    \item Möglichkeit zur Erweiterung um zusätzliche Funktionen (z. B. weitere Stände)
+\end{itemize}

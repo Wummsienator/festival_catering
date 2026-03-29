@@ -14,7 +14,7 @@
 \pagestyle{scrheadings}
 % chapterpagestyle gibt es nicht in scrartcl
 %\renewcommand{\chapterpagestyle}{scrheadings}
-\clearscrheadfoot
+\clearpairofpagestyles
 
 % Kopfzeile
 \renewcommand{\headfont}{\normalfont} % Schriftform der Kopfzeile
@@ -25,9 +25,10 @@
 %\setheadwidth[0pt]{textwithmarginpar} % Kopfzeile über den Text hinaus verbreitern (falls Logo den Text überdeckt)
 
 % Fußzeile
-\ifoot{\autorName}
+\ifoot{© \autorName}
 \cfoot{}
 \ofoot{\pagemark}
+\setlength{\footskip}{8mm} % Höhe der Fußzeile
 
 % Überschriften nach DIN 5008 in einer Fluchtlinie
 % ------------------------------------------------------------------------------

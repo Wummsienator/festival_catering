@@ -4,18 +4,104 @@
 
 \subsection{Zielplattform}
 \label{sec:Zielplattform}
+Im Rahmen der Entwurfsphase wurde die Zielplattform für die Umsetzung des Systems festgelegt. Dabei wurden sowohl die
+Anforderungen des Projekts als auch die im schulischen Umfeld verfügbaren Technologien berücksichtigt. Die Anwendung wird als Desktop-Anwendung
+entwickelt und basiert auf der Programmiersprache Python. Python wurde gewählt, da im schulischen Unterricht größtenteils diese Sprache verwendet
+wurde und diese somit eine sichere und effiziente Umsetzung ermöglicht. Zudem bietet Python eine große Anzahl an Bibliotheken, die die Entwicklung unterstützen.
+
+Für die grafische Benutzeroberfläche wird die Bibliothek Tkinter eingesetzt. Tkinter ist Bestandteil der Standardbibliothek von
+Python und ermöglicht die Erstellung einfacher, plattformunabhängiger Benutzeroberflächen. Aufgrund der guten Integration in Python
+und der geringen Einstiegshürde eignet sich Tkinter insbesondere für den Einsatz im schulischen Kontext.
+Zur Datenhaltung wird ein Microsoft SQL Server verwendet. Dieser stellt ein relationales Datenbankmanagementsystem dar und
+ermöglicht eine strukturierte und konsistente Speicherung der benötigten Daten, wie beispielsweise Benutzerinformationen, Bestellungen
+und Produktbestände. Die Verwaltung der Datenbank erfolgt über das Tool SQL Server Management Studio 22.
+Die Kommunikation zwischen Anwendung und Datenbank wird über die Python-Bibliothek \emph{pyodbc} realisiert. Diese ermöglicht den
+Zugriff auf relationale Datenbanken über eine standardisierte Schnittstelle (\acs{ODBC}) und unterstützt die Ausführung von \acs{SQL}-Abfragen direkt
+aus der Anwendung heraus.
+
+Durch die gewählte Kombination aus Python, Tkinter und Microsoft SQL Server wird eine klare Trennung zwischen Benutzeroberfläche, Anwendungslogik
+und Datenhaltung erreicht. Gleichzeitig ermöglicht die Zielplattform eine stabile und nachvollziehbare Umsetzung der Anforderungen im Rahmen des Projekts.
 
 \subsection{Architekturdesign}
 \label{sec:Architekturdesign}
+Für den Aufbau der Anwendung wurde eine an das Model-View-Controller-Muster (\acs{MVC}) angelehnte Softwarearchitektur gewählt. Ziel dieser Architektur
+ist die Trennung von Benutzeroberfläche, Anwendungslogik und Datenzugriff, um die Anwendung übersichtlicher, wartbarer und besser erweiterbar zu gestalten.
+
+Das \textbf{Model} umfasst in diesem Projekt insbesondere den Zugriff auf die Datenbank sowie die Verarbeitung und Bereitstellung der benötigten Daten.
+Hierzu zählen unter anderem Funktionen zum Abrufen von Bestellungen, Guthaben, Benachrichtigungen und Produktbeständen sowie zum Speichern von Änderungen,
+beispielsweise bei Stornierungen oder Guthabenbuchungen.
+
+Die \textbf{View} bildet die grafische Benutzeroberfläche ab. Diese wurde mit der Python-Bibliothek Tkinter umgesetzt und stellt die verschiedenen Benutzerseiten,
+Dialoge und Steuerelemente bereit. Dazu gehören unter anderem Tabellen zur Anzeige offener Bestellungen, Eingabefelder für Ticketnummern, Schaltflächen zur Navigation
+sowie die Darstellung des \acs{QR}-Codes für die Abholung.
+
+Der \textbf{Controller} übernimmt die Steuerung der Benutzerinteraktionen und verbindet die Benutzeroberfläche mit der Datenlogik. Er verarbeitet Eingaben, ruft
+Datenbankfunktionen auf und aktualisiert anschließend die dargestellten Inhalte in der Oberfläche. Dadurch wird sichergestellt, dass Änderungen im System, wie
+zum Beispiel neue Bestellungen oder Statusänderungen, direkt in der Anwendung sichtbar werden.
+
+Die Umsetzung orientiert sich an diesem Muster, ohne es vollständig in strikt getrennte Klassenstrukturen zu überführen. Insbesondere innerhalb einzelner
+\acs{GUI}-Klassen werden sowohl Darstellungslogik als auch steuernde Funktionen zusammengefasst. Dennoch ist eine fachliche Trennung der Verantwortlichkeiten erkennbar:
+Die Oberfläche dient primär der Darstellung, während Datenbankoperationen über separate Methoden und Objekte ausgeführt werden.
+Ein Beispiel hierfür ist die Besucheransicht. Diese stellt dem Benutzer Informationen wie Ticketnummer, Guthaben, offene Bestellungen, Benachrichtigungen und
+den \acs{QR}-Code grafisch zur Verfügung. Gleichzeitig werden Benutzeraktionen, wie das Stornieren einer Bestellung, das Freischalten einer Bestellung für Freund*innen
+oder das Aufladen von Guthaben, über entsprechende Steuerungsfunktionen verarbeitet. Die dafür notwendigen Daten werden über die Datenzugriffsschicht aus der Datenbank
+geladen und nach Änderungen erneut in der Oberfläche dargestellt.
+
+Durch die Wahl einer an \acs{MVC} angelehnten Architektur wird die Anwendung logisch strukturiert. Dies erleichtert die Entwicklung im Projektverlauf sowie die spätere
+Wartung und Erweiterung der Software. Insbesondere die Trennung von Oberflächenkomponenten und Datenzugriff trägt dazu bei, Änderungen gezielter umsetzen zu können.
 
 \subsection{Entwurf der Benutzeroberfläche}
 \label{sec:Benutzeroberflaeche} 
+Im Rahmen der Entwurfsphase wurde die Benutzeroberfläche der Anwendung zunächst in Form von Mockups geplant. Ziel dieser Vorab-Visualisierung war es,
+die Struktur, Navigation und grundlegende Bedienlogik der Anwendung festzulegen, bevor mit der eigentlichen Implementierung begonnen wurde.
+Die Mockups dienen dabei als konzeptionelle Grundlage für die spätere Umsetzung und ermöglichen eine frühzeitige Absprache der Benutzerführung mit dem Auftraggeber
+sowie der Anordnung der einzelnen Bedienelemente. Insbesondere wurde darauf geachtet, die Benutzeroberfläche übersichtlich und intuitiv zu gestalten, um eine einfache
+Bedienung für alle Benutzergruppen zu gewährleisten.
+
+Für jede zentrale Benutzerrolle (Besucher*innen, Standpersonal) wurden entsprechende Oberflächen entworfen. Dabei wurden typische Nutzungsszenarien berücksichtigt, wie
+beispielsweise das Aufgeben einer Bestellung, die Anzeige von Bestellstatus oder die Verwaltung von Bestellungen durch das Standpersonal.
+Ein besonderer Fokus lag auf der klaren Darstellung von Statusinformationen, wie beispielsweise dem Fortschritt einer Bestellung. Darüber hinaus wurden wichtige Funktionen
+wie das Stornieren von Bestellungen oder das Aufladen von Guthaben leicht zugänglich gestaltet. Die im Entwurfsprozess erstellten Mockups sind im Anhang unter
+\bhref{app:Mockups} einsehbar und dienten als Vorlage für die spätere programmatische Umsetzung.
+Während der Implementierungsphase wurden kleinere Anpassungen vorgenommen, um technische Gegebenheiten sowie praktische Anforderungen zu berücksichtigen.
+Durch den Einsatz von Mockups konnte die Benutzeroberfläche bereits vor der Implementierung strukturiert geplant und potenzielle Usability-Probleme frühzeitig erkannt werden.
 
 \subsection{Datenmodell}
 \label{sec:Datenmodell}
+Im Rahmen der Entwurfsphase wurde ein Datenmodell entwickelt, um die für das System benötigten Informationen strukturiert und konsistent in einer relationalen Datenbank
+abzubilden. Ziel war es, alle relevanten Datenobjekte des Bestell- und Abholprozesses sowie deren Beziehungen zueinander nachvollziehbar zu modellieren. Als Grundlage
+für die Modellierung wurde zunächst ein Entity-Relationship-Diagramm erstellt. Dieses dient der konzeptionellen Darstellung der wichtigsten Entitäten, Attribute und Beziehungen.
+Aufbauend darauf wurde ein relationales Datenbankmodell entworfen, welches die technische Umsetzung in Microsoft SQL Server beschreibt. Beide Darstellungen sind im Anhang unter
+\bhref{app:ER-Diagramm} und \bhref{app:Relationales_Datenbankmodell} einsehbar.
+
+Das Datenmodell bildet die zentralen Bestandteile des Systems ab. Dazu zählen insbesondere die Entitäten \emph{Tickets}, \emph{Orders}, \emph{OrderPositions},
+\emph{Products}, \emph{Stands}, \emph{Status} und \emph{Messages}. Ergänzt werden diese durch Verknüpfungstabellen wie \emph{Stand2Product} und
+\emph{Order2Ticket}, welche n:m-Beziehungen zwischen den jeweiligen Entitäten auflösen.
+
+Bei der Modellierung wurde darauf geachtet, Redundanzen weitgehend zu vermeiden und Beziehungen zwischen den Entitäten über Primär- und Fremdschlüssel eindeutig abzubilden. Das
+Datenbankmodell befindet sich in der dritten Normalform.  Durch die relationale Struktur können Daten konsistent gespeichert und effizient abgefragt werden. Dies bildet die
+Grundlage für die zuverlässige Verarbeitung von Bestellungen, Beständen und Benutzerinformationen innerhalb der Anwendung.
 
 \subsection{Geschäftslogik}
 \label{sec:Geschaeftslogik}
+Um die Umsetzung der Geschäftsobjekte vorab grob planen zu können, wurde während der Entwurfsphase ein Klassendiagramm erstellt. Es macht den ungefähren Aufbau der zu
+implementierenden Objektklassen anschaulich und ist im Anhang unter \bhref{app:Klassendiagramm} zu finden.
+
+Mit Blick auf die in Abschnitt \bhref{sec:Architekturdesign} erwähnten Rollen des \acs{MVC}-Musters, nimmt die Klasse \emph{Database} die Rolle des Models ein. Die jeweiligen
+Seitenobjekte (\emph{LoginPage}, \emph{VisitorPage}, \emph{OrderPage}, \emph{SellerPage}) bilden die Controller, welche die zugrunde liegende Logik hinter den View-Objekten 
+bereitstellen. Über die jeweilige \emph{get\_page()} Methode wird innerhalb der Controller-Klassen das, auf Tkinter aufgebaute, View-Objekt initialisiert und mit dem Controller
+verbunden.
+
+Für den Dialog zum Aufladen des Ticket-gebunden Guthabens (\emph{CreditDialog}) wird eine eigene, wiederverwendbare Klasse implementiert. So kann der Dialog einfach und erweiterbar
+an diversen Stellen der Anwendung eingebunden werden.
 
 \subsection{Maßnahmen zur Qualitätssicherung}
 \label{sec:Qualitaetssicherung}
+Es werden Black-Box-Tests durch eine Test-Gruppe bestehend aus Mitschülern geplant. Die Testfälle werden aus dem zur Verfügung gestellten Anforderungsdokument erstellt. In Folge der
+Durchführung der Tests werden Fehler analysiert und korrigiert. Es werden kontinuierliche Feature-Tests durch die Entwickler während der Entwicklung durchgeführt.
+
+\subsection{Pflichtenheft}
+\label{sec:Pflichtenheft}
+Am Ende der Entwurfsphase wurde ein Pflichtenheft erstellt. Dieses baut auf dem Lastenheft (Abschnitt \bhref{sec:Lastenheft}) auf und beschreibt wie und womit die Autoren die
+Anforderungen des Fachbereiches umsetzen möchten. Es dient als Grundlage für die Realisierung des Projektes. Ein Auszug aus dem Pflichtenheft ist im Anhang \bhref{app:Pflichtenheft}
+einzusehen.
